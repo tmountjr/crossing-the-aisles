@@ -62,16 +62,25 @@ export const latestVoteIds = sqliteView("latest_vote_ids", {
 	sourceFilename: text("source_filename"),
 }).as(
 	sql`
-  select vm.*
-  from vote_meta vm
-  join (
-    select bill_id, max(date) as latest_date
-    from vote_meta
-    group by bill_id
-  ) latest_votes
-  on
-    vm.bill_id = latest_votes.bill_id
-    and vm.date = latest_votes.latest_date
+	with temp_vm as (
+		select
+			*,
+			case
+				when bill_id = 'N/A'
+				then substr(nomination_title, 1, 10)
+				else bill_id
+			end as unique_matching_field
+		from vote_meta vm
+	)
+
+	select vm.*
+	from temp_vm vm
+	join (
+		select unique_matching_field, max(date) as latest_date
+		from temp_vm
+		group by unique_matching_field
+	) latest_votes
+	on vm.unique_matching_field = latest_votes.unique_matching_field and vm.date = latest_votes.latest_date
 	`)
 
 export const enrichedVoteMeta = sqliteView("enriched_vote_meta", {
