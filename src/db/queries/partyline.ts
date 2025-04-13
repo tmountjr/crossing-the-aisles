@@ -19,7 +19,12 @@ const recentVotes = db
     category: v_ids.category,
     nominationTitle: v_ids.nominationTitle,
     title: b.title,
-    sponsorParty: vm.sponsorParty,
+    sponsorParty: sql<string>`
+      CASE
+        WHEN ${v_ids.category} = 'nomination'
+        THEN 'R'
+        ELSE ${vm.sponsorParty}
+      END`.as("sponsor_party"),
   })
   .from(v_ids)
   .innerJoin(vm, eq(v_ids.voteId, vm.voteId))
