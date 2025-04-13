@@ -1,11 +1,11 @@
 import { db } from "@/db";
 import { desc, eq, sql } from "drizzle-orm";
 import {
-  latestVoteIds as v_ids,
-  enrichedVoteMeta as vm,
+  bills as b,
   votes as v,
   legislators as l,
-  bills as b
+  enrichedVoteMeta as vm,
+  latestVoteIds as v_ids,
 } from "@/db/schema";
 
 // First get the 10 most recent votes.
@@ -28,7 +28,10 @@ const recentVotes = db
   .limit(10)
   .as("recent_votes");
 
-// Now fetch all vote details pertaining to those votes.
+// Now fetch all vote details pertaining to those votes and determine if it's
+// a party line vote or not.
+// A party line vote is determined by:
+//   legislator_party = sponsor_party and position = "yea"
 const allVotes = db
   .select({
     voteId: v.voteId,
@@ -56,8 +59,6 @@ const allVotes = db
   .as("all_votes");
 
 // Finally, summarize those votes by how many did or did not vote along party lines.
-// A party line vote is determined by:
-//   legislator_party = sponsor_party and position = "yea"
 export const data = await db
   .select({
     voteId: allVotes.voteId,
