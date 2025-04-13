@@ -45,7 +45,7 @@ export default function RootLayout({
           </header>
 
           <main className="flex-grow flex justify-center items-start mt-8">
-            <div className="w-full max-w-[800px] px-4">{children}</div>
+            <div className="w-full px-10">{children}</div>
           </main>
 
           <footer className="sticky bottom-0 bg-gray-100 shadow-inner">
