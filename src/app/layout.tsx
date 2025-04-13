@@ -27,7 +27,31 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col min-h-screen">
+          <header className="sticky top-0 bg-white shadow-md z-10">
+            <div className="flex items-center justify-between max-w-7xl mx-auto">
+              <div className="flex items-center">
+                {/* brand image */}
+                <div className="h-8 w-8 bg-gray-200 rounded"></div>
+              </div>
+              <nav>
+                <ul className="flex space-x-4">
+                  <li className="hover:underline cursor-pointer">Link 1</li>
+                  <li className="hover:underline cursor-pointer">Link 2</li>
+                  <li className="hover:underline cursor-pointer">Link 3</li>
+                </ul>
+              </nav>
+            </div>
+          </header>
+
+          <main className="flex-grow flex justify-center items-start mt-8">
+            <div className="w-full max-w-[800px] px-4">{children}</div>
+          </main>
+
+          <footer className="sticky bottom-0 bg-gray-100 shadow-inner">
+            <div className="text-center py-2">© 2025 Your App</div>
+          </footer>
+        </div>
       </body>
     </html>
   );
