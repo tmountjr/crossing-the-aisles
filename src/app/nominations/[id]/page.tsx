@@ -1,5 +1,5 @@
 import PageHeader from "@/app/components/PageHeader";
-import { lawmakerVotesByNomination } from "@/db/queries/nominations";
+import { lawmakerVotesByNomination, nominationTitle } from "@/db/queries/nominations";
 
 export default async function Page({
   params,
@@ -8,51 +8,63 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const [ dVotes, rVotes, otherVotes ] = await Promise.all([
-    lawmakerVotesByNomination(id, 'd'),
-    lawmakerVotesByNomination(id, 'r'),
-    lawmakerVotesByNomination(id, 'other'),
-  ])
+  const [dVotes, rVotes, otherVotes] = await Promise.all([
+    lawmakerVotesByNomination(id, "d"),
+    lawmakerVotesByNomination(id, "r"),
+    lawmakerVotesByNomination(id, "other"),
+  ]);
+
+  const { title } = (await nominationTitle(id))[0]
 
   // Internal component to make the display a little cleaner
   const partyTable = (party: string, votes: any[]) => {
-    const grouped = votes.reduce((acc, curr) => {
-      const position = curr.position && (curr.position === 'Yea' || curr.position === 'Nay')
-        ? curr.position.toLowerCase()
-        : 'unknown';
-      
-      acc[position].push(curr)
-      return acc
-    }, { yea: [], nay: [], unknown: [] })
+    const grouped = votes.reduce(
+      (acc, curr) => {
+        const position =
+          curr.position && (curr.position === "Yea" || curr.position === "Nay")
+            ? curr.position.toLowerCase()
+            : "unknown";
 
-    const partyName = party === 'd'
-      ? 'Democratic Party'
-      : party === 'r'
-        ? 'Republican Party'
-        : 'Other'
-    
+        acc[position].push(curr);
+        return acc;
+      },
+      { yea: [], nay: [], unknown: [] }
+    );
+
+    const partyName =
+      party === "d"
+        ? "Democratic Party"
+        : party === "r"
+        ? "Republican Party"
+        : "Other";
+
     return (
-      <div className="flex flex-col border border-solid p-4">
-        <h2>{partyName}</h2>
-        <div className="flex flex-row gap-10">
-          <div className="flex flex-col">
-            <h3>Yea ({grouped.yea.length})</h3>
+      <div className="flex flex-col p-4 border border-1">
+        <div className="grid grid-cols-3 gap-2">
+          {/* top row */}
+          <h2 className="col-span-3 text-center text-xl font-bold">{partyName}</h2>
+
+          {/* second row */}
+          <h3 className="font-bold">Yea ({grouped.yea.length})</h3>
+          <h3 className="font-bold">Nay ({grouped.nay.length})</h3>
+          <h3 className="font-bold">Other ({grouped.unknown.length})</h3>
+
+          {/* third row */}
+          <div className="flex flex-col gap-2">
             {grouped.yea.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state})
               </p>
             ))}
           </div>
-          <div className="flex flex-col">
-            <h3>Nay ({grouped.nay.length})</h3>
+          <div className="flex flex-col gap-2">
             {grouped.nay.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state})
               </p>
             ))}
           </div>
-          <div className="flex flex-col">
-            <h3>Other ({grouped.unknown.length})</h3>
+          <div className="flex flex-col gap-2">
             {grouped.unknown.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state}) voted &quot;{v.position}&quot;
@@ -61,16 +73,16 @@ export default async function Page({
           </div>
         </div>
       </div>
-    )
+    );
   };
-  
+
   return (
     <>
-      <PageHeader title={`Nomination #${id}`} />
-      <section className="flex flex-row gap-10">
-        {partyTable('d', dVotes)}
-        {partyTable('r', rVotes)}
-        {partyTable('other', otherVotes)}
+      <PageHeader title={`Nomination #${id}`} subtitle={title!} />
+      <section className="flex flex-col xl:flex-row gap-2 ">
+        {partyTable("d", dVotes)}
+        {partyTable("r", rVotes)}
+        {partyTable("other", otherVotes)}
       </section>
     </>
   );

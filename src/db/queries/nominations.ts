@@ -77,4 +77,20 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
   }
 }
 
+/**
+ * Get the title of a specific nomination.
+ * @param voteId The vote ID.
+ * @returns The full title of the nomination.
+ */
+export const nominationTitle = async (voteId: string) => {
+  return db
+    .select({
+      title: vm.nominationTitle
+    })
+    .from(vm)
+    .where(eq(vm.voteId, voteId))
+    .limit(1)
+    .execute()
+}
+
 export const nominationVoteIds = _nominationVoteIds.execute()
