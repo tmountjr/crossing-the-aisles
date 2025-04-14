@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import VoteChart from "@/app/components/VoteChart";
 import PageHeader from "@/app/components/PageHeader";
 import LegislatorList from "@/app/components/LegislatorList";
 
@@ -116,10 +117,9 @@ export default function Home() {
       {selectedState && (
         <>
           <LegislatorList state={selectedState} />
-
-          <section className="mt-10">
-            <h1>Chart goes here</h1>
-          </section>
+          <VoteChart
+            state={selectedState !== "" ? selectedState : undefined}
+          />
         </>
       )}
     </>

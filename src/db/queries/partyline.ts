@@ -1,7 +1,6 @@
 import { db } from "@/db";
-import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
 import {
-  bills as b,
   votes as v,
   legislators as l,
   enrichedVoteMeta as vm,
@@ -19,6 +18,7 @@ const _tempVoteMeta = db
     category: v_ids.category,
     nomination_title: v_ids.nominationTitle,
     sourceFilename: v_ids.sourceFilename,
+    sponsorName: vm.sponsorName,
     sponsorParty: sql<string>`
      CASE
         WHEN ${v_ids.category} = 'nomination'
@@ -26,9 +26,8 @@ const _tempVoteMeta = db
         ELSE ${vm.sponsorParty}
       END`.as("sponsor_party"),
   })
-  .from(v_ids)
-  .innerJoin(vm, eq(v_ids.voteId, vm.voteId))
-  .leftJoin(b, eq(v_ids.billId, b.billId))
+  .from(vm)
+  .innerJoin(v_ids, eq(vm.voteId, v_ids.voteId))
   .as('temp_vote_meta');
 
 const _votesWithPartyLine = db
@@ -46,14 +45,17 @@ const _votesWithPartyLine = db
       CASE
         WHEN (${l.party} =  ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Nay') 
           OR (${l.party} != ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Yea')
-        THEN TRUE
-        ELSE FALSE
-      END`.as("is_party_line")
+        THEN 1
+        ELSE 0
+      END`.as("is_party_line"),
+    isAbstail: sql<boolean>`
+      CASE WHEN ${v.position} NOT IN ('Yea', 'Nay') THEN 1 ELSE 0 END
+    `.as('is_abstain')
   })
   .from(v)
   .innerJoin(_tempVoteMeta, eq(v.voteId, _tempVoteMeta.voteId))
   .innerJoin(l, eq(v.legislatorId, l.id))
-  .as("votes_with_party_line")
+  .as("votes_with_party_line");
 
 const _brokePartyLineVotes = db
   .select({
@@ -64,23 +66,25 @@ const _brokePartyLineVotes = db
     termType: _votesWithPartyLine.termType,
     party: _votesWithPartyLine.party,
     brokePartyLineCount: sql<number>`
-      CASE
-        WHEN ${_votesWithPartyLine.isPartyLine} = 0
-        THEN 1
-        ELSE 0
-      END`.as('broke_party_line_count'),
+      SUM(
+        CASE
+          WHEN ${_votesWithPartyLine.isPartyLine} = 0
+          THEN 1
+          ELSE 0
+        END
+      )`.as('broke_party_line_count'),
     totalVoteCount: count(_votesWithPartyLine.legislatorId).as("total_vote_count"),
   })
   .from(_votesWithPartyLine)
   .groupBy(_votesWithPartyLine.legislatorId)
   .as('broke_party_line_votes');
 
-interface BrokePartyLinesFilters {
+export interface BrokePartyLinesFilters {
   state?: string;
   chamber?: "sen" | "rep";
   party?: "d" | "r" | "i";
   legislatorIds?: string[];
-}
+};
 
 /**
  * Get the Broke Party Lines data, optionally limited by a set of filters.
@@ -103,5 +107,13 @@ export const brokePartyLineVotes = ({
       legislatorIds ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
     )
   )
-  .orderBy(asc(_votesWithPartyLine.party), desc(_brokePartyLineVotes.brokePartyLineCount))
-  .execute()
+  .orderBy(asc(_brokePartyLineVotes.party), desc(_brokePartyLineVotes.brokePartyLineCount))
+  .execute();
+
+export type BrokePartyLinesData =
+  Pick<InferSelectModel<typeof v>, "legislatorId"> &
+  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party"> &
+  {
+    brokePartyLineCount: number,
+    totalVoteCount: number
+  };
