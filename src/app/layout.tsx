@@ -28,7 +28,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <header className="sticky top-0 bg-white shadow-md z-10">
+          <header className="sticky top-0 bg-white shadow-md z-10 dark:bg-gray-600 dark:text-white">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
               <div className="flex items-center">
                 {/* brand image */}
@@ -48,7 +48,7 @@ export default function RootLayout({
             <div className="w-full px-10">{children}</div>
           </main>
 
-          <footer className="sticky bottom-0 bg-gray-100 shadow-inner">
+          <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white">
             <div className="text-center py-2">© 2025 Your App</div>
           </footer>
         </div>
