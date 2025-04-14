@@ -1,45 +1,85 @@
 "use client";
 
-import type { BrokePartyLinesFilters, BrokePartyLinesData } from "@/db/queries/partyline";
-import { fetchBplData } from "@/server/actions/brokePartyLines";
-import { useEffect, useState } from "react";
+import type {
+  BrokePartyLinesData,
+} from "@/db/queries/partyline";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-const VoteChart: React.FC<BrokePartyLinesFilters> = ({ state, chamber, party, legislatorIds }) => {
-  const [bplData, setBplData] = useState<BrokePartyLinesData[]>([]);
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchBplData({ state, chamber, party, legislatorIds});
-      setBplData(data);
-    };
+interface Reducer {
+  labels: string[];
+  normalizedValues: number[];
+  backgroundColors: string[];
+}
 
-    fetchData();
-  }, [state, chamber, party, legislatorIds])
-  
+const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
+  const { labels, normalizedValues, backgroundColors } = data.reduce<Reducer>((acc, curr) => {
+    acc.labels.push(`${curr.name} - ${curr.brokePartyLineCount} / ${curr.totalVoteCount}`);
+    acc.normalizedValues.push((curr.brokePartyLineCount / curr.totalVoteCount) * 100);
+
+    let bgColor;
+    if (curr.party === "D") {
+      bgColor = "blue";
+    } else if (curr.party === "R") {
+      bgColor = "red";
+    } else {
+      bgColor = "gray";
+    }
+    acc.backgroundColors.push(bgColor)
+
+    return acc;
+  }, {
+    labels: [],
+    normalizedValues: [],
+    backgroundColors: []
+  });
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "Breaks from Party (%)",
+        data: normalizedValues,
+        backgroundColor: backgroundColors,
+        borderColor: "white",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: "y" as const, // Horizontal bar chart
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+
   return (
-    <section className="mt-10">
-      {/* For right now just output a raw table, we'll dress it up later. */}
-      {bplData.length && (
-        <table>
-          <thead>
-            <tr>
-              <th>Legislator</th>
-              <th>Total Votes</th>
-              <th>Votes Across Party Lines</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bplData.map((d) => (
-              <tr key={d.legislatorId}>
-                <td>{d.name}</td>
-                <td>{d.totalVoteCount}</td>
-                <td>{d.brokePartyLineCount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </section>
+    <div style={{ width: "100%", height: "750px" }}>
+      <Bar data={chartData} options={options} />
+    </div>
   );
 };
 

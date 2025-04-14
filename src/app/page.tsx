@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import VoteChart from "@/app/components/VoteChart";
 import PageHeader from "@/app/components/PageHeader";
 import LegislatorList from "@/app/components/LegislatorList";
+import VoteChartWrapper from "./components/VoteChartWrapper";
 
 const states = [
   { name: "Alabama", code: "AL" },
@@ -117,9 +117,7 @@ export default function Home() {
       {selectedState && (
         <>
           <LegislatorList state={selectedState} />
-          <VoteChart
-            state={selectedState !== "" ? selectedState : undefined}
-          />
+          <VoteChartWrapper state={selectedState} />
         </>
       )}
     </>

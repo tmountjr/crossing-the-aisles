@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { and, asc, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
 import {
   votes as v,
   legislators as l,
@@ -107,7 +107,7 @@ export const brokePartyLineVotes = ({
       legislatorIds ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
     )
   )
-  .orderBy(asc(_brokePartyLineVotes.party), desc(_brokePartyLineVotes.brokePartyLineCount))
+  .orderBy(desc(_brokePartyLineVotes.brokePartyLineCount))
   .execute();
 
 export type BrokePartyLinesData =
