@@ -3,8 +3,9 @@ import {
   votes as v,
   legislators as l,
   latestVoteIds as vm,
+  LatestVoteId
 } from '@/db/schema';
-import { and, asc, eq, inArray, not } from 'drizzle-orm';
+import { and, asc, eq, inArray, not, type InferSelectModel } from 'drizzle-orm';
 
 // Subquery select to filter for just nomination votes
 const nominationVotes = db
@@ -94,3 +95,12 @@ export const nominationTitle = async (voteId: string) => {
 }
 
 export const nominationVoteIds = _nominationVoteIds.execute()
+
+type Vote = InferSelectModel<typeof v>
+type Legislator = InferSelectModel<typeof l>
+
+export type NominationVotes = 
+  Pick<Vote, "voteId" | "legislatorId" | "position"> &
+  Pick<Legislator, "name" | "state" | "party"> &
+  Pick<LatestVoteId, "date"> &
+  { title: string | null };

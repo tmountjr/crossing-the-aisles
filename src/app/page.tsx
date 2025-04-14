@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import PageHeader from "@/app/components/PageHeader";
+import LegislatorList from "@/app/components/LegislatorList";
 
 export default function Home() {
-  const [geoLoaded, setGeoLoaded] = useState(false);
   const [selectedState, setSelectedState] = useState("");
-  const [legislators, setLegislators] = useState<Record<string, any>[]>([]);
 
   const states = useMemo(() => [
     { name: "Alabama", code: "AL" },
@@ -62,56 +60,6 @@ export default function Home() {
     { name: "Wyoming", code: "WY" },
   ], []);
 
-  // On page load, download all the legislators.
-  useEffect(() => {
-    fetch("http://localhost:3000/api/legislators")
-      .then(response => response.json())
-      .then(data => setLegislators(data))
-      .catch(error => console.error("Error fetching legislators:", error));
-  }, []);
-
-  // On page load, grab the geolocation information (if available) and pick a state.
-  useEffect(() => {
-    if (!geoLoaded) {
-      setGeoLoaded(true);
-      (async () => {
-        try {
-          const response = await fetch("https://ipinfo.io/json")
-          const data = await response.json()
-          if (data.country && data.country === "US") {
-            if (data.region) {
-              const matchedState = states.find(state => state.name === data.region)
-              if (matchedState) {
-                setSelectedState(matchedState.code);
-              }
-            }
-          } else {
-            setSelectedState("");
-          }
-        } catch (e) {
-          console.error(`Error fetching geo: ${e}`)
-        }
-      })();
-    }
-  }, [geoLoaded, states]);
-
-  // When the user's home state changes, update the legislators useState value.
-  useEffect(() => {
-    if (selectedState !== "") {
-      fetch(`http://localhost:3000/api/legislators?state=${selectedState}`) 
-        .then(response => response.json())
-        .then(l => {
-          setLegislators(l);
-        });
-    } else {
-      fetch("http://localhost:3000/api/legislators")
-        .then(response => response.json())
-        .then(l => {
-          setLegislators(l);
-        });
-    }
-  }, [selectedState]);
-
   return (
     <>
       <PageHeader
@@ -140,22 +88,7 @@ export default function Home() {
         </select>
       </section>
 
-      {/* {selectedState && (
-      <section className="w-full mt-10">
-        <p>Based on your selection, here are all the legislators for your state:</p>
-        <div className="flex flex-row flex-wrap mt-2">
-          {legislators.map((legislator) => {
-            const chamber = legislator.termType === 'sen' ? "Senate" : "Representative"
-
-            return (
-              <span key={legislator.id} className="border rounded-md p-2 mr-2 mb-2">
-                {chamber} - {legislator.name} ({legislator.party}{legislator.termType === 'rep' ? `, ${legislator.district}` : ''})
-              </span>
-            );
-          })}
-        </div>
-      </section>
-      )} */}
+      <LegislatorList state={selectedState} />
 
       <section className="mt-10">
         <h1>Chart goes here</h1>

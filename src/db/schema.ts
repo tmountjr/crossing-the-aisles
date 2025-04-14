@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { InferSelectModel, sql } from "drizzle-orm";
 import { sqliteTable, sqliteView, text, numeric, primaryKey, integer } from "drizzle-orm/sqlite-core"
 
 export const legislators = sqliteTable("legislators", {
@@ -82,6 +82,9 @@ export const latestVoteIds = sqliteView("latest_vote_ids", {
 	) latest_votes
 	on vm.unique_matching_field = latest_votes.unique_matching_field and vm.date = latest_votes.latest_date
 	`)
+
+type VoteMeta = InferSelectModel<typeof voteMeta>;
+export type LatestVoteId = VoteMeta & { "uniqueMatchingField": string };
 
 export const enrichedVoteMeta = sqliteView("enriched_vote_meta", {
 	voteNumber: integer("vote_number"),

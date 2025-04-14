@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
 import {
   lawmakerVotesByNomination,
   nominationTitle,
+  type NominationVotes
 } from "@/db/queries/nominations";
 
 export default async function Page({
@@ -23,8 +22,11 @@ export default async function Page({
   const { title } = (await nominationTitle(id))[0];
 
   // Internal component to make the display a little cleaner
-  const partyTable = (party: string, votes: any[]) => {
-    const grouped = votes.reduce(
+  type ReduceReturnType = {
+    [key: string]: NominationVotes[];
+  }
+  const partyTable = (party: string, votes: NominationVotes[]) => {
+    const grouped = votes.reduce<ReduceReturnType>(
       (acc, curr) => {
         const position =
           curr.position && (curr.position === "Yea" || curr.position === "Nay")
