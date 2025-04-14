@@ -113,11 +113,15 @@ export default function Home() {
         </select>
       </section>
 
-      {selectedState && <LegislatorList state={selectedState} />}
+      {selectedState && (
+        <>
+          <LegislatorList state={selectedState} />
 
-      <section className="mt-10">
-        <h1>Chart goes here</h1>
-      </section>
+          <section className="mt-10">
+            <h1>Chart goes here</h1>
+          </section>
+        </>
+      )}
     </>
   );
 }

@@ -21,7 +21,7 @@ const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber }) => {
   }, [state, chamber]);
 
   return (
-    <section className="w-full mt-10">
+    <section className="w-full mt-10 flex flex-col">
       <p>
         Based on your selection, here are the legislators that match your
         filters:
