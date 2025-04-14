@@ -62,7 +62,7 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
       .from(nominationVotes)
       .where(and(
         eq(nominationVotes.voteId, voteId),
-        eq(nominationVotes.party, 'D')
+        eq(nominationVotes.party, 'R')
       ))
       .orderBy(asc(nominationVotes.party))
   } else {

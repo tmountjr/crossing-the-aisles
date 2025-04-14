@@ -32,11 +32,11 @@ export default async function Page({
         : 'Other'
     
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col border border-solid p-4">
         <h2>{partyName}</h2>
         <div className="flex flex-row gap-10">
           <div className="flex flex-col">
-            <h3>Yea</h3>
+            <h3>Yea ({grouped.yea.length})</h3>
             {grouped.yea.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state})
@@ -44,7 +44,7 @@ export default async function Page({
             ))}
           </div>
           <div className="flex flex-col">
-            <h3>Nay</h3>
+            <h3>Nay ({grouped.nay.length})</h3>
             {grouped.nay.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state})
@@ -52,7 +52,7 @@ export default async function Page({
             ))}
           </div>
           <div className="flex flex-col">
-            <h3>Other</h3>
+            <h3>Other ({grouped.unknown.length})</h3>
             {grouped.unknown.map((v) => (
               <p key={v.legislatorId}>
                 {v.name} ({v.state}) voted &quot;{v.position}&quot;
