@@ -1,5 +1,9 @@
+import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
-import { lawmakerVotesByNomination, nominationTitle } from "@/db/queries/nominations";
+import {
+  lawmakerVotesByNomination,
+  nominationTitle,
+} from "@/db/queries/nominations";
 
 export default async function Page({
   params,
@@ -14,7 +18,7 @@ export default async function Page({
     lawmakerVotesByNomination(id, "other"),
   ]);
 
-  const { title } = (await nominationTitle(id))[0]
+  const { title } = (await nominationTitle(id))[0];
 
   // Internal component to make the display a little cleaner
   const partyTable = (party: string, votes: any[]) => {
@@ -42,7 +46,9 @@ export default async function Page({
       <div className="flex flex-col p-4 border border-1">
         <div className="grid grid-cols-3 gap-2">
           {/* top row */}
-          <h2 className="col-span-3 text-center text-xl font-bold">{partyName}</h2>
+          <h2 className="col-span-3 text-center text-xl font-bold">
+            {partyName}
+          </h2>
 
           {/* second row */}
           <h3 className="font-bold">Yea ({grouped.yea.length})</h3>
@@ -79,6 +85,9 @@ export default async function Page({
   return (
     <>
       <PageHeader title={`Nomination #${id}`} subtitle={title!} />
+      <p className="text-center">
+        <Link href="/nominations">Back to Nomination List</Link>
+      </p>
       <section className="flex flex-col xl:flex-row gap-2 ">
         {partyTable("d", dVotes)}
         {partyTable("r", rVotes)}
