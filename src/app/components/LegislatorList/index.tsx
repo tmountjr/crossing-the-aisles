@@ -7,20 +7,22 @@ import Link from "next/link";
 interface LegislatorListProps {
   state: string;
   chamber?: "sen" | "rep" | "all";
+  party?: "R" | "D" | "I" | "all";
 }
 
-const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber }) => {
+const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber, party }) => {
   const [legisData, setLegisData] = useState<Legislator[]>([]);
 
   useEffect(() => {
     const chamberToFetch = chamber === "all" ? undefined : chamber;
+    const partyToFetch = party === "all" ? undefined : party;
     const fetchData = async () => {
-      const data = await fetchLegislators(state, chamberToFetch);
+      const data = await fetchLegislators(state, chamberToFetch, partyToFetch);
       setLegisData(data);
     };
 
     fetchData();
-  }, [state, chamber]);
+  }, [state, chamber, party]);
 
   return (
     <section className="w-full mt-10 flex flex-col">

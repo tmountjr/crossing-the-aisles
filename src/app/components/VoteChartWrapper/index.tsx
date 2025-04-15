@@ -15,8 +15,7 @@ const VoteChartWrapper: React.FC<BrokePartyLinesFilters> = ({
   const [bplData, setBplData] = useState<BrokePartyLinesData[]>([]);
 
   useEffect(() => {
-    const chamberToFetch = chamber === "all" ? undefined : chamber;
-    fetchBplData({ state, chamber: chamberToFetch, party, legislatorIds }).then(
+    fetchBplData({ state, chamber, party, legislatorIds }).then(
       (data) => {
         setBplData(data);
       }

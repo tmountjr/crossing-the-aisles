@@ -82,7 +82,7 @@ const _brokePartyLineVotes = db
 export interface BrokePartyLinesFilters {
   state?: string;
   chamber?: "sen" | "rep" | "all";
-  party?: "d" | "r" | "i";
+  party?: "D" | "R" | "I" | "all";
   legislatorIds?: string[];
 };
 
@@ -96,19 +96,24 @@ export interface BrokePartyLinesFilters {
  */
 export const brokePartyLineVotes = ({
   state, chamber, party, legislatorIds
-}: BrokePartyLinesFilters) => db
-  .select()
-  .from(_brokePartyLineVotes)
-  .where(
-    and(
-      state ? eq(_brokePartyLineVotes.state, state) : undefined,
-      chamber ? eq(_brokePartyLineVotes.termType, chamber) : undefined,
-      party ? eq(_brokePartyLineVotes.party, party.toUpperCase()) : undefined,
-      legislatorIds ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
+}: BrokePartyLinesFilters) => {
+  const normalizedChamber = chamber === "all" ? undefined : chamber;
+  const normalizedParty = party === "all" ? undefined : party;
+  
+  return db
+    .select()
+    .from(_brokePartyLineVotes)
+    .where(
+      and(
+        state ? eq(_brokePartyLineVotes.state, state) : undefined,
+        normalizedChamber ? eq(_brokePartyLineVotes.termType, normalizedChamber) : undefined,
+        normalizedParty ? eq(_brokePartyLineVotes.party, normalizedParty) : undefined,
+        legislatorIds ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
+      )
     )
-  )
-  .orderBy(desc(_brokePartyLineVotes.brokePartyLineCount))
-  .execute();
+    .orderBy(desc(_brokePartyLineVotes.brokePartyLineCount))
+    .execute();
+}
 
 export type BrokePartyLinesData =
   Pick<InferSelectModel<typeof v>, "legislatorId"> &

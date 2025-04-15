@@ -77,6 +77,7 @@ const getClientState = async (): Promise<string> => {
 export default function Home() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [selectedChamber, setSelectedChamber] = useState<"sen" | "rep" | "all">("all");
+  const [selectedParty, setSelectedParty] = useState<"R" | "D" | "I" | "all">("all");
 
   // On page load, set the state if we can.
   useEffect(() => {
@@ -85,14 +86,24 @@ export default function Home() {
     });
   }, []);
 
-  const chamberList: {
+  const chamberFilterList: {
     value: "sen" | "rep" | "all";
     label: string;
   }[] = [
+    { value: "all", label: "Senate and House"},
     { value: "sen", label: "Senate" },
     { value: "rep", label: "House" },
-    { value: "all", label: "Senate and House"}
   ];
+
+  const partyFilterList: {
+    value: "R" | "D" | "I" | "all";
+    label: string;
+  }[] = [
+    { value: "all", label: "All Parties" },
+    { value: "R", label: "Republican" },
+    { value: "D", label: "Democrat" },
+    { value: "I", label: "Independent" },
+  ]
 
   return (
     <>
@@ -132,7 +143,7 @@ export default function Home() {
           <div className="flex flex-row gap-4">
             <span className="text-lg font-medium">Chamber:</span>
             <div className="flex flex-row gap-2">
-              {chamberList.map((chamber) => (
+              {chamberFilterList.map((chamber) => (
                 <label key={chamber.value} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
@@ -147,13 +158,33 @@ export default function Home() {
               ))}
             </div>
           </div>
+
+          {/* Filter: party */}
+          <div className="flex flex-row gap-4">
+            <span className="text-lg font-medium">Party:</span>
+            <div className="flex flex-row gap-2">
+              {partyFilterList.map((party) => (
+                <label key={party.value} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="party"
+                    value={party.value}
+                    checked={party.value === selectedParty}
+                    onChange={() => setSelectedParty(party.value)}
+                    className="focus:ring-2 focus:ring-sky-500"
+                  />
+                  {party.label}
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {selectedState && (
         <>
-          <LegislatorList state={selectedState} chamber={selectedChamber} />
-          <VoteChartWrapper state={selectedState} chamber={selectedChamber} />
+          <LegislatorList state={selectedState} chamber={selectedChamber} party={selectedParty} />
+          <VoteChartWrapper state={selectedState} chamber={selectedChamber} party={selectedParty} />
         </>
       )}
     </>
