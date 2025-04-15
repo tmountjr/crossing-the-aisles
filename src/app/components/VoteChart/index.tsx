@@ -75,7 +75,7 @@ const ITEMS_PER_PAGE = 5;
 
 const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   const [page, setPage] = useState(0);
-  const [currentTheme, setCurrentTheme] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   
   useEffect(() => {
     window
@@ -100,7 +100,9 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         acc.normalizedValues.push(
           (curr.brokePartyLineCount / curr.totalVoteCount) * 100
         );
-        acc.backgroundColors.push(colorScheme[currentTheme][curr.party?.toUpperCase()]);
+        if (curr.party === "D" || curr.party === "I" || curr.party === "R") {
+          acc.backgroundColors.push(colorScheme[currentTheme][curr.party]);
+        }
 
         return acc;
       },

@@ -9,7 +9,7 @@ export const legislators = sqliteTable("legislators", {
 	termType: text("term_type"),
 	state: text(),
 	district: text(),
-	party: text(),
+	party: text().notNull(),
 	url: text(),
 	address: text(),
 	phone: text(),
