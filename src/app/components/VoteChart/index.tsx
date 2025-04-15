@@ -23,27 +23,47 @@ ChartJS.register(
   Legend
 );
 
-ChartJS.register({
-  id: "customLabels",
-  afterDraw: (chart) => {
-    const ctx = chart.ctx;
-    const xySize = 70;
+// ChartJS.register({
+//   id: "customLabels",
+//   afterDraw: (chart) => {
+//     const ctx = chart.ctx;
+//     const xySize = 70;
 
-    chart.data.labels?.forEach((label, index) => {
-      const image = new Image();
-      image.src = "https://avatar.iran.liara.run/public"; // Placeholder avatar
-      const yPos = chart.scales.y.getPixelForValue(index);
-      const barEndX = chart.scales.x.getPixelForValue(chart.data.datasets[0].data[index]);
-      let avatarX = barEndX - xySize - 30;
-      if (avatarX < 10) avatarX = 10; // Ensure it doesn't go off the canvas
+//     chart.data.labels?.forEach((label, index) => {
+//       const image = new Image();
+//       image.src = "https://avatar.iran.liara.run/public"; // Placeholder avatar
+//       const yPos = chart.scales.y.getPixelForValue(index);
+//       const barEndX = chart.scales.x.getPixelForValue(chart.data.datasets[0].data[index]);
+//       let avatarX = barEndX - xySize - 30;
+//       if (avatarX < 200) avatarX = 200; // Ensure it doesn't go off the canvas
 
-      ctx.drawImage(image, avatarX, yPos - xySize / 2, xySize, xySize); // Adjust positioning
-      ctx.beginPath();
-      ctx.arc(avatarX + xySize / 2, yPos, xySize / 2, 0, Math.PI * 2);
-      ctx.stroke();
-    });
-  },
-});
+//       ctx.drawImage(image, avatarX, yPos - xySize / 2, xySize, xySize); // Adjust positioning
+//       ctx.beginPath();
+//       ctx.arc(avatarX + xySize / 2, yPos, xySize / 2, 0, Math.PI * 2);
+//       ctx.stroke();
+
+
+//       // // TODO: Test drawing rounded rectangle mask around squared images instead of circles
+//       // ctx.save(); // Save state before clipping
+//       // ctx.beginPath();
+//       // ctx.moveTo(avatarX + cornerRadius, yPos - xyHeight / 2);
+//       // ctx.lineTo(avatarX + xyWidth - cornerRadius, yPos - xyHeight / 2);
+//       // ctx.arcTo(avatarX + xyWidth, yPos - xyHeight / 2, avatarX + xyWidth, yPos + xyHeight / 2, cornerRadius);
+//       // ctx.lineTo(avatarX + xyWidth, yPos + xyHeight / 2 - cornerRadius);
+//       // ctx.arcTo(avatarX + xyWidth, yPos + xyHeight / 2, avatarX + xyWidth - cornerRadius, yPos + xyHeight / 2, cornerRadius);
+//       // ctx.lineTo(avatarX + cornerRadius, yPos + xyHeight / 2);
+//       // ctx.arcTo(avatarX, yPos + xyHeight / 2, avatarX, yPos + xyHeight / 2 - cornerRadius, cornerRadius);
+//       // ctx.lineTo(avatarX, yPos - xyHeight / 2 + cornerRadius);
+//       // ctx.arcTo(avatarX, yPos - xyHeight / 2, avatarX + cornerRadius, yPos - xyHeight / 2, cornerRadius);
+//       // ctx.clip(); // Clip the avatar image to the rounded rect
+
+//       // // Draw image inside clipped area
+//       // ctx.drawImage(image, avatarX, yPos - xyHeight / 2, xyWidth, xyHeight);
+
+//       // ctx.restore(); // Restore state after clipping
+//     });
+//   },
+// });
 
 interface Reducer {
   labels: string[];
@@ -123,7 +143,6 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
       legend: {
         display: false,
       },
-      customLabels: {},
       tooltip: {
         xAlign: "left" as const,
       },
