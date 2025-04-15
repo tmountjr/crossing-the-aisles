@@ -43,8 +43,8 @@ export default async function Page({
       party === "d"
         ? "Democratic Party"
         : party === "r"
-        ? "Republican Party"
-        : "Other";
+          ? "Republican Party"
+          : "Other";
 
     return (
       <div className="flex flex-col p-4 border border-1">

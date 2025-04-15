@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AllowedChambers } from "@/db/queries/partyline";
+import { AllowedParties } from "@/db/queries/legislators";
 import { fetchLegislators, type Legislator } from "@/server/actions/legislators";
 import Link from "next/link";
 
 interface LegislatorListProps {
   state: string;
-  chamber?: "sen" | "rep" | "all";
-  party?: "R" | "D" | "I" | "all";
+  chamber?: AllowedChambers;
+  party?: AllowedParties;
 }
 
 const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber, party }) => {
@@ -51,8 +53,8 @@ const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber, party }
               href={`/legislator/${leg.id}`}
               className={`border border-2 ${linkStyle} rounded-md p-2 mr-2 mb-2`}
             >
-              {c} - {leg.name} ({leg.party}
-              {leg.termType === "rep" ? `, ${leg.district}` : ""})
+              {c} - {leg.name} ({leg.party}, {leg.state}
+              {leg.termType === "rep" ? `-${leg.district}` : ""})
             </Link>
           );
         })}

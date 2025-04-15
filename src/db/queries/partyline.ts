@@ -6,6 +6,7 @@ import {
   enrichedVoteMeta as vm,
   latestVoteIds as v_ids,
 } from "@/db/schema";
+import { AllowedParties } from "@/db/queries/legislators";
 
 const _tempVoteMeta = db
   .select({
@@ -79,10 +80,12 @@ const _brokePartyLineVotes = db
   .groupBy(_votesWithPartyLine.legislatorId)
   .as('broke_party_line_votes');
 
+export type AllowedChambers = "sen" | "rep" | "all";
+
 export interface BrokePartyLinesFilters {
   state?: string;
-  chamber?: "sen" | "rep" | "all";
-  party?: "D" | "R" | "I" | "all";
+  chamber?: AllowedChambers;
+  party?: AllowedParties;
   legislatorIds?: string[];
 };
 

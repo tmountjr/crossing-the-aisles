@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import PageHeader from "@/app/components/PageHeader";
+import { AllowedChambers } from "@/db/queries/partyline";
+import { AllowedParties } from "@/db/queries/legislators";
 import LegislatorList from "@/app/components/LegislatorList";
 import VoteChartWrapper from "./components/VoteChartWrapper";
 
@@ -76,12 +78,9 @@ const getClientState = async (): Promise<string> => {
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState<string>("");
-  const [selectedChamber, setSelectedChamber] = useState<"sen" | "rep" | "all">(
-    "all"
-  );
-  const [selectedParty, setSelectedParty] = useState<"R" | "D" | "I" | "all">(
-    "all"
-  );
+  const [selectedChamber, setSelectedChamber] =
+    useState<AllowedChambers>("all");
+  const [selectedParty, setSelectedParty] = useState<AllowedParties>("all");
 
   // On page load, set the state if we can.
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function Home() {
   }, []);
 
   const chamberFilterList: {
-    value: "sen" | "rep" | "all";
+    value: AllowedChambers;
     label: string;
   }[] = [
     { value: "all", label: "Senate and House" },
@@ -100,7 +99,7 @@ export default function Home() {
   ];
 
   const partyFilterList: {
-    value: "R" | "D" | "I" | "all";
+    value: AllowedParties;
     label: string;
   }[] = [
     { value: "all", label: "All Parties" },

@@ -4,6 +4,8 @@ import {
 } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+export type AllowedParties = "R" | "D" | "I" | "all";
+
 export const allLegislators = db
   .select()
   .from(legislators)

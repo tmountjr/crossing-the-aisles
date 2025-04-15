@@ -2,12 +2,14 @@
 
 import { legislators } from "@/db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { AllowedChambers } from "@/db/queries/partyline";
+import { AllowedParties } from "@/db/queries/legislators";
 import { allLegislators, stateLegislators } from "@/db/queries/legislators";
 
 export async function fetchLegislators(
   state: string,
-  chamber?: "sen" | "rep",
-  party?: "R" | "D" | "I"
+  chamber?: AllowedChambers,
+  party?: AllowedParties,
 ) {
   let legisData;
 
