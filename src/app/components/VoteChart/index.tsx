@@ -84,8 +84,18 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   }, []);
 
   const colorScheme = {
-    light: { D: "blue", R: "red", I: "gray", grid: { x: "#ddd", y: "#ccc" } },
-    dark: { D: "#4a90e2", R: "#e74c3c", I: "a0a0a0", grid: { x: "#555", y: "#444" } },
+    light: {
+      D: "#008ed1",
+      R: "#f83631",
+      I: "gray",
+      grid: { x: "#ddd", y: "#ccc" },
+    },
+    dark: {
+      D: "#4a90e2",
+      R: "#e74c3c",
+      I: "a0a0a0",
+      grid: { x: "#555", y: "#444" },
+    },
   };
 
   const startIndex = page * ITEMS_PER_PAGE;
