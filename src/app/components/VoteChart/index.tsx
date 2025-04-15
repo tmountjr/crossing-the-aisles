@@ -65,13 +65,17 @@ ChartJS.register(
 //   },
 // });
 
-const getPartyColors = () => {
+const getColorScheme = () => {
   const docStyle = window.getComputedStyle(window.document.body);
-  return {
+  const scheme = {
     D: docStyle.getPropertyValue("--dem"),
     R: docStyle.getPropertyValue("--rep"),
     I: docStyle.getPropertyValue("--ind"),
+    gridX: docStyle.getPropertyValue("--grid-x"),
+    gridY: docStyle.getPropertyValue("--grid-y"),
   };
+  console.log(scheme);
+  return scheme;
 };
 
 
@@ -85,32 +89,19 @@ const ITEMS_PER_PAGE = 5;
 
 const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   const [page, setPage] = useState(0);
-  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const [partyColors, setPartyColors] = useState<Record<string, string>>(getPartyColors());
+  const [colorScheme, setColorScheme] = useState<Record<string, string>>(getColorScheme());
   
   useEffect(() => {
     window
       .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        // Update the state based on the new theme.
-        setCurrentTheme(e.matches ? "dark" : "light");
-
+      .addEventListener("change", () => {
         // Update the chart colors from the global CSS variables.
         // See: @/app/global.css
-        const colors = getPartyColors();
-        setPartyColors(colors);
+        const colors = getColorScheme();
+        setColorScheme(colors);
       });
   }, []);
 
-
-  const colorScheme = {
-    light: {
-      grid: { x: "#ddd", y: "#ccc" },
-    },
-    dark: {
-      grid: { x: "#555", y: "#444" },
-    },
-  };
 
   const startIndex = page * ITEMS_PER_PAGE;
   const paginatedData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -124,7 +115,7 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         acc.normalizedValues.push(
           (curr.brokePartyLineCount / curr.totalVoteCount) * 100
         );
-        acc.backgroundColors.push(partyColors[curr.party]);
+        acc.backgroundColors.push(colorScheme[curr.party]);
         
         return acc;
       },
@@ -156,11 +147,11 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
       x: {
         min: 0,
         max: 100,
-        grid: { color: colorScheme[currentTheme].grid.x },
+        grid: { color: colorScheme.gridX },
       },
       y: {
         ticks: { display: true },
-        grid: { color: colorScheme[currentTheme].grid.y },
+        grid: { color: colorScheme.gridY },
       },
     },
     plugins: {
