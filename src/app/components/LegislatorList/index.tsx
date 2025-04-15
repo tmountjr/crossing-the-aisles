@@ -32,7 +32,7 @@ const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber, party }
         Based on your selection, here are the legislators that match your
         filters:
       </p>
-      <div className="flex flex row flex-wrap mt-2">
+      <div className="flex flex-row flex-wrap mt-2">
         {legisData.map((leg) => {
           const c = leg.termType === "sen" ? "Senate" : "House";
 
