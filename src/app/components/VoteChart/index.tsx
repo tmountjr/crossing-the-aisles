@@ -23,6 +23,28 @@ ChartJS.register(
   Legend
 );
 
+ChartJS.register({
+  id: "customLabels",
+  afterDraw: (chart) => {
+    const ctx = chart.ctx;
+    const xySize = 70;
+
+    chart.data.labels?.forEach((label, index) => {
+      const image = new Image();
+      image.src = "https://avatar.iran.liara.run/public"; // Placeholder avatar
+      const yPos = chart.scales.y.getPixelForValue(index);
+      const barEndX = chart.scales.x.getPixelForValue(chart.data.datasets[0].data[index]);
+      let avatarX = barEndX - xySize - 30;
+      if (avatarX < 10) avatarX = 10; // Ensure it doesn't go off the canvas
+
+      ctx.drawImage(image, avatarX, yPos - xySize / 2, xySize, xySize); // Adjust positioning
+      ctx.beginPath();
+      ctx.arc(avatarX + xySize / 2, yPos, xySize / 2, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+  },
+});
+
 interface Reducer {
   labels: string[];
   normalizedValues: number[];
@@ -93,12 +115,17 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         grid: { color: colorScheme[currentTheme].grid.x },
       },
       y: {
+        ticks: { display: true },
         grid: { color: colorScheme[currentTheme].grid.y },
       },
     },
     plugins: {
       legend: {
         display: false,
+      },
+      customLabels: {},
+      tooltip: {
+        xAlign: "left" as const,
       },
     },
   };
