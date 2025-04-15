@@ -65,6 +65,16 @@ ChartJS.register(
 //   },
 // });
 
+const getPartyColors = () => {
+  const docStyle = window.getComputedStyle(window.document.body);
+  return {
+    D: docStyle.getPropertyValue("--dem"),
+    R: docStyle.getPropertyValue("--rep"),
+    I: docStyle.getPropertyValue("--ind"),
+  };
+};
+
+
 interface Reducer {
   labels: string[];
   normalizedValues: number[];
@@ -76,24 +86,28 @@ const ITEMS_PER_PAGE = 5;
 const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   const [page, setPage] = useState(0);
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const [partyColors, setPartyColors] = useState<Record<string, string>>(getPartyColors());
   
   useEffect(() => {
     window
       .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => setCurrentTheme(e.matches ? "dark" : "light"));
+      .addEventListener("change", (e) => {
+        // Update the state based on the new theme.
+        setCurrentTheme(e.matches ? "dark" : "light");
+
+        // Update the chart colors from the global CSS variables.
+        // See: @/app/global.css
+        const colors = getPartyColors();
+        setPartyColors(colors);
+      });
   }, []);
+
 
   const colorScheme = {
     light: {
-      D: "#008ed1",
-      R: "#f83631",
-      I: "gray",
       grid: { x: "#ddd", y: "#ccc" },
     },
     dark: {
-      D: "#4a90e2",
-      R: "#e74c3c",
-      I: "a0a0a0",
       grid: { x: "#555", y: "#444" },
     },
   };
@@ -110,10 +124,8 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         acc.normalizedValues.push(
           (curr.brokePartyLineCount / curr.totalVoteCount) * 100
         );
-        if (curr.party === "D" || curr.party === "I" || curr.party === "R") {
-          acc.backgroundColors.push(colorScheme[currentTheme][curr.party]);
-        }
-
+        acc.backgroundColors.push(partyColors[curr.party]);
+        
         return acc;
       },
       {

@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: oklch(13% 0.028 261.692);
+  --dem: rgb(0, 142, 209);
+  --rep: rgb(248, 54, 49);
+  --ind: rgb(128, 128, 128);
 }
 
 @theme inline {
@@ -16,6 +19,9 @@
   :root {
     --background: oklch(27.8% 0.033 256.848);
     --foreground: oklch(98.5% 0.002 247.839);
+    --dem: rgb(74, 144, 226);
+    --rep: rgb(231, 76, 60);
+    --ind: rgb(160, 160, 160);
   }
 }
 
