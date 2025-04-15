@@ -16,7 +16,7 @@ const Header: React.FC = () => {
   const firstLevel = `/${pathname.split("/")[1]}`;
 
   return (
-    <header className="sticky top-0 bg-white shadow-md z-10 dark:bg-gray-600 dark:text-white py-2">
+    <header className="sticky top-0 bg-white shadow-md z-10 dark:bg-gray-600 dark:text-white px-2 py-2">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex flex-row items-center gap-2">
           <FontAwesomeIcon icon={faShuffle} className="fa-fw fa-2xl" />

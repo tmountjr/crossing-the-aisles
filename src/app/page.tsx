@@ -139,7 +139,7 @@ export default function Home() {
         </div>
 
         {/* Row 2 of the filters is all the other stuff - chamber (house, senate) and party (R, D) */}
-        <div className="flex flex-row gap-10">
+        <div className="flex flex-col gap-5 lg:flex-row lg:gap-10">
           {/* Filter: chamber */}
           <div className="flex flex-row gap-4">
             <span className="text-lg font-medium">Chamber:</span>
