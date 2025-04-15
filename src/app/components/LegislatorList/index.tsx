@@ -6,15 +6,16 @@ import Link from "next/link";
 
 interface LegislatorListProps {
   state: string;
-  chamber?: "sen" | "rep";
+  chamber?: "sen" | "rep" | "all";
 }
 
 const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber }) => {
   const [legisData, setLegisData] = useState<Legislator[]>([]);
 
   useEffect(() => {
+    const chamberToFetch = chamber === "all" ? undefined : chamber;
     const fetchData = async () => {
-      const data = await fetchLegislators(state, chamber);
+      const data = await fetchLegislators(state, chamberToFetch);
       setLegisData(data);
     };
 

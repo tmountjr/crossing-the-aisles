@@ -81,7 +81,7 @@ const _brokePartyLineVotes = db
 
 export interface BrokePartyLinesFilters {
   state?: string;
-  chamber?: "sen" | "rep";
+  chamber?: "sen" | "rep" | "all";
   party?: "d" | "r" | "i";
   legislatorIds?: string[];
 };

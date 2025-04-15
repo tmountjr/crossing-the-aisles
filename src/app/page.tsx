@@ -76,6 +76,7 @@ const getClientState = async (): Promise<string> => {
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [selectedChamber, setSelectedChamber] = useState<"sen" | "rep" | "all">("all");
 
   // On page load, set the state if we can.
   useEffect(() => {
@@ -84,6 +85,15 @@ export default function Home() {
     });
   }, []);
 
+  const chamberList: {
+    value: "sen" | "rep" | "all";
+    label: string;
+  }[] = [
+    { value: "sen", label: "Senate" },
+    { value: "rep", label: "House" },
+    { value: "all", label: "Senate and House"}
+  ];
+
   return (
     <>
       <PageHeader
@@ -91,33 +101,59 @@ export default function Home() {
         subtitle="Based on your IP location, we've picked a state. Feel free to change it, or choose 'No State Selected' to see results for all legislators."
       />
 
-      <section className="w-full flex flex-row items-center space-x-4">
-        <label
-          htmlFor="state-picker"
-          className="text-lg font-medium text-gray-700 dark:text-white w-40"
-        >
-          Select Your State:
-        </label>
-        <select
-          name="state-picker"
-          id="state-picker"
-          className="w-full border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-          value={selectedState || ""}
-          onChange={(e) => setSelectedState(e.target.value)}
-        >
-          <option value="">No State Selected</option>
-          {states.map((state) => (
-            <option key={state.code} value={state.code}>
-              {state.name}
-            </option>
-          ))}
-        </select>
+      {/* Filters */}
+      <section className="w-full flex flex-col gap-4">
+
+        {/* Row 1 of the filters is just the state selector to make it stand out. */}
+        <div className="flex flex-row items-center gap-2">
+          <label htmlFor="state-picker" className="text-lg font-medium">
+            Select Your State:
+          </label>
+          <select
+            name="state-picker"
+            id="state-picker"
+            className="flex-grow border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+            value={selectedState || ""}
+            onChange={(e) => setSelectedState(e.target.value)}
+          >
+            <option value="">No State Selected</option>
+            {states.map((state) => (
+              <option key={state.code} value={state.code}>
+                {state.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Row 2 of the filters is all the other stuff - chamber (house, senate) and party (R, D) */}
+        <div className="flex flex-row gap-10">
+
+          {/* Filter: chamber */}
+          <div className="flex flex-row gap-4">
+            <span className="text-lg font-medium">Chamber:</span>
+            <div className="flex flex-row gap-2">
+              {chamberList.map((chamber) => (
+                <label key={chamber.value} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="chamber"
+                    value={chamber.value}
+                    checked={chamber.value === selectedChamber}
+                    onChange={() => setSelectedChamber(chamber.value)}
+                    className="focus:ring-2 focus:ring-sky-500"
+                  />
+                  {chamber.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {selectedState && (
         <>
-          <LegislatorList state={selectedState} />
-          <VoteChartWrapper state={selectedState} />
+          <LegislatorList state={selectedState} chamber={selectedChamber} />
+          <VoteChartWrapper state={selectedState} chamber={selectedChamber} />
         </>
       )}
     </>
