@@ -101,7 +101,7 @@ export default function Home() {
         <select
           name="state-picker"
           id="state-picker"
-          className="w-full border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
           value={selectedState || ""}
           onChange={(e) => setSelectedState(e.target.value)}
         >

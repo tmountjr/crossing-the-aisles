@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchLegislators, type Legislator } from "@/server/actions/legislators";
+import Link from "next/link";
 
 interface LegislatorListProps {
   state: string;
@@ -31,10 +32,14 @@ const LegislatorList: React.FC<LegislatorListProps> = ({ state, chamber }) => {
           const c = leg.termType === "sen" ? "Senate" : "House";
 
           return (
-            <span key={leg.id} className="border rounded-md p-2 mr-2 mb-2">
+            <Link
+              key={leg.id}
+              href={`/legislator/${leg.id}`}
+              className="border rounded-md p-2 mr-2 mb-2"
+            >
               {c} - {leg.name} ({leg.party}
               {leg.termType === "rep" ? `, ${leg.district}` : ""})
-            </span>
+            </Link>
           );
         })}
       </div>
