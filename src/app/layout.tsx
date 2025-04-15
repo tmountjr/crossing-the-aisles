@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -45,7 +45,7 @@ export default function RootLayout({
           </header>
 
           <main className="flex-grow flex justify-center items-start mt-8">
-            <div className="w-full px-10">{children}</div>
+            <div className="w-full px-10 mb-[75px]">{children}</div>
           </main>
 
           <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white">

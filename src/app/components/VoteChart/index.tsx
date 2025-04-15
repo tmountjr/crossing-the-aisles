@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Register Chart.js components
 ChartJS.register(
@@ -33,6 +33,18 @@ const ITEMS_PER_PAGE = 5;
 
 const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   const [page, setPage] = useState(0);
+  const [currentTheme, setCurrentTheme] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  
+  useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => setCurrentTheme(e.matches ? "dark" : "light"));
+  }, []);
+
+  const colorScheme = {
+    light: { D: "blue", R: "red", I: "gray", grid: { x: "#ddd", y: "#ccc" } },
+    dark: { D: "#4a90e2", R: "#e74c3c", I: "a0a0a0", grid: { x: "#555", y: "#444" } },
+  };
 
   const startIndex = page * ITEMS_PER_PAGE;
   const paginatedData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -46,16 +58,7 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         acc.normalizedValues.push(
           (curr.brokePartyLineCount / curr.totalVoteCount) * 100
         );
-
-        let bgColor;
-        if (curr.party === "D") {
-          bgColor = "blue";
-        } else if (curr.party === "R") {
-          bgColor = "red";
-        } else {
-          bgColor = "gray";
-        }
-        acc.backgroundColors.push(bgColor);
+        acc.backgroundColors.push(colorScheme[currentTheme][curr.party?.toUpperCase()]);
 
         return acc;
       },
@@ -84,7 +87,14 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
     maintainAspectRatio: false,
     indexAxis: "y" as const, // Horizontal bar chart
     scales: {
-      x: { min: 0, max: 100 },
+      x: {
+        min: 0,
+        max: 100,
+        grid: { color: colorScheme[currentTheme].grid.x },
+      },
+      y: {
+        grid: { color: colorScheme[currentTheme].grid.y },
+      },
     },
     plugins: {
       legend: {
