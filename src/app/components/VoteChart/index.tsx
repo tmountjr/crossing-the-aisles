@@ -23,62 +23,6 @@ ChartJS.register(
   Legend
 );
 
-// ChartJS.register({
-//   id: "customLabels",
-//   afterDraw: (chart) => {
-//     const ctx = chart.ctx;
-//     const xySize = 70;
-
-//     chart.data.labels?.forEach((label, index) => {
-//       const image = new Image();
-//       image.src = "https://avatar.iran.liara.run/public"; // Placeholder avatar
-//       const yPos = chart.scales.y.getPixelForValue(index);
-//       const barEndX = chart.scales.x.getPixelForValue(chart.data.datasets[0].data[index]);
-//       let avatarX = barEndX - xySize - 30;
-//       if (avatarX < 200) avatarX = 200; // Ensure it doesn't go off the canvas
-
-//       ctx.drawImage(image, avatarX, yPos - xySize / 2, xySize, xySize); // Adjust positioning
-//       ctx.beginPath();
-//       ctx.arc(avatarX + xySize / 2, yPos, xySize / 2, 0, Math.PI * 2);
-//       ctx.stroke();
-
-
-//       // // TODO: Test drawing rounded rectangle mask around squared images instead of circles
-//       // ctx.save(); // Save state before clipping
-//       // ctx.beginPath();
-//       // ctx.moveTo(avatarX + cornerRadius, yPos - xyHeight / 2);
-//       // ctx.lineTo(avatarX + xyWidth - cornerRadius, yPos - xyHeight / 2);
-//       // ctx.arcTo(avatarX + xyWidth, yPos - xyHeight / 2, avatarX + xyWidth, yPos + xyHeight / 2, cornerRadius);
-//       // ctx.lineTo(avatarX + xyWidth, yPos + xyHeight / 2 - cornerRadius);
-//       // ctx.arcTo(avatarX + xyWidth, yPos + xyHeight / 2, avatarX + xyWidth - cornerRadius, yPos + xyHeight / 2, cornerRadius);
-//       // ctx.lineTo(avatarX + cornerRadius, yPos + xyHeight / 2);
-//       // ctx.arcTo(avatarX, yPos + xyHeight / 2, avatarX, yPos + xyHeight / 2 - cornerRadius, cornerRadius);
-//       // ctx.lineTo(avatarX, yPos - xyHeight / 2 + cornerRadius);
-//       // ctx.arcTo(avatarX, yPos - xyHeight / 2, avatarX + cornerRadius, yPos - xyHeight / 2, cornerRadius);
-//       // ctx.clip(); // Clip the avatar image to the rounded rect
-
-//       // // Draw image inside clipped area
-//       // ctx.drawImage(image, avatarX, yPos - xyHeight / 2, xyWidth, xyHeight);
-
-//       // ctx.restore(); // Restore state after clipping
-//     });
-//   },
-// });
-
-const getColorScheme = () => {
-  const docStyle = window.getComputedStyle(window.document.body);
-  const scheme = {
-    D: docStyle.getPropertyValue("--dem"),
-    R: docStyle.getPropertyValue("--rep"),
-    I: docStyle.getPropertyValue("--ind"),
-    gridX: docStyle.getPropertyValue("--grid-x"),
-    gridY: docStyle.getPropertyValue("--grid-y"),
-  };
-  console.log(scheme);
-  return scheme;
-};
-
-
 interface Reducer {
   labels: string[];
   normalizedValues: number[];
@@ -89,19 +33,27 @@ const ITEMS_PER_PAGE = 5;
 
 const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
   const [page, setPage] = useState(0);
-  const [colorScheme, setColorScheme] = useState<Record<string, string>>(getColorScheme());
-  
+  const [colorScheme, setColorScheme] = useState<Record<string, string>>({});
+
+  const updateColors = () => {
+    const docStyle = window.getComputedStyle(window.document.body);
+    const scheme = {
+      D: docStyle.getPropertyValue("--dem"),
+      R: docStyle.getPropertyValue("--rep"),
+      I: docStyle.getPropertyValue("--ind"),
+      gridX: docStyle.getPropertyValue("--grid-x"),
+      gridY: docStyle.getPropertyValue("--grid-y"),
+    };
+    setColorScheme(scheme);
+  }
+
   useEffect(() => {
+    updateColors();
+
     window
       .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => {
-        // Update the chart colors from the global CSS variables.
-        // See: @/app/global.css
-        const colors = getColorScheme();
-        setColorScheme(colors);
-      });
+      .addEventListener("change", () => updateColors());
   }, []);
-
 
   const startIndex = page * ITEMS_PER_PAGE;
   const paginatedData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -116,7 +68,7 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
           (curr.brokePartyLineCount / curr.totalVoteCount) * 100
         );
         acc.backgroundColors.push(colorScheme[curr.party]);
-        
+
         return acc;
       },
       {
@@ -181,7 +133,10 @@ const VoteChart: React.FC<{ data: BrokePartyLinesData[] }> = ({ data }) => {
         >
           Next
         </button>
-        <span>Currently viewing page {page + 1} of {Math.ceil(data.length / ITEMS_PER_PAGE)}.</span>
+        <span>
+          Currently viewing page {page + 1} of{" "}
+          {Math.ceil(data.length / ITEMS_PER_PAGE)}.
+        </span>
       </div>
       <Bar data={chartData} options={options} />
     </div>

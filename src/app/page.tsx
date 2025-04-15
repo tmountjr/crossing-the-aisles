@@ -75,9 +75,13 @@ const getClientState = async (): Promise<string> => {
 };
 
 export default function Home() {
-  const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [selectedChamber, setSelectedChamber] = useState<"sen" | "rep" | "all">("all");
-  const [selectedParty, setSelectedParty] = useState<"R" | "D" | "I" | "all">("all");
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedChamber, setSelectedChamber] = useState<"sen" | "rep" | "all">(
+    "all"
+  );
+  const [selectedParty, setSelectedParty] = useState<"R" | "D" | "I" | "all">(
+    "all"
+  );
 
   // On page load, set the state if we can.
   useEffect(() => {
@@ -90,7 +94,7 @@ export default function Home() {
     value: "sen" | "rep" | "all";
     label: string;
   }[] = [
-    { value: "all", label: "Senate and House"},
+    { value: "all", label: "Senate and House" },
     { value: "sen", label: "Senate" },
     { value: "rep", label: "House" },
   ];
@@ -103,7 +107,7 @@ export default function Home() {
     { value: "R", label: "Republican" },
     { value: "D", label: "Democrat" },
     { value: "I", label: "Independent" },
-  ]
+  ];
 
   return (
     <>
@@ -114,7 +118,6 @@ export default function Home() {
 
       {/* Filters */}
       <section className="w-full flex flex-col gap-4">
-
         {/* Row 1 of the filters is just the state selector to make it stand out. */}
         <div className="flex flex-row items-center gap-2">
           <label htmlFor="state-picker" className="text-lg font-medium">
@@ -138,13 +141,15 @@ export default function Home() {
 
         {/* Row 2 of the filters is all the other stuff - chamber (house, senate) and party (R, D) */}
         <div className="flex flex-row gap-10">
-
           {/* Filter: chamber */}
           <div className="flex flex-row gap-4">
             <span className="text-lg font-medium">Chamber:</span>
             <div className="flex flex-row gap-2">
               {chamberFilterList.map((chamber) => (
-                <label key={chamber.value} className="flex items-center gap-2 cursor-pointer">
+                <label
+                  key={chamber.value}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="chamber"
@@ -164,7 +169,10 @@ export default function Home() {
             <span className="text-lg font-medium">Party:</span>
             <div className="flex flex-row gap-2">
               {partyFilterList.map((party) => (
-                <label key={party.value} className="flex items-center gap-2 cursor-pointer">
+                <label
+                  key={party.value}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="party"
@@ -181,12 +189,17 @@ export default function Home() {
         </div>
       </section>
 
-      {selectedState && (
-        <>
-          <LegislatorList state={selectedState} chamber={selectedChamber} party={selectedParty} />
-          <VoteChartWrapper state={selectedState} chamber={selectedChamber} party={selectedParty} />
-        </>
-      )}
+      {/* Figures */}
+      <LegislatorList
+        state={selectedState}
+        chamber={selectedChamber}
+        party={selectedParty}
+      />
+      <VoteChartWrapper
+        state={selectedState}
+        chamber={selectedChamber}
+        party={selectedParty}
+      />
     </>
   );
 }

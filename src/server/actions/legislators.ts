@@ -10,6 +10,7 @@ export async function fetchLegislators(
   party?: "R" | "D" | "I"
 ) {
   let legisData;
+
   if (state !== "") {
     legisData = await stateLegislators(state);
   } else {
