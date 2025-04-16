@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Bar } from "react-chartjs-2";
-import React, { useEffect, useState } from "react";
 import type { ChartData, ChartOptions } from "chart.js";
 import { fetchBplData } from "@/server/actions/brokePartyLines";
+import NavButton from "@/app/components/NavButton";
+import React, { useEffect, useState } from "react";
 import type {
   BrokePartyLinesData,
   BrokePartyLinesFilters,
@@ -79,6 +79,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
       (filteredData) => {
         setBplData(filteredData);
         setRecordCount(filteredData.length);
+        setPage(0);
       }
     );
   }, [state, chamber, party, legislatorIds]);
@@ -133,11 +134,11 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
         x: {
           min: 0,
           max: 100,
-          grid: { color: colorScheme.gridX }
+          grid: { color: colorScheme.gridX },
         },
         y: {
           ticks: { display: true },
-          grid: { color: colorScheme.gridY }
+          grid: { color: colorScheme.gridY },
         },
       },
       plugins: {
@@ -152,20 +153,16 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
       {displayData && (
         <>
           <div className="mt-20 text-center flex flex-row justify-start items-center gap-10">
-            <button
+            <NavButton
               disabled={page === 0}
               onClick={() => setPage(page - 1)}
-              className="px-4 py-2 rounded-lg font-medium transition-colors bg-white text-gray-950 border border-gray-300 hover:bg-sky-500 hover:text-white dark:bg-gray-800 dark:text-gray-50 dark:border-gray-600 dark:hover:bg-sky-500 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <button
+              direction="previous"
+            />
+            <NavButton
               disabled={page * ITEMS_PER_PAGE + ITEMS_PER_PAGE >= recordCount}
               onClick={() => setPage(page + 1)}
-              className="px-4 py-2 rounded-lg font-medium transition-colors bg-white text-gray-950 border border-gray-300 hover:bg-sky-500 hover:text-white dark:bg-gray-800 dark:text-gray-50 dark:border-gray-600 dark:hover:bg-sky-500 dark:hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
+              direction="next"
+            />
             <span>
               Currently viewing page {page + 1} of{" "}
               {Math.ceil(recordCount / ITEMS_PER_PAGE)}.

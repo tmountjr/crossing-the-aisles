@@ -198,7 +198,7 @@ export default function Home() {
         state={selectedState}
         chamber={selectedChamber}
         party={selectedParty}
-      ></VoteBarChart>
+      />
     </>
   );
 }
