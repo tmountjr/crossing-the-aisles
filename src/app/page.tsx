@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import PageHeader from "@/app/components/PageHeader";
+import VoteBarChart from "./components/VoteBarChart";
 import { AllowedChambers } from "@/db/queries/partyline";
 import { AllowedParties } from "@/db/queries/legislators";
 import LegislatorList from "@/app/components/LegislatorList";
-import VoteChartWrapper from "./components/VoteChartWrapper";
 
 const states = [
   { name: "Alabama", code: "AL" },
@@ -194,11 +194,11 @@ export default function Home() {
         chamber={selectedChamber}
         party={selectedParty}
       />
-      <VoteChartWrapper
+      <VoteBarChart
         state={selectedState}
         chamber={selectedChamber}
         party={selectedParty}
-      />
+      ></VoteBarChart>
     </>
   );
 }
