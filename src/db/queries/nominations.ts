@@ -17,7 +17,8 @@ const nominationVotes = db
     state: l.state,
     party: l.party,
     position: v.position,
-    title: vm.nominationTitle
+    title: vm.nominationTitle,
+    result: vm.result
   })
   .from(v)
   .innerJoin(vm, eq(v.voteId, vm.voteId))
@@ -30,7 +31,8 @@ const _nominationVoteIds = db
   .selectDistinct({
     voteId: nominationVotes.voteId,
     date: nominationVotes.date,
-    title: nominationVotes.title
+    title: nominationVotes.title,
+    result: nominationVotes.result
   })
   .from(nominationVotes)
   .orderBy(asc(nominationVotes.date))
@@ -76,7 +78,7 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
       ))
       .orderBy(asc(nominationVotes.party))
   }
-}
+};
 
 /**
  * Get the title of a specific nomination.
@@ -92,7 +94,7 @@ export const nominationTitle = async (voteId: string) => {
     .where(eq(vm.voteId, voteId))
     .limit(1)
     .execute()
-}
+};
 
 export const nominationVoteIds = _nominationVoteIds.execute()
 
@@ -102,5 +104,5 @@ type Legislator = InferSelectModel<typeof l>
 export type NominationVotes = 
   Pick<Vote, "voteId" | "legislatorId" | "position"> &
   Pick<Legislator, "name" | "state" | "party"> &
-  Pick<LatestVoteId, "date"> &
+  Pick<LatestVoteId, "date" | "result"> &
   { title: string | null };

@@ -3,7 +3,7 @@ import PageHeader from "@/app/components/PageHeader";
 import { nominationVoteIds } from "@/db/queries/nominations";
 
 export default async function NominationsPage() {
-  const voteIdsResponse = await nominationVoteIds;
+  const voteIdsResponse = (await nominationVoteIds).slice().reverse();
 
   const parseNomineeName = (title: string): string => {
     const matches = [...title.matchAll(/^(.+), (of|in).*/gm)];
@@ -17,7 +17,7 @@ export default async function NominationsPage() {
     <>
       <PageHeader title="Nominations" />
 
-      <section className="flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto">
         <p>
           There have been <strong>{voteIdsResponse.length}</strong> nominations
           in the 119th Congress so far.
@@ -34,25 +34,31 @@ export default async function NominationsPage() {
           This page shows the distribution of votes for each nominee. The
           distribution is shown as a stacked bar chart, one bar per nominee. The
           chart is also shown in the same order in which the votes were taken,
-          which can potentially highlight shifts in attitude towards the majority
-          party.
+          which can potentially highlight shifts in attitude towards the
+          majority party.
         </p>
         <p>
           Click on a nomination vote to display the details of how each Senator
-          voted.
+          voted. The list is sorted so that the latest vote shows up first.
         </p>
 
-        <ul>
+        <div className="mx-auto p-4 flex flex-row flex-wrap gap-4">
           {voteIdsResponse.map((voteObject) => (
-            <li key={voteObject.voteId}>
-              <Link href={`/nominations/${voteObject.voteId}`}>
-                {voteObject.voteId} - {parseNomineeName(voteObject.title!)} on{" "}
-                {voteObject.date!}
-              </Link>
-            </li>
+            <Link
+              key={voteObject.voteId}
+              href={`/nominations/${voteObject.voteId}`}
+              className="border border-rep bg-rep/10 hover:bg-rep/25 rounded-md p-4 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] mb-4"
+            >
+              <h2 className="text-xl font-bold">
+                {parseNomineeName(voteObject.title!)}
+              </h2>
+              <h3 className="text-md text-gray-700 italic">
+                Date: {voteObject.date?.split(" ")[0]}
+              </h3>
+              <p className="text-lg mt-4">Result: {voteObject.result}</p>
+            </Link>
           ))}
-        </ul>
-        <p>Click on a link to view the details of that nomination.</p>
+        </div>
       </section>
     </>
   );

@@ -150,17 +150,18 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
   }, [page, bplData, colorScheme]);
 
   return (
-    <div className="w-full h-[750px]">
-      <div className="mt-20">
+    <div className="w-full">
+      <div className="mt-20 lg:max-w-[768px] m-auto">
+        <h2 className="text-center text-xl font-bold">Explanation</h2>
         <p className="mt-2">
           Each bar on this chart represents the percentage of votes where the
           legislator crossed party lines. A more detailed description of the
-          methodology can be found <Link href="/about">here</Link>, but to put it
-          simply, a vote is considered a &quot;party line&quot; vote when the
+          methodology can be found <Link href="/about">here</Link>, but to put
+          it simply, a vote is considered a &quot;party line&quot; vote when the
           lawmaker <strong>does not vote &quot;Nay&quot;</strong> on a bill
           advanced by their own party,{" "}
-          <strong>OR does not vote &quot;Yea&quot;</strong> on a bill advanced by
-          the opposition party.
+          <strong>OR does not vote &quot;Yea&quot;</strong> on a bill advanced
+          by the opposition party.
         </p>
         <p className="mt-2">
           Because the chart can in theory mix Senate and House legislators, and
@@ -188,8 +189,9 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
               {Math.ceil(recordCount / ITEMS_PER_PAGE)}.
             </span>
           </div>
-
-          <Bar data={displayData} options={displayOptions}></Bar>
+          <div className="h-[750px]">
+            <Bar data={displayData} options={displayOptions}></Bar>
+          </div>
         </>
       )}
     </div>
