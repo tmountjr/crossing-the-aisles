@@ -18,6 +18,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import Link from "next/link";
 
 // Register Chart.js components
 ChartJS.register(
@@ -150,9 +151,28 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
 
   return (
     <div className="w-full h-[750px]">
+      <div className="mt-20">
+        <p className="mt-2">
+          Each bar on this chart represents the percentage of votes where the
+          legislator crossed party lines. A more detailed description of the
+          methodology can be found <Link href="/about">here</Link>, but to put it
+          simply, a vote is considered a &quot;party line&quot; vote when the
+          lawmaker <strong>does not vote &quot;Nay&quot;</strong> on a bill
+          advanced by their own party,{" "}
+          <strong>OR does not vote &quot;Yea&quot;</strong> on a bill advanced by
+          the opposition party.
+        </p>
+        <p className="mt-2">
+          Because the chart can in theory mix Senate and House legislators, and
+          because not all legislators vote on all issues, the data is shown as a
+          normalized percentage of votes cast by that legislator. This ensures
+          that the scales between Seantors and Representatives on the same chart
+          are an apples-to-apples comparison.
+        </p>
+      </div>
       {displayData && (
         <>
-          <div className="mt-20 text-center flex flex-row justify-start items-center gap-10">
+          <div className="mt-4 text-center flex flex-row justify-start items-center gap-10">
             <NavButton
               disabled={page === 0}
               onClick={() => setPage(page - 1)}
