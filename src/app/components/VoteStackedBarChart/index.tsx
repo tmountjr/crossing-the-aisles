@@ -157,7 +157,7 @@ const VoteStackedBarChart: React.FC<VoteDonutChartProps> = ({
       </div>
 
       {displayData && (
-        <div className="h-[300px] lg:h-[400px]">
+        <div className="mt-10 h-[300px] lg:h-[400px]">
           <Bar data={displayData} options={displayOptions} />
         </div>
       )}

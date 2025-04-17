@@ -1,11 +1,22 @@
 import Link from "next/link";
 
+export type ChipStyle = "dem" | "rep" | "ind" | "yea" | "nay" | "dnv";
+
 interface ChipProps {
   children: React.ReactNode;
   href: string;
-  style?: "dem" | "rep" | "ind" | "yea" | "nay" | "dnv";
+  style?: ChipStyle;
   additionalClassNames?: string[];
 }
+
+const STYLE_TITLES: Record<ChipStyle, string> = {
+  "dem": "Democrat",
+  "dnv": "Did Not Vote",
+  "ind": "Independent",
+  "nay": "Nay",
+  "rep": "Republican",
+  "yea": "Yea",
+};
 
 const Chip: React.FC<ChipProps> = ({
   children,
@@ -47,7 +58,12 @@ const Chip: React.FC<ChipProps> = ({
   }
 
   return (
-    <Link href={href} className={classes.join(" ")} {...props}>
+    <Link
+      href={href}
+      className={classes.join(" ")}
+      title={STYLE_TITLES[style!]}
+      {...props}
+    >
       {children}
     </Link>
   );
