@@ -6,19 +6,19 @@ import PageHeader from "@/app/components/PageHeader";
 import {type NominationVotes } from "@/db/queries/nominations";
 import { fetchNominationVotes, fetchNominationTitle } from "@/server/actions/nominations";
 import Link from "next/link";
-import VoteDonutChart from "@/app/components/VoteDonutChart";
+import VoteStackedBarChart from "@/app/components/VoteStackedBarChart";
 
 const Page = () => {
   const { id } = useParams();
   const [title, setTitle] = useState<string>("");
   const [displayData, setDisplayData] = useState<NominationVotes[]>([]);
+  const [sortType, setSortType] = useState<"party" | "position">("party");
 
   // On page load, fetch the data and set both the data and displayData states.
   useEffect(() => {
     const fetchData = async (id: string) => {
       const data = await fetchNominationVotes(id);
       const _title = await fetchNominationTitle(id);
-      console.log(_title)
       setDisplayData(data);
       setTitle(_title);
     };
@@ -45,8 +45,13 @@ const Page = () => {
         <Link href="/nominations">Back to Nomination List</Link>
       </p>
 
-      <section className="flex flexcol xl:flex-row gap-2">
-        <VoteDonutChart data={displayData} groupBy="position" />
+      <section className="flex flex-col gap-2">
+        <VoteStackedBarChart data={displayData} groupBy={sortType} />
+
+        <div>
+          <button className="border-2 rounded-md" onClick={() => setSortType("party")}>Sort by Party</button>
+          <button className="border-2 rounded-md" onClick={() => setSortType("position")}>Sort by Position</button>
+        </div>
       </section>
     </>
   );

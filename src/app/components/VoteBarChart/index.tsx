@@ -151,7 +151,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
 
   return (
     <div className="w-full">
-      <div className="mt-20 lg:max-w-[768px] m-auto">
+      <div className="mt-10 lg:mt-20 lg:max-w-[768px] m-auto">
         <h2 className="text-center text-xl font-bold">Explanation</h2>
         <p className="mt-2">
           Each bar on this chart represents the percentage of votes where the
