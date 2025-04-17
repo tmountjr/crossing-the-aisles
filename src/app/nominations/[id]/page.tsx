@@ -47,7 +47,7 @@ export default async function Page({
           : "Other";
 
     return (
-      <div className="flex flex-col p-4 border border-1">
+      <div className="flex flex-col p-4 border-1">
         <div className="grid grid-cols-3 gap-2">
           {/* top row */}
           <h2 className="col-span-3 text-center text-xl font-bold">
