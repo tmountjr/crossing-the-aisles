@@ -18,6 +18,8 @@
   --color-dem: var(--dem);
   --color-rep: var(--rep);
   --color-ind: var(--ind);
+
+  /* The vote colors look fine on light and dark backgrounds. */
   --color-yea: var(--color-green-500);
   --color-nay: var(--color-orange-500);
   --color-dnv: var(--color-purple-600);

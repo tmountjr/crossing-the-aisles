@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Chip from "@/app/components/Chip";
 import PageHeader from "@/app/components/PageHeader";
 import { nominationVoteIds } from "@/db/queries/nominations";
 
@@ -42,12 +42,12 @@ export default async function NominationsPage() {
           voted. The list is sorted so that the latest vote shows up first.
         </p>
 
-        <div className="mx-auto p-4 flex flex-row flex-wrap gap-4">
+        <div className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
           {voteIdsResponse.map((voteObject) => (
-            <Link
+            <Chip
               key={voteObject.voteId}
               href={`/nominations/${voteObject.voteId}`}
-              className="border border-rep bg-rep/10 hover:bg-rep/25 rounded-md p-4 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1rem)] mb-4"
+              style="rep"
             >
               <h2 className="text-xl font-bold">
                 {parseNomineeName(voteObject.title!)}
@@ -56,7 +56,7 @@ export default async function NominationsPage() {
                 Date: {voteObject.date?.split(" ")[0]}
               </h3>
               <p className="text-lg mt-4">Result: {voteObject.result}</p>
-            </Link>
+            </Chip>
           ))}
         </div>
       </section>
