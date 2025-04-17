@@ -1,10 +1,10 @@
 "use client";
 
 import { Bar } from "react-chartjs-2";
-import type { ChartData, ChartOptions } from "chart.js";
-import { fetchBplData } from "@/server/actions/brokePartyLines";
 import NavButton from "@/app/components/NavButton";
 import React, { useEffect, useState } from "react";
+import type { ChartData, ChartOptions } from "chart.js";
+import { fetchBplData } from "@/server/actions/brokePartyLines";
 import type {
   BrokePartyLinesData,
   BrokePartyLinesFilters,
