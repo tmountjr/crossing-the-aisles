@@ -97,12 +97,3 @@ const Page = () => {
 };
 
 export default Page;
-
-// Don't want to duplicate information so what we should do is:
-//   * Provide a link to the legislator's govtrack.us page, and
-//   * List the votes they've taken and their position on each.
-// We can probably provide some level of sorting (by date or by
-// position seems like the most obvious ones).
-// TODO: how do we link back to govtrack based on id?
-// TODO: will also need a server action to grab the legislator
-// details by ID.
