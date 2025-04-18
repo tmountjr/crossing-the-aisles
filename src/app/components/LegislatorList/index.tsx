@@ -44,7 +44,7 @@ const LegislatorList: React.FC<LegislatorListProps> = ({
       </p>
       <div
         className={`relative overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-          expanded || !shouldCollapse ? "max-h-none" : "max-h-[100px]"
+          expanded || !shouldCollapse ? "max-h-none" : "max-h-[150px]"
         }`}
       >
         <div className="flex flex-row flex-wrap mt-2">
@@ -70,7 +70,7 @@ const LegislatorList: React.FC<LegislatorListProps> = ({
       {shouldCollapse && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-2 text-blue-600 underline"
+          className="mt-2 text-blue-600  dark:text-blue-300 underline"
         >
           {expanded
             ? "Click to collapse the list."
