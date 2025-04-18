@@ -50,12 +50,7 @@ const Page = () => {
     };
 
     if (id) {
-      let _id: string;
-      if (Array.isArray(id)) {
-        _id = id[0];
-      } else {
-        _id = id;
-      }
+      const _id = Array.isArray(id) ? id[0] : id;
       fetchData(_id);
     }
   }, [id]);

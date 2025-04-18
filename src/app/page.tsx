@@ -7,7 +7,7 @@ import { AllowedChambers } from "@/db/queries/partyline";
 import { AllowedParties } from "@/db/queries/legislators";
 import LegislatorList from "@/app/components/LegislatorList";
 
-const states = [
+export const states = [
   { name: "Alabama", code: "AL" },
   { name: "Alaska", code: "AK" },
   { name: "Arizona", code: "AZ" },

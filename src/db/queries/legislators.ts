@@ -16,3 +16,10 @@ export const stateLegislators = (stateCode: string) => db
   .from(legislators)
   .where(eq(legislators.state, stateCode))
   .execute();
+
+export const legislator = (id: string) => db
+  .select()
+  .from(legislators)
+  .where(eq(legislators.id, id))
+  .limit(1)
+  .execute();
