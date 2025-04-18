@@ -88,7 +88,8 @@ const Page = () => {
       </section>
 
       <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
-        <h2 className="text-xl font-bold">Vote History</h2>
+        <h2 className="text-xl font-bold">Vote Summary</h2>
+        <p className="italic">Coming soon!</p>
       </section>
     </>
   ) : (
