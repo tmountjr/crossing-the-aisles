@@ -1,5 +1,6 @@
 "use client";
 
+import "./page.css";
 import { states } from "@/app/page";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -64,22 +65,20 @@ const Page = () => {
           <strong>Quick Links:</strong>
         </h2>
         <ul className="flex flex-col gap-2">
-          <li>
+          <li className="ml-10">
             <a
               href={`https://bioguide.congress.gov/search/bio/${legislator.bioguideId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b-1"
             >
               Entry on the Biographical Directory of the United States Congress
             </a>
           </li>
-          <li>
+          <li className="ml-10">
             <a
               href={legislator.url!}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b-1"
             >
               Official Website
             </a>
