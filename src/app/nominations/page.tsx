@@ -52,7 +52,7 @@ export default async function NominationsPage() {
               <h2 className="text-xl font-bold">
                 {parseNomineeName(voteObject.title!)}
               </h2>
-              <h3 className="text-md text-gray-700 italic">
+              <h3 className="text-md text-gray-700 dark:text-gray-300 italic">
                 Date: {voteObject.date?.split(" ")[0]}
               </h3>
               <p className="text-lg mt-4">Result: {voteObject.result}</p>

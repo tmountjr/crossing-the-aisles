@@ -64,7 +64,7 @@ const LegislatorList: React.FC<LegislatorListProps> = ({
           })}
         </div>
         {!expanded && shouldCollapse && (
-          <div className="absolute bottom-0 w-full h-[30px] bg-gradient-to-t to-transparent from-white"></div>
+          <div className="absolute bottom-0 w-full h-[30px] bg-gradient-to-t to-transparent from-background"></div>
         )}
       </div>
       {shouldCollapse && (
