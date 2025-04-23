@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crossing Party Lines",
+  title: "Crossing the Aisles",
   description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
 };
 
