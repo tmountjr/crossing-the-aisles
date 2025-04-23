@@ -1,12 +1,11 @@
 import { relations } from "drizzle-orm/relations";
 import { legislators, bills, votes, voteMeta } from "./schema";
 
-export const billsRelations = relations(bills, ({one, many}) => ({
+export const billsRelations = relations(bills, ({ one }) => ({
 	legislator: one(legislators, {
 		fields: [bills.sponsorId],
 		references: [legislators.bioguideId]
 	}),
-	voteMetas: many(voteMeta),
 }));
 
 export const legislatorsRelations = relations(legislators, ({many}) => ({
@@ -25,10 +24,6 @@ export const votesRelations = relations(votes, ({one}) => ({
 	}),
 }));
 
-export const voteMetaRelations = relations(voteMeta, ({one, many}) => ({
+export const voteMetaRelations = relations(voteMeta, ({ many }) => ({
 	votes: many(votes),
-	bill: one(bills, {
-		fields: [voteMeta.billId],
-		references: [bills.billId]
-	}),
 }));

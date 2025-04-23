@@ -4,7 +4,7 @@ import {
   legislators as l,
   latestVoteIds as vm,
   LatestVoteId
-} from '@/db/schema';
+} from "@/db/schema";
 import { and, asc, eq, inArray, not, type InferSelectModel } from 'drizzle-orm';
 
 // Subquery select to filter for just nomination votes

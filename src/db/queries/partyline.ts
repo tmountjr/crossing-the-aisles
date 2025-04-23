@@ -77,7 +77,7 @@ const _brokePartyLineVotes = db
     totalVoteCount: count(_votesWithPartyLine.legislatorId).as("total_vote_count"),
   })
   .from(_votesWithPartyLine)
-  .groupBy(_votesWithPartyLine.legislatorId)
+  .groupBy(_votesWithPartyLine.legislatorId)  // TODO: postgres is a little more strict on GROUP BY, probably need all the fields listed, or break the group out earlier.
   .as('broke_party_line_votes');
 
 export type AllowedChambers = "sen" | "rep" | "all";

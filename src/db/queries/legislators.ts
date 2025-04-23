@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import {
   legislators
-} from '@/db/schema';
+} from "@/db/schema";
 import { eq } from 'drizzle-orm';
 
 export type AllowedParties = "R" | "D" | "I" | "all";
