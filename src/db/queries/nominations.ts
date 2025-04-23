@@ -37,19 +37,20 @@ const _nominationVoteIds = db
   .from(nominationVotes)
   .orderBy(asc(nominationVotes.date))
 
-  /**
-   * Get all individual votes for a single vote.
-   * @param voteId The Vote ID.
-   * @param party  If provided, limit return to a specific party's voters.
-   * @returns The nominationVote object for the given vote.
-   */
-export const lawmakerVotesByNomination = async (voteId: string, party: string = 'all') => {
+/**
+ * Get all individual votes for a single vote.
+ * @param voteId The Vote ID.
+ * @param party  If provided, limit return to a specific party's voters.
+ * @returns The nominationVote object for the given vote.
+ */
+export const lawmakerVotesByNomination = async (voteId: string, party: string = 'all'): Promise<NominationVotes[]> => {
   if (party === 'all') {
     return db
       .select()
       .from(nominationVotes)
       .where(eq(nominationVotes.voteId, voteId))
       .orderBy(asc(nominationVotes.party))
+      .execute()
   } else if (party === 'd') {
     return db
       .select()
@@ -59,6 +60,7 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
         eq(nominationVotes.party, 'D')
       ))
       .orderBy(asc(nominationVotes.party))
+      .execute()
   } else if (party === 'r') {
     return db
       .select()
@@ -68,6 +70,7 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
         eq(nominationVotes.party, 'R')
       ))
       .orderBy(asc(nominationVotes.party))
+      .execute()
   } else {
     return db
       .select()
@@ -77,6 +80,7 @@ export const lawmakerVotesByNomination = async (voteId: string, party: string = 
         not(inArray(nominationVotes.party, ['R', 'D']))
       ))
       .orderBy(asc(nominationVotes.party))
+      .execute()
   }
 };
 
