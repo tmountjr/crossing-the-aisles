@@ -92,8 +92,8 @@ export const latestVoteIds = pgView("latest_vote_ids", {
 			vm_1.nomination_title,
 			vm_1.source_filename,
 			CASE
-				WHEN vm_1.bill_id::text = 'N/A'::text
-				THEN substr(vm_1.nomination_title::text, 1, 10)::character varying
+				WHEN vm_1.bill_id IS NULL
+				THEN SUBSTRING(vm_1.nomination_title FROM 1 FOR 10)::character varying
 				ELSE vm_1.bill_id
 			END AS unique_matching_field
 		FROM vote_meta vm_1
@@ -110,7 +110,7 @@ export const latestVoteIds = pgView("latest_vote_ids", {
 		vm.nomination_title,
 		vm.source_filename,
 		vm.unique_matching_field
-	FROM temp_vm vm 
+	FROM temp_vm vm
 	JOIN (
 		SELECT temp_vm.unique_matching_field, max(temp_vm.date) AS latest_date
 		FROM temp_vm
