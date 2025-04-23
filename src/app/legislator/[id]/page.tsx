@@ -1,7 +1,7 @@
 "use client";
 
 import "./page.css";
-import { states } from "@/app/page";
+import { states } from "@/exports/states";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import PageHeader from "@/app/components/PageHeader";
