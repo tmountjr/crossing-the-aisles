@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: oklch(13% 0.028 261.692);
+  --foreground: oklch(13% 0.028 261.692); /* gray-950 */
   --dem: rgb(0, 142, 209);
   --rep: rgb(248, 54, 49);
   --ind: rgb(128, 128, 128);
@@ -27,8 +27,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(27.8% 0.033 256.848);
-    --foreground: oklch(98.5% 0.002 247.839);
+    --background: oklch(27.8% 0.033 256.848); /* gray-800 */
+    --foreground: oklch(98.5% 0.002 247.839); /* gray-50 */
     --dem: rgb(74, 144, 226);
     --rep: rgb(231, 76, 60);
     --ind: rgb(160, 160, 160);
