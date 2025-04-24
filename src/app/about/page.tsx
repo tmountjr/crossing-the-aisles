@@ -111,6 +111,43 @@ export default function Page() {
       </section>
 
       <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+        <h2 className="text-xl font-bold">Data Caveats</h2>
+        <p>There are a few caveats to be aware of when looking at this data:</p>
+        <ol className="flex flex-col gap-2">
+          <li className="ml-10">
+            <strong>Not all votes are shown.</strong> Because there can be (and
+            often are) more than one vote for each issue under consideration,
+            and the logic for what is and is not a &quot;party line vote&quot;
+            can flip depending on the kind of vote, we have made the decision
+            only to display the most recent vote on any given matter.{" "}
+            <strong>Why it matters:</strong> The percentage of party line votes
+            we display for a legislator may be higher or lower than in reality
+            when all &quot;internal&quot; votes on a bill are taken into
+            account. However, in a selection of test cases, this did not seem to
+            push any of legislators over the 50% line from a &quot;not party
+            line&quot; to a &quot;party line&quot; legislator.
+          </li>
+          <li className="ml-10">
+            <strong>Independent legislators:</strong> Independent legislators
+            are currently rare, but when they do appear, for the purposes of
+            deciding whether a given vote is a party-line vote, we use the party
+            they caucus with as a substitute for their party. Hence why a
+            legislator like Bernie Sanders will have party line votes that align
+            with Democratic Party goals, even though he is not registered with
+            the Democratic Party.
+          </li>
+          <li className="ml-10">
+            <strong>Nominations:</strong> Nominations are not considered
+            &quot;bills&quot; in the upstream data source we use, and as a
+            result votes on nominations do not come with a &quot;sponsor
+            party&quot;. In these cases, we use the majority party as the
+            &quot;sponsor party&quot; when determining whether a vote on a
+            nomination is a party-line vote.
+          </li>
+        </ol>
+      </section>
+
+      <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
         <h2 className="text-xl font-bold">Data Sources and Acknowledgements</h2>
         <p>
           The data powering this site comes primarily from{" "}
@@ -140,11 +177,12 @@ export default function Page() {
           you see throughout the site.
         </p>
         <p>
-          If you see data that you believe is misleading or incorrect, please feel
-          free to <a href="#">create an issue</a> on the Github repository for
-          this site. Most likely, inaccuracies you may find here are a result of
-          incorrect querying or summarizing, rather than incorrect upstream data,
-          but filing an issue will help us troubleshoot all the same.
+          If you see data that you believe is misleading or incorrect, please
+          feel free to <a href="#">create an issue</a> on the Github repository
+          for this site. Most likely, inaccuracies you may find here are a
+          result of incorrect querying or summarizing, rather than incorrect
+          upstream data, but filing an issue will help us troubleshoot all the
+          same.
         </p>
       </section>
     </>
