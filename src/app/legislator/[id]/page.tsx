@@ -38,6 +38,27 @@ type Reducer = {
   isNotPartyLine: VoteWithPartyLine[];
 };
 
+const groupVotes = (v: VoteWithPartyLine[]): Reducer =>
+  v.reduce<Reducer>(
+    (acc, curr) => {
+      if (curr.isAbstain) {
+        acc.isAbstain.push(curr);
+      } else {
+        if (curr.isPartyLine) {
+          acc.isPartyLine.push(curr);
+        } else {
+          acc.isNotPartyLine.push(curr);
+        }
+      }
+      return acc;
+    },
+    {
+      isPartyLine: [],
+      isNotPartyLine: [],
+      isAbstain: [],
+    }
+  );
+
 const Page = () => {
   const [legislator, setLegislator] = useState<Legislator>();
   const [votes, setVotes] = useState<VoteWithPartyLine[]>([]);
@@ -106,25 +127,7 @@ const Page = () => {
     };
 
     if (votes && legislator) {
-      const groupedVotes = votes.reduce<Reducer>(
-        (acc, curr) => {
-          if (curr.isAbstain) {
-            acc.isAbstain.push(curr);
-          } else {
-            if (curr.isPartyLine) {
-              acc.isPartyLine.push(curr);
-            } else {
-              acc.isNotPartyLine.push(curr);
-            }
-          }
-          return acc;
-        },
-        {
-          isPartyLine: [],
-          isNotPartyLine: [],
-          isAbstain: [],
-        }
-      );
+      const groupedVotes = groupVotes(votes);
 
       data.datasets = [
         {
@@ -162,25 +165,7 @@ const Page = () => {
 
     if (votes && legislator && legislator.termType === "sen") {
       const nominationVotes = votes.filter((v) => v.category === "nomination");
-      const groupedVotes = nominationVotes.reduce<Reducer>(
-        (acc, curr) => {
-          if (curr.isAbstain) {
-            acc.isAbstain.push(curr);
-          } else {
-            if (curr.isPartyLine) {
-              acc.isPartyLine.push(curr);
-            } else {
-              acc.isNotPartyLine.push(curr);
-            }
-          }
-          return acc;
-        },
-        {
-          isPartyLine: [],
-          isNotPartyLine: [],
-          isAbstain: [],
-        }
-      );
+      const groupedVotes = groupVotes(nominationVotes);
 
       data.datasets = [
         {
@@ -303,27 +288,22 @@ const Page = () => {
             <div className="h-[100px] lg:h-[200px]">
               <Bar data={nominationDisplayData()} options={displayOptions} />
             </div>
+            <div className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
+              {votes
+                .filter((v) => v.category === "nomination")
+                .map((vote) => (
+                  <Chip
+                    key={vote.voteId}
+                    href={`/nominations/${vote.voteId}`}
+                    style={getChipDisplayOption(vote)}
+                  >
+                    {vote.nominationTitle}
+                  </Chip>
+                ))}
+            </div>
           </>
         )}
       </section>
-
-      {/* TODO: We're gonna have to pull in bill information for this section. */}
-      {/* <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
-        <h2 className="text-xl font-bold">Vote Details</h2>
-        <p>Each vote is shown below, color-coded the same as the chart above.</p>
-        <div className="flex flex-row flex-wrap mt-2">
-          {votes.map((vote) => (
-            <Chip
-              key={vote.voteId}
-              href="#"
-              style={getChipDisplayOption(vote)}
-            >
-              <strong>{vote.voteId}</strong>
-              <p>{vote.position}</p>
-            </Chip>
-          ))}
-        </div>
-      </section> */}
     </>
   ) : (
     <p>Loading...</p>
