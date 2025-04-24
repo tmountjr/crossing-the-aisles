@@ -8,6 +8,8 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
+import { Analytics } from "@vercel/analytics/react";
+
 // import { FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 // import { faGithubSquare } from "@fortawesome/free-brands-svg-icons";
 
@@ -40,7 +42,10 @@ export default function RootLayout({
           <Header />
 
           <main className="flex-grow flex justify-center items-start mt-8">
-            <div className="w-full px-10 mb-[75px]">{children}</div>
+            <div className="w-full px-10 mb-[75px]">
+              {children}
+              <Analytics />
+            </div>
           </main>
 
           <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white flex flex-row justify-end items-center gap-2 px-10 py-2">
