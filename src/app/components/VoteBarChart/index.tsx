@@ -59,6 +59,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
       I: docStyle.getPropertyValue("--ind"),
       gridX: docStyle.getPropertyValue("--grid-x"),
       gridY: docStyle.getPropertyValue("--grid-y"),
+      legendColor: docStyle.getPropertyValue("--color-foreground"),
     };
     setColorScheme(scheme);
   };
@@ -147,6 +148,8 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
         tooltip: { xAlign: "left" as const },
       },
     });
+
+    ChartJS.defaults.color = colorScheme.legendColor;
   }, [page, bplData, colorScheme]);
 
   return (
