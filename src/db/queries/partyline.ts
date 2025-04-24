@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { and, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
 import {
   votes as v,
   legislators as l,
@@ -31,7 +31,7 @@ const _tempVoteMeta = db
   .innerJoin(v_ids, eq(vm.voteId, v_ids.voteId))
   .as('temp_vote_meta');
 
-const _votesWithPartyLine = db
+export const _votesWithPartyLine = db
   .select({
     voteId: v.voteId,
     legislatorId: v.legislatorId,
@@ -49,7 +49,7 @@ const _votesWithPartyLine = db
         THEN 1
         ELSE 0
       END`.as("is_party_line"),
-    isAbstail: sql<boolean>`
+    isAbstain: sql<boolean>`
       CASE WHEN ${v.position} NOT IN ('Yea', 'Nay') THEN 1 ELSE 0 END
     `.as('is_abstain')
   })
@@ -131,4 +131,20 @@ export type BrokePartyLinesData =
   {
     brokePartyLineCount: number,
     totalVoteCount: number
+  };
+
+export const votesWithPartyLineByLegislator = (id: string): Promise<VoteWithPartyLine[]> => db
+  .select()
+  .from(_votesWithPartyLine)
+  .where(eq(_votesWithPartyLine.legislatorId, id))
+  .orderBy(asc(_votesWithPartyLine.voteId))
+  .execute();
+
+export type VoteWithPartyLine =
+  Pick<InferSelectModel<typeof v>, "voteId" | "legislatorId" | "position"> &
+  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party"> &
+  {
+    sponsor_party: string,
+    isPartyLine: boolean,
+    isAbstain: boolean
   };

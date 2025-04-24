@@ -1,9 +1,7 @@
 import { db } from '@/db';
-import {
-  legislators,
-  votes
-} from "@/db/schema";
+import type { Vote } from '@/db/schema';
 import { eq, exists } from 'drizzle-orm';
+import { legislators, votes } from "@/db/schema";
 
 export type AllowedParties = "R" | "D" | "I" | "all";
 
@@ -30,3 +28,9 @@ export const legislator = (id: string) => db
   .execute();
 
 export const allLegislators = db.select().from(_allLegislators).execute();
+
+export const votesByLegislator = (id: string): Promise<Vote[]> => db
+  .select()
+  .from(votes)
+  .where(eq(votes.legislatorId, id))
+  .execute();

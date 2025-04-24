@@ -121,6 +121,8 @@ export const latestVoteIds = pgView("latest_vote_ids", {
 type VoteMeta = InferSelectModel<typeof voteMeta>;
 export type LatestVoteId = VoteMeta & { "uniqueMatchingField": string };
 
+export type Vote = InferSelectModel<typeof votes>;
+
 export const enrichedVoteMeta = pgView("enriched_vote_meta", {
 	voteNumber: integer("vote_number"),
 	voteId: varchar("vote_id"),
