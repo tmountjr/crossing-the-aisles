@@ -36,6 +36,8 @@ export const _votesWithPartyLine = db
     voteId: v.voteId,
     legislatorId: v.legislatorId,
     position: v.position,
+    category: _tempVoteMeta.category,
+    nominationTitle: _tempVoteMeta.nomination_title,
     sponsor_party: _tempVoteMeta.sponsorParty,
     name: l.name,
     state: l.state,
@@ -144,6 +146,8 @@ export type VoteWithPartyLine =
   Pick<InferSelectModel<typeof v>, "voteId" | "legislatorId" | "position"> &
   Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party"> &
   {
+    category: string | null,
+    nominationTitle: string | null,
     sponsor_party: string,
     isPartyLine: boolean,
     isAbstain: boolean

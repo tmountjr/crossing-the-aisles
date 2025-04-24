@@ -21,6 +21,7 @@ import {
 } from "chart.js";
 import { VoteWithPartyLine } from "@/db/queries/partyline";
 import Link from "next/link";
+import Chip, { ChipStyle } from "@/app/components/Chip";
 
 ChartJS.register(
   CategoryScale,
@@ -153,6 +154,62 @@ const Page = () => {
     return data;
   };
 
+  const nominationDisplayData = () => {
+    const data: ChartData<"bar"> = {
+      labels: ["Votes"],
+      datasets: [],
+    };
+
+    if (votes && legislator && legislator.termType === "sen") {
+      const nominationVotes = votes.filter((v) => v.category === "nomination");
+      const groupedVotes = nominationVotes.reduce<Reducer>(
+        (acc, curr) => {
+          if (curr.isAbstain) {
+            acc.isAbstain.push(curr);
+          } else {
+            if (curr.isPartyLine) {
+              acc.isPartyLine.push(curr);
+            } else {
+              acc.isNotPartyLine.push(curr);
+            }
+          }
+          return acc;
+        },
+        {
+          isPartyLine: [],
+          isNotPartyLine: [],
+          isAbstain: [],
+        }
+      );
+
+      data.datasets = [
+        {
+          label: "Party Line",
+          data: [groupedVotes.isPartyLine.length],
+          backgroundColor: [legislatorPLScheme.isPartyLine],
+          borderColor: "white",
+          borderWidth: 1,
+        },
+        {
+          label: "Not Party Line",
+          data: [groupedVotes.isNotPartyLine.length],
+          backgroundColor: [legislatorPLScheme.isNotPartyLine],
+          borderColor: "white",
+          borderWidth: 1,
+        },
+        {
+          label: "Not Voting",
+          data: [groupedVotes.isAbstain.length],
+          backgroundColor: [legislatorPLScheme.isAbstain],
+          borderColor: "white",
+          borderWidth: 1,
+        },
+      ];
+    }
+
+    return data;
+  };
+
   const displayOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -168,6 +225,17 @@ const Page = () => {
         stacked: true,
       },
     },
+  };
+
+  const getChipDisplayOption = (vote: VoteWithPartyLine): ChipStyle => {
+    if (vote.isAbstain) return "dnv";
+    if (vote.isPartyLine) {
+      if (legislator?.party === "D") return "dem";
+      if (legislator?.party === "R") return "rep";
+    }
+    if (legislator?.party === "D") return "rep";
+    if (legislator?.party === "R") return "dem";
+    return "dnv";
   };
 
   return legislator ? (
@@ -224,10 +292,38 @@ const Page = () => {
           for the methodology we use to determine what is and is not a
           party-line vote.
         </p>
+        <h3 className="text-lg font-bold">All Votes</h3>
         <div className="h-[100px] lg:h-[200px]">
           <Bar data={displayData()} options={displayOptions} />
         </div>
+
+        {legislator.termType === "sen" && (
+          <>
+            <h3 className="text-lg font-bold">Nomination Votes</h3>
+            <div className="h-[100px] lg:h-[200px]">
+              <Bar data={nominationDisplayData()} options={displayOptions} />
+            </div>
+          </>
+        )}
       </section>
+
+      {/* TODO: We're gonna have to pull in bill information for this section. */}
+      {/* <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+        <h2 className="text-xl font-bold">Vote Details</h2>
+        <p>Each vote is shown below, color-coded the same as the chart above.</p>
+        <div className="flex flex-row flex-wrap mt-2">
+          {votes.map((vote) => (
+            <Chip
+              key={vote.voteId}
+              href="#"
+              style={getChipDisplayOption(vote)}
+            >
+              <strong>{vote.voteId}</strong>
+              <p>{vote.position}</p>
+            </Chip>
+          ))}
+        </div>
+      </section> */}
     </>
   ) : (
     <p>Loading...</p>
