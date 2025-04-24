@@ -1,6 +1,7 @@
 "use client";
 
 import { Bar } from "react-chartjs-2";
+import { useColorScheme } from "@/exports/colors";
 import type { ChartData, ChartOptions } from "chart.js";
 import { type NominationVotes } from "@/db/queries/nominations";
 import {
@@ -12,7 +13,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -29,40 +29,16 @@ const NORMALIZED_LABELS: Record<string, string> = {
   I: "Independent",
 };
 
-interface VoteDonutChartProps {
+interface VoteStackedBarProps {
   data: NominationVotes[];
   groupBy?: "party" | "position";
 }
 
-const VoteStackedBarChart: React.FC<VoteDonutChartProps> = ({
+const VoteStackedBarChart: React.FC<VoteStackedBarProps> = ({
   data,
   groupBy = "party",
 }) => {
-  // const [displayData, setDisplayData] = useState<ChartData<"doughnut">>();
-  const [colorScheme, setColorScheme] = useState<Record<string, string>>({});
-
-  const updateColors = () => {
-    const docStyle = window.getComputedStyle(window.document.body);
-    const scheme = {
-      D: docStyle.getPropertyValue("--dem"),
-      R: docStyle.getPropertyValue("--rep"),
-      I: docStyle.getPropertyValue("--ind"),
-      Yea: docStyle.getPropertyValue("--color-yea"),
-      Nay: docStyle.getPropertyValue("--color-nay"),
-      "Not Voting": docStyle.getPropertyValue("--color-dnv"),
-      gridX: docStyle.getPropertyValue("--grid-x"),
-      gridY: docStyle.getPropertyValue("--grid-y"),
-    };
-    setColorScheme(scheme);
-  };
-
-  // Run effect when page loads.
-  useEffect(() => {
-    updateColors();
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => updateColors());
-  }, []);
+  const colorScheme = useColorScheme();
 
   // The filters (changing the primary grouping) really only change which dataset comes first in the
   // pie chart. So we can pre-compute them once as non-state items.

@@ -1,6 +1,7 @@
 "use client";
 
 import { Bar } from "react-chartjs-2";
+import { useColorScheme } from "@/exports/colors";
 import NavButton from "@/app/components/NavButton";
 import React, { useEffect, useState } from "react";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -48,32 +49,9 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
   const [recordCount, setRecordCount] = useState(0);
   const [bplData, setBplData] = useState<BrokePartyLinesData[]>([]);
   const [displayData, setDisplayData] = useState<ChartData<"bar">>();
-  const [colorScheme, setColorScheme] = useState<Record<string, string>>({});
   const [displayOptions, setDisplayOptions] = useState<ChartOptions<"bar">>();
 
-  const updateColors = () => {
-    const docStyle = window.getComputedStyle(window.document.body);
-    const scheme = {
-      D: docStyle.getPropertyValue("--dem"),
-      R: docStyle.getPropertyValue("--rep"),
-      I: docStyle.getPropertyValue("--ind"),
-      gridX: docStyle.getPropertyValue("--grid-x"),
-      gridY: docStyle.getPropertyValue("--grid-y"),
-      legendColor: docStyle.getPropertyValue("--color-foreground"),
-    };
-    setColorScheme(scheme);
-  };
-
-  // Run an effect once on initial page load.
-  useEffect(() => {
-    // First update the colors on page load.
-    updateColors();
-
-    // Then set a window callback to do it anytime it changes later.
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => updateColors());
-  }, []);
+  const colorScheme = useColorScheme();
 
   // Run an effect when the filters change.
   useEffect(() => {
