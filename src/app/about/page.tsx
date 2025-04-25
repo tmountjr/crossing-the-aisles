@@ -4,13 +4,17 @@ import PageHeader from "@/app/components/PageHeader";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.DOMAIN!),
   title: "About CTA",
   description: "About page for Crossing the Aisles",
   openGraph: {
     title: "About CTA",
     description: "About page for Crossing the Aisles",
-  }
-}
+    url: `${process.env.DOMAIN}/about`,
+    siteName: "Crossing the Aisles",
+    type: "website",
+  },
+};
 
 export default function Page() {
   return (

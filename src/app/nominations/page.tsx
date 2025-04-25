@@ -4,6 +4,7 @@ import { nominationVoteIds } from "@/db/queries/nominations";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.DOMAIN!),
   title: "Senate Nominations",
   description: "A list of Senate nomination votes and their results.",
   openGraph: {
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
     description: "A list of Senate nomination votes and their results.",
     url: `${process.env.DOMAIN}/nominations`,
     type: "website",
+    siteName: "Crossing the Aisles",
   },
 };
 

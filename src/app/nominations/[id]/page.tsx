@@ -13,10 +13,11 @@ export async function generateMetadata(props: {
   searchParams: SearchParams
 }): Promise<Metadata> {
   const params = await props.params;
-  const id = params.id;
+  const { id } = params;
   const title = await fetchNominationTitle(id);
 
   return {
+    metadataBase: new URL(process.env.DOMAIN!),
     title: `Senate Nomination ${id}`,
     description: `Details for Senate vote ${id}`,
     openGraph: {
@@ -24,6 +25,7 @@ export async function generateMetadata(props: {
       description: title,
       url: `${process.env.DOMAIN}/nominations/${id}`,
       type: "website",
+      siteName: "Crossing the Aisles",
     },
   };
 };

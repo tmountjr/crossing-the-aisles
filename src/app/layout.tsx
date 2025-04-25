@@ -24,12 +24,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.DOMAIN!),
   title: "Crossing the Aisles",
   description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
   openGraph: {
     title: "Crossing the Aisles",
     description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
     url: process.env.DOMAIN,
+    siteName: "Crossing the Aisles",
     type: "website",
   },
 };

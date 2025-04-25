@@ -17,6 +17,7 @@ export async function generateMetadata(props: {
   const legislator = await fetchLegislator(id);
 
   return {
+    metadataBase: new URL(process.env.DOMAIN!),
     title: legislator.name,
     description: `Details for ${legislator.name}, ${legislator.party}-${legislator.state}`,
     openGraph: {
@@ -30,6 +31,7 @@ export async function generateMetadata(props: {
       }.`,
       url: `${process.env.DOMAIN}/legislator/${id}`,
       type: "profile",
+      siteName: "Crossing the Aisles",
     },
   };
 };
