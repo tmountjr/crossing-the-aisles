@@ -13,6 +13,7 @@ export const legislators = pgTable("legislators", {
 	url: varchar(),
 	address: varchar(),
 	phone: varchar(),
+	caucus: varchar().notNull(),
 }, (table) => [
 	unique("legislators_bioguide_id_key").on(table.bioguideId),
 ]);

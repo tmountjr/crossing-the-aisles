@@ -16,6 +16,7 @@ const nominationVotes = db
     name: l.name,
     state: l.state,
     party: l.party,
+    caucus: l.caucus,
     position: v.position,
     title: vm.nominationTitle,
     result: vm.result
@@ -107,6 +108,6 @@ type Legislator = InferSelectModel<typeof l>
 
 export type NominationVotes = 
   Pick<Vote, "voteId" | "legislatorId" | "position"> &
-  Pick<Legislator, "name" | "state" | "party"> &
+  Pick<Legislator, "name" | "state" | "party" | "caucus"> &
   Pick<LatestVoteId, "date" | "result"> &
   { title: string | null };

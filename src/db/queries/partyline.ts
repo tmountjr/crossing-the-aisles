@@ -44,10 +44,11 @@ export const _votesWithPartyLine = db
     district: l.district,
     termType: l.termType,
     party: l.party,
+    caucus: l.caucus,
     isPartyLine: sql<boolean>`
       CASE
-        WHEN (${l.party} =  ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Nay') 
-          OR (${l.party} != ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Yea')
+        WHEN (${l.caucus} =  ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Nay')
+          OR (${l.caucus} != ${_tempVoteMeta.sponsorParty} AND ${v.position} != 'Yea')
         THEN 1
         ELSE 0
       END`.as("is_party_line"),
@@ -68,6 +69,7 @@ const _brokePartyLineVotes = db
     district: _votesWithPartyLine.district,
     termType: _votesWithPartyLine.termType,
     party: _votesWithPartyLine.party,
+    caucus: _votesWithPartyLine.caucus,
     brokePartyLineCount: sql<number>`
       SUM(
         CASE
@@ -86,6 +88,7 @@ const _brokePartyLineVotes = db
     t.district,
     t.termType,
     t.party,
+    t.caucus,
   ])
   .as('broke_party_line_votes');
 
@@ -129,7 +132,7 @@ export const brokePartyLineVotes = ({
 
 export type BrokePartyLinesData =
   Pick<InferSelectModel<typeof v>, "legislatorId"> &
-  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party"> &
+  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party" | "caucus"> &
   {
     brokePartyLineCount: number,
     totalVoteCount: number
@@ -144,7 +147,7 @@ export const votesWithPartyLineByLegislator = (id: string): Promise<VoteWithPart
 
 export type VoteWithPartyLine =
   Pick<InferSelectModel<typeof v>, "voteId" | "legislatorId" | "position"> &
-  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party"> &
+  Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party" | "caucus"> &
   {
     category: string | null,
     nominationTitle: string | null,

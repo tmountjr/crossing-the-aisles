@@ -215,11 +215,11 @@ const Page = () => {
   const getChipDisplayOption = (vote: VoteWithPartyLine): ChipStyle => {
     if (vote.isAbstain) return "dnv";
     if (vote.isPartyLine) {
-      if (legislator?.party === "D" || legislator?.party === "I") return "dem";
-      if (legislator?.party === "R") return "rep";
+      if (legislator?.caucus === "D") return "dem";
+      if (legislator?.caucus === "R") return "rep";
     }
-    if (legislator?.party === "D" || legislator?.party === "I") return "rep";
-    if (legislator?.party === "R") return "dem";
+    if (legislator?.caucus === "D") return "rep";
+    if (legislator?.caucus === "R") return "dem";
     return "dnv";
   };
 
