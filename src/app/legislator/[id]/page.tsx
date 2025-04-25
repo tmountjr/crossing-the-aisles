@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
-import type { ChartData, ChartOptions } from "chart.js";
 import Chip, { ChipStyle } from "@/app/components/Chip";
 import { VoteWithPartyLine } from "@/db/queries/partyline";
+import type { ChartData, ChartDataset, ChartOptions } from "chart.js";
 import { fetchVotesByLegislator } from "@/server/actions/brokePartyLines";
 import { fetchLegislator, type Legislator } from "@/server/actions/legislators";
 import {
@@ -38,6 +38,13 @@ type PartyLineGroups = {
   isNotPartyLine: VoteWithPartyLine[];
 };
 
+type PartyLineColorScheme = Record<keyof PartyLineGroups, string>;
+
+/**
+ * Group a list of votes for a legislator based on the vote party line status.
+ * @param v A list of votes to group.
+ * @returns Votes grouped by party line status.
+ */
 const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
   v.reduce<PartyLineGroups>(
     (acc, curr) => {
@@ -59,9 +66,40 @@ const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
     }
   );
 
-type PartyLineColorScheme = Record<keyof PartyLineGroups, string>;
+/**
+ * Generate chart datasets for a list of votes.
+ * @param votes A list of votes to use as the data source.
+ * @param colors A color scheme object.
+ * @returns The ChartDataset objects for the vote data.
+ */
+const generateDatasets = (
+  votes: PartyLineGroups,
+  colors: PartyLineColorScheme
+): ChartDataset<"bar">[] => [
+  {
+    label: "Party Line",
+    data: [votes.isPartyLine.length],
+    backgroundColor: [colors.isPartyLine],
+    borderColor: "white",
+    borderWidth: 1,
+  },
+  {
+    label: "Not Party Line",
+    data: [votes.isNotPartyLine.length],
+    backgroundColor: [colors.isNotPartyLine],
+    borderColor: "white",
+    borderWidth: 1,
+  },
+  {
+    label: "Not Voting",
+    data: [votes.isAbstain.length],
+    backgroundColor: [colors.isAbstain],
+    borderColor: "white",
+    borderWidth: 1,
+  },
+];
 
-const defaultChartData = {
+const defaultChartData: ChartData<"bar"> = {
   labels: ["Votes"],
   datasets: [],
 };
@@ -85,6 +123,7 @@ const Page = () => {
   const { id } = useParams();
   const colorScheme = useColorScheme();
 
+  // On page load, fetch the core data and set up some calculated properties.
   useEffect(() => {
     const fetchData = async (id: string) => {
       const _legislator = await fetchLegislator(id);
@@ -135,75 +174,29 @@ const Page = () => {
   useEffect(() => {
     if (!legislator || !legislatorPLScheme) return;
 
-    const allVoteData: ChartData<"bar"> = {
+    const defaultData: ChartData<"bar"> = {
       labels: ["Votes"],
       datasets: [],
     };
 
-    const groupedVotes = groupVotes(votes);
-    setAllVotePartyLineCount(groupedVotes.isPartyLine.length);
+    const allVotes = groupVotes(votes);
+    setAllVotePartyLineCount(allVotes.isPartyLine.length);
 
-    allVoteData.datasets = [
-      {
-        label: "Party Line",
-        data: [groupedVotes.isPartyLine.length],
-        backgroundColor: [legislatorPLScheme.isPartyLine],
-        borderColor: "white",
-        borderWidth: 1,
-      },
-      {
-        label: "Not Party Line",
-        data: [groupedVotes.isNotPartyLine.length],
-        backgroundColor: [legislatorPLScheme.isNotPartyLine],
-        borderColor: "white",
-        borderWidth: 1,
-      },
-      {
-        label: "Not Voting",
-        data: [groupedVotes.isAbstain.length],
-        backgroundColor: [legislatorPLScheme.isAbstain],
-        borderColor: "white",
-        borderWidth: 1,
-      },
-    ];
-
+    const allVoteData: ChartData<"bar"> = { ...defaultData };
+    allVoteData.datasets = generateDatasets(allVotes, legislatorPLScheme);
     setAllVotesChartData(allVoteData);
 
     if (legislator.termType === "sen") {
-      const nomVoteData: ChartData<"bar"> = {
-        labels: ["Votes"],
-        datasets: [],
-      };
-
       const nomVotes = votes.filter((v) => v.category === "nomination");
-      const groupedVotes = groupVotes(nomVotes);
-      setnomVotePartyLineCount(groupedVotes.isPartyLine.length);
+      const groupedNomVotes = groupVotes(nomVotes);
+      setnomVotePartyLineCount(groupedNomVotes.isPartyLine.length);
       setTotalNomVote(nomVotes.length);
 
-      nomVoteData.datasets = [
-        {
-          label: "Party Line",
-          data: [groupedVotes.isPartyLine.length],
-          backgroundColor: [legislatorPLScheme?.isPartyLine],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-        {
-          label: "Not Party Line",
-          data: [groupedVotes.isNotPartyLine.length],
-          backgroundColor: [legislatorPLScheme?.isNotPartyLine],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-        {
-          label: "Not Voting",
-          data: [groupedVotes.isAbstain.length],
-          backgroundColor: [legislatorPLScheme.isAbstain],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-      ];
-
+      const nomVoteData: ChartData<"bar"> = { ...defaultData };
+      nomVoteData.datasets = generateDatasets(
+        groupedNomVotes,
+        legislatorPLScheme
+      );
       setNomVotesChartData(nomVoteData);
     }
   }, [votes, legislator, legislatorPLScheme]);
@@ -299,14 +292,12 @@ const Page = () => {
             equates to{" "}
             <strong>
               {Math.floor((allVotePartyLineCount / votes.length) * 100)}%
-            </strong>
+            </strong>{" "}
             of the total votes cast by this legislator.
           </p>
-          {Object.keys(allVotesChartData).length > 0 && (
-            <div className="h-[100px] lg:h-[200px]">
-              <Bar data={allVotesChartData} options={displayOptions} />
-            </div>
-          )}
+          <div className="h-[100px] lg:h-[200px]">
+            <Bar data={allVotesChartData} options={displayOptions} />
+          </div>
         </section>
 
         {legislator.termType === "sen" && (
@@ -322,11 +313,9 @@ const Page = () => {
               </strong>{" "}
               of the total nomination votes cast by this legislator.
             </p>
-            {Object.keys(nomVotesChartData).length > 0 && (
-              <div className="h-[100px] lg:h-[200px]">
-                <Bar data={nomVotesChartData} options={displayOptions} />
-              </div>
-            )}
+            <div className="h-[100px] lg:h-[200px]">
+              <Bar data={nomVotesChartData} options={displayOptions} />
+            </div>
             <div className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
               {votes
                 .filter((v) => v.category === "nomination")
