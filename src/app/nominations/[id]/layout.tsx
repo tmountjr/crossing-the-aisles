@@ -9,6 +9,7 @@ type Props = {
   params: Promise<{ id: string }>
 }
 
+// Make the page a server component to use different metadata tags.
 const WrappedPage = async ({ params }: Props) => {
   const { id } = await params;
 
@@ -34,6 +35,7 @@ export async function generateMetadata(
       title: `Senate Nomation ${id}`,
       description: title,
       url: `https://cta.us/nominations/${id}`,
+      type: "website",
     },
   };
 };

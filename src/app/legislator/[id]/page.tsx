@@ -3,16 +3,13 @@
 import "./page.css";
 import Link from "next/link";
 import { Bar } from "react-chartjs-2";
-import { states } from "@/exports/states";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
 import Chip, { ChipStyle } from "@/app/components/Chip";
 import { VoteWithPartyLine } from "@/db/queries/partyline";
+import { type Legislator } from "@/server/actions/legislators";
 import type { ChartData, ChartDataset, ChartOptions } from "chart.js";
-import { fetchVotesByLegislator } from "@/server/actions/brokePartyLines";
-import { fetchLegislator, type Legislator } from "@/server/actions/legislators";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -104,71 +101,42 @@ const defaultChartData: ChartData<"bar"> = {
   datasets: [],
 };
 
-const Page = () => {
-  const [legislator, setLegislator] = useState<Legislator>();
-  const [votes, setVotes] = useState<VoteWithPartyLine[]>([]);
+type PageProps = {
+  legislator: Legislator;
+  votes: VoteWithPartyLine[];
+  fullParty: string;
+  shortTitle: string;
+  homeState: string;
+}
+
+const Page = ({ legislator, votes, fullParty, shortTitle, homeState }: PageProps) => {
   const [legislatorPLScheme, setLegislatorPLScheme] =
     useState<PartyLineColorScheme>();
   const [allVotesChartData, setAllVotesChartData] =
     useState<ChartData<"bar">>(defaultChartData);
   const [nomVotesChartData, setNomVotesChartData] =
     useState<ChartData<"bar">>(defaultChartData);
-  const [shortTitle, setShortTitle] = useState<string>();
-  const [homeState, setHomeState] = useState<string>();
-  const [fullParty, setFullParty] = useState<string>();
   const [allVotePartyLineCount, setAllVotePartyLineCount] = useState(0);
   const [nomVotePartyLineCount, setnomVotePartyLineCount] = useState(0);
   const [totalNomVote, setTotalNomVote] = useState(0);
 
-  const { id } = useParams();
   const colorScheme = useColorScheme();
 
-  // On page load, fetch the core data and set up some calculated properties.
+  // On page load, set up some calculated properties.
   useEffect(() => {
-    const fetchData = async (id: string) => {
-      const _legislator = await fetchLegislator(id);
-      const _votesByLegislator = await fetchVotesByLegislator(id);
-      setLegislator(_legislator);
-      setVotes(_votesByLegislator);
-
-      switch (_legislator.party) {
-        case "R":
-          setFullParty("Republican");
-          break;
-        case "D":
-          setFullParty("Democratic");
-          break;
-        case "I":
-          setFullParty("Independent");
-          break;
-        default:
-          setFullParty("Other");
-      }
-
-      setShortTitle(
-        _legislator.termType === "sen" ? "Senator" : "Representative"
-      );
-      setHomeState(states.find((s) => s.code === _legislator.state)?.name);
-
-      const _legislatorPLScheme: PartyLineColorScheme = {
-        isPartyLine:
-          _legislator.party === "D" || _legislator.party === "I"
-            ? colorScheme.D
-            : colorScheme.R,
-        isNotPartyLine:
-          _legislator.party === "D" || _legislator.party === "I"
-            ? colorScheme.R
-            : colorScheme.D,
-        isAbstain: colorScheme["Not Voting"],
-      };
-      setLegislatorPLScheme(_legislatorPLScheme);
+    const legislatorPLScheme: PartyLineColorScheme = {
+      isPartyLine:
+        legislator.party === "D" || legislator.party === "I"
+          ? colorScheme.D
+          : colorScheme.R,
+      isNotPartyLine:
+        legislator.party === "D" || legislator.party === "I"
+          ? colorScheme.R
+          : colorScheme.D,
+      isAbstain: colorScheme["Not Voting"],
     };
-
-    if (id) {
-      const _id = Array.isArray(id) ? id[0] : id;
-      fetchData(_id);
-    }
-  }, [id, colorScheme]);
+    setLegislatorPLScheme(legislatorPLScheme);
+  }, [legislator, colorScheme]);
 
   // Once the votes have been set, we can calculate the chart data.
   useEffect(() => {
@@ -229,7 +197,7 @@ const Page = () => {
     return "dnv";
   };
 
-  return legislator ? (
+  return (
     <>
       <PageHeader
         title={`${legislator.name!}, ${legislator.party}-${legislator.state}`}
@@ -333,8 +301,6 @@ const Page = () => {
         )}
       </section>
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 
