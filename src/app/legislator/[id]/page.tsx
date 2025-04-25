@@ -61,11 +61,26 @@ const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
 
 type PartyLineColorScheme = Record<keyof PartyLineGroups, string>;
 
+const defaultChartData = {
+  labels: ["Votes"],
+  datasets: [],
+};
+
 const Page = () => {
   const [legislator, setLegislator] = useState<Legislator>();
   const [votes, setVotes] = useState<VoteWithPartyLine[]>([]);
   const [legislatorPLScheme, setLegislatorPLScheme] =
     useState<PartyLineColorScheme>();
+  const [allVotesChartData, setAllVotesChartData] =
+    useState<ChartData<"bar">>(defaultChartData);
+  const [nomVotesChartData, setNomVotesChartData] =
+    useState<ChartData<"bar">>(defaultChartData);
+  const [shortTitle, setShortTitle] = useState<string>();
+  const [homeState, setHomeState] = useState<string>();
+  const [fullParty, setFullParty] = useState<string>();
+  const [allVotePartyLineCount, setAllVotePartyLineCount] = useState(0);
+  const [nomVotePartyLineCount, setnomVotePartyLineCount] = useState(0);
+  const [totalNomVote, setTotalNomVote] = useState(0);
 
   const { id } = useParams();
   const colorScheme = useColorScheme();
@@ -76,6 +91,25 @@ const Page = () => {
       const _votesByLegislator = await fetchVotesByLegislator(id);
       setLegislator(_legislator);
       setVotes(_votesByLegislator);
+
+      switch (_legislator.party) {
+        case "R":
+          setFullParty("Republican");
+          break;
+        case "D":
+          setFullParty("Democratic");
+          break;
+        case "I":
+          setFullParty("Independent");
+          break;
+        default:
+          setFullParty("Other");
+      }
+
+      setShortTitle(
+        _legislator.termType === "sen" ? "Senator" : "Representative"
+      );
+      setHomeState(states.find((s) => s.code === _legislator.state)?.name);
 
       const _legislatorPLScheme: PartyLineColorScheme = {
         isPartyLine:
@@ -97,40 +131,56 @@ const Page = () => {
     }
   }, [id, colorScheme]);
 
-  const fullParty = () => {
-    if (!legislator) return;
-    switch (legislator.party) {
-      case "R":
-        return "Republican";
-      case "D":
-        return "Democratic";
-      case "I":
-        return "Independent";
-      default:
-        return "Other";
-    }
-  };
+  // Once the votes have been set, we can calculate the chart data.
+  useEffect(() => {
+    if (!legislator || !legislatorPLScheme) return;
 
-  const shortTitle = () => {
-    if (!legislator) return;
-    return legislator.termType === "sen" ? "Senator" : "Representative";
-  };
-
-  const homeState = () => {
-    if (!legislator) return;
-    return states.find((s) => s.code === legislator.state)?.name;
-  };
-
-  const displayData = () => {
-    const data: ChartData<"bar"> = {
+    const allVoteData: ChartData<"bar"> = {
       labels: ["Votes"],
       datasets: [],
     };
 
-    if (votes && legislator) {
-      const groupedVotes = groupVotes(votes);
+    const groupedVotes = groupVotes(votes);
+    setAllVotePartyLineCount(groupedVotes.isPartyLine.length);
 
-      data.datasets = [
+    allVoteData.datasets = [
+      {
+        label: "Party Line",
+        data: [groupedVotes.isPartyLine.length],
+        backgroundColor: [legislatorPLScheme.isPartyLine],
+        borderColor: "white",
+        borderWidth: 1,
+      },
+      {
+        label: "Not Party Line",
+        data: [groupedVotes.isNotPartyLine.length],
+        backgroundColor: [legislatorPLScheme.isNotPartyLine],
+        borderColor: "white",
+        borderWidth: 1,
+      },
+      {
+        label: "Not Voting",
+        data: [groupedVotes.isAbstain.length],
+        backgroundColor: [legislatorPLScheme.isAbstain],
+        borderColor: "white",
+        borderWidth: 1,
+      },
+    ];
+
+    setAllVotesChartData(allVoteData);
+
+    if (legislator.termType === "sen") {
+      const nomVoteData: ChartData<"bar"> = {
+        labels: ["Votes"],
+        datasets: [],
+      };
+
+      const nomVotes = votes.filter((v) => v.category === "nomination");
+      const groupedVotes = groupVotes(nomVotes);
+      setnomVotePartyLineCount(groupedVotes.isPartyLine.length);
+      setTotalNomVote(nomVotes.length);
+
+      nomVoteData.datasets = [
         {
           label: "Party Line",
           data: [groupedVotes.isPartyLine.length],
@@ -148,53 +198,15 @@ const Page = () => {
         {
           label: "Not Voting",
           data: [groupedVotes.isAbstain.length],
-          backgroundColor: [legislatorPLScheme?.isAbstain],
+          backgroundColor: [legislatorPLScheme.isAbstain],
           borderColor: "white",
           borderWidth: 1,
         },
       ];
+
+      setNomVotesChartData(nomVoteData);
     }
-
-    return data;
-  };
-
-  const nominationDisplayData = () => {
-    const data: ChartData<"bar"> = {
-      labels: ["Votes"],
-      datasets: [],
-    };
-
-    if (votes && legislator && legislator.termType === "sen") {
-      const nominationVotes = votes.filter((v) => v.category === "nomination");
-      const groupedVotes = groupVotes(nominationVotes);
-
-      data.datasets = [
-        {
-          label: "Party Line",
-          data: [groupedVotes.isPartyLine.length],
-          backgroundColor: [legislatorPLScheme?.isPartyLine],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-        {
-          label: "Not Party Line",
-          data: [groupedVotes.isNotPartyLine.length],
-          backgroundColor: [legislatorPLScheme?.isNotPartyLine],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-        {
-          label: "Not Voting",
-          data: [groupedVotes.isAbstain.length],
-          backgroundColor: [legislatorPLScheme?.isAbstain],
-          borderColor: "white",
-          borderWidth: 1,
-        },
-      ];
-    }
-
-    return data;
-  };
+  }, [votes, legislator, legislatorPLScheme]);
 
   const displayOptions: ChartOptions<"bar"> = {
     responsive: true,
@@ -234,9 +246,9 @@ const Page = () => {
         <p>
           <strong>{legislator.name}</strong> is a{" "}
           <strong>
-            {fullParty()} {shortTitle()}
+            {fullParty} {shortTitle}
           </strong>{" "}
-          from {homeState()}
+          from {homeState}
           {legislator.termType === "rep" &&
             `'s House District ${legislator.district}`}
           .
@@ -278,17 +290,43 @@ const Page = () => {
           for the methodology we use to determine what is and is not a
           party-line vote.
         </p>
-        <h3 className="text-lg font-bold">All Votes</h3>
-        <div className="h-[100px] lg:h-[200px]">
-          <Bar data={displayData()} options={displayOptions} />
-        </div>
+        <section className="flex flex-col gap-4">
+          <h3 className="text-lg font-bold">All Votes</h3>
+          <p>
+            {legislator.name} has cast <strong>{votes.length}</strong> votes in
+            the current session of Congress. We calculate that{" "}
+            <strong>{allVotePartyLineCount}</strong> were party-line votes. This
+            equates to{" "}
+            <strong>
+              {Math.floor((allVotePartyLineCount / votes.length) * 100)}%
+            </strong>
+            of the total votes cast by this legislator.
+          </p>
+          {Object.keys(allVotesChartData).length > 0 && (
+            <div className="h-[100px] lg:h-[200px]">
+              <Bar data={allVotesChartData} options={displayOptions} />
+            </div>
+          )}
+        </section>
 
         {legislator.termType === "sen" && (
-          <>
+          <section className="flex flex-col gap-4">
             <h3 className="text-lg font-bold">Nomination Votes</h3>
-            <div className="h-[100px] lg:h-[200px]">
-              <Bar data={nominationDisplayData()} options={displayOptions} />
-            </div>
+            <p>
+              {legislator.name} has cast <strong>{totalNomVote}</strong> votes
+              for nominees in the current session of Congress. We calculate that{" "}
+              <strong>{nomVotePartyLineCount}</strong> were party-line votes.
+              This equates to{" "}
+              <strong>
+                {Math.floor((nomVotePartyLineCount / totalNomVote) * 100)}%
+              </strong>{" "}
+              of the total nomination votes cast by this legislator.
+            </p>
+            {Object.keys(nomVotesChartData).length > 0 && (
+              <div className="h-[100px] lg:h-[200px]">
+                <Bar data={nomVotesChartData} options={displayOptions} />
+              </div>
+            )}
             <div className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
               {votes
                 .filter((v) => v.category === "nomination")
@@ -302,7 +340,7 @@ const Page = () => {
                   </Chip>
                 ))}
             </div>
-          </>
+          </section>
         )}
       </section>
     </>
