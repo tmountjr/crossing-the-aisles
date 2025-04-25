@@ -1,6 +1,16 @@
 import "./page.css";
 import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About CTA",
+  description: "About page for Crossing the Aisles",
+  openGraph: {
+    title: "About CTA",
+    description: "About page for Crossing the Aisles",
+  }
+}
 
 export default function Page() {
   return (
