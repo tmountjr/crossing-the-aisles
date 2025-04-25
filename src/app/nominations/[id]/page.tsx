@@ -1,18 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import PageHeader from "@/app/components/PageHeader";
-import { type NominationVotes } from "@/db/queries/nominations";
-import {
-  fetchNominationVotes,
-  fetchNominationTitle,
-} from "@/server/actions/nominations";
 import Link from "next/link";
-import VoteStackedBarChart from "@/app/components/VoteStackedBarChart";
+import { useEffect, useState } from "react";
+import PageHeader from "@/app/components/PageHeader";
 import Chip, {type ChipStyle } from "@/app/components/Chip";
+import { type NominationVotes } from "@/db/queries/nominations";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
+import VoteStackedBarChart from "@/app/components/VoteStackedBarChart";
 
 type ChipLookup = "D" | "R" | "I" | "Yea" | "Nay" | "Not Voting";
 
@@ -31,33 +26,21 @@ const NORMALIZED_LABELS: Record<string, string> = {
   I: "Independent",
 };
 
-const Page = () => {
-  const { id } = useParams();
-  const [title, setTitle] = useState<string>("");
-  const [displayData, setDisplayData] = useState<NominationVotes[]>([]);
+type PageProps = {
+  data: NominationVotes[];
+  title: string;
+  id: string;
+};
+
+const Page = ({ data, title, id }: PageProps) => {
   const [sortType, setSortType] = useState<"party" | "position">("party");
   const [slicedData, setSlicedData] = useState<
     Record<string, NominationVotes[]>
   >({});
 
-  // On page load, fetch the data and set both the data and displayData states.
   useEffect(() => {
-    const fetchData = async (id: string) => {
-      const data = await fetchNominationVotes(id);
-      const _title = await fetchNominationTitle(id);
-      setDisplayData(data);
-      setTitle(_title);
-    };
-
-    if (id) {
-      const _id = Array.isArray(id) ? id[0] : id;
-      fetchData(_id);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (!displayData) return;
-    const _slicedData = displayData.reduce<Record<string, NominationVotes[]>>((acc, curr) => {
+    if (!data) return;
+    const _slicedData = data.reduce<Record<string, NominationVotes[]>>((acc, curr) => {
       if (!(curr[sortType]! in acc)) {
         acc[curr[sortType]!] = [];
       }
@@ -66,7 +49,7 @@ const Page = () => {
       return acc;
     }, {});
     setSlicedData(_slicedData);
-  }, [sortType, displayData]);
+  }, [sortType, data]);
 
   return (
     <>
@@ -79,7 +62,7 @@ const Page = () => {
       </p>
 
       <section className="flex flex-col gap-2">
-        <VoteStackedBarChart data={displayData} groupBy={sortType} />
+        <VoteStackedBarChart data={data} groupBy={sortType} />
 
         <div className="mt-5 flex flex-row gap-4 lg:max-w-[768px] m-auto">
           <button

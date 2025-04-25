@@ -1,6 +1,18 @@
 import Chip from "@/app/components/Chip";
 import PageHeader from "@/app/components/PageHeader";
 import { nominationVoteIds } from "@/db/queries/nominations";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Senate Nominations",
+  description: "A list of Senate nomination votes and their results.",
+  openGraph: {
+    title: "Senate Nominations",
+    description: "A list of Senate nomination votes and their results.",
+    url: "https://cta.us/nominations",
+    type: "website",
+  },
+};
 
 export default async function NominationsPage() {
   const voteIdsResponse = (await nominationVoteIds).slice().reverse();
