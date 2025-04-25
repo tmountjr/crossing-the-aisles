@@ -26,6 +26,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Crossing the Aisles",
   description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
+  openGraph: {
+    title: "Crossing the Aisles",
+    description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
+    url: "https://cta.us",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
