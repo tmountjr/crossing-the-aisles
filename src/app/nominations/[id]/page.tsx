@@ -22,7 +22,7 @@ export async function generateMetadata(props: {
     openGraph: {
       title: `Senate Nomation ${id}`,
       description: title,
-      url: `https://cta.us/nominations/${id}`,
+      url: `${process.env.DOMAIN}/nominations/${id}`,
       type: "website",
     },
   };

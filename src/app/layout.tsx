@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Crossing the Aisles",
     description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
-    url: "https://cta.us",
+    url: process.env.DOMAIN,
     type: "website",
   },
 };

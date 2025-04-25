@@ -28,7 +28,7 @@ export async function generateMetadata(props: {
           ? " as well as a breakdown of party line voting on Nominations"
           : ""
       }.`,
-      url: `https://cta.us/legislator/${id}`,
+      url: `${process.env.DOMAIN}/legislator/${id}`,
       type: "profile",
     },
   };

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Senate Nominations",
     description: "A list of Senate nomination votes and their results.",
-    url: "https://cta.us/nominations",
+    url: `${process.env.DOMAIN}/nominations`,
     type: "website",
   },
 };
