@@ -1,6 +1,7 @@
 "use client";
 
 import "./page.css";
+import Link from "next/link";
 import { Bar } from "react-chartjs-2";
 import { states } from "@/exports/states";
 import { useEffect, useState } from "react";
@@ -8,6 +9,8 @@ import { useParams } from "next/navigation";
 import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
 import type { ChartData, ChartOptions } from "chart.js";
+import Chip, { ChipStyle } from "@/app/components/Chip";
+import { VoteWithPartyLine } from "@/db/queries/partyline";
 import { fetchVotesByLegislator } from "@/server/actions/brokePartyLines";
 import { fetchLegislator, type Legislator } from "@/server/actions/legislators";
 import {
@@ -19,9 +22,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { VoteWithPartyLine } from "@/db/queries/partyline";
-import Link from "next/link";
-import Chip, { ChipStyle } from "@/app/components/Chip";
 
 ChartJS.register(
   CategoryScale,
@@ -32,14 +32,14 @@ ChartJS.register(
   Legend
 );
 
-type Reducer = {
+type PartyLineGroups = {
   isPartyLine: VoteWithPartyLine[];
   isAbstain: VoteWithPartyLine[];
   isNotPartyLine: VoteWithPartyLine[];
 };
 
-const groupVotes = (v: VoteWithPartyLine[]): Reducer =>
-  v.reduce<Reducer>(
+const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
+  v.reduce<PartyLineGroups>(
     (acc, curr) => {
       if (curr.isAbstain) {
         acc.isAbstain.push(curr);
@@ -59,12 +59,13 @@ const groupVotes = (v: VoteWithPartyLine[]): Reducer =>
     }
   );
 
+type PartyLineColorScheme = Record<keyof PartyLineGroups, string>;
+
 const Page = () => {
   const [legislator, setLegislator] = useState<Legislator>();
   const [votes, setVotes] = useState<VoteWithPartyLine[]>([]);
-  const [legislatorPLScheme, setLegislatorPLScheme] = useState<
-    Record<string, string>
-  >({});
+  const [legislatorPLScheme, setLegislatorPLScheme] =
+    useState<PartyLineColorScheme>();
 
   const { id } = useParams();
   const colorScheme = useColorScheme();
@@ -76,7 +77,7 @@ const Page = () => {
       setLegislator(_legislator);
       setVotes(_votesByLegislator);
 
-      const _legislatorPLScheme: Record<string, string> = {
+      const _legislatorPLScheme: PartyLineColorScheme = {
         isPartyLine:
           _legislator.party === "D" || _legislator.party === "I"
             ? colorScheme.D
@@ -133,21 +134,21 @@ const Page = () => {
         {
           label: "Party Line",
           data: [groupedVotes.isPartyLine.length],
-          backgroundColor: [legislatorPLScheme.isPartyLine],
+          backgroundColor: [legislatorPLScheme?.isPartyLine],
           borderColor: "white",
           borderWidth: 1,
         },
         {
           label: "Not Party Line",
           data: [groupedVotes.isNotPartyLine.length],
-          backgroundColor: [legislatorPLScheme.isNotPartyLine],
+          backgroundColor: [legislatorPLScheme?.isNotPartyLine],
           borderColor: "white",
           borderWidth: 1,
         },
         {
           label: "Not Voting",
           data: [groupedVotes.isAbstain.length],
-          backgroundColor: [legislatorPLScheme.isAbstain],
+          backgroundColor: [legislatorPLScheme?.isAbstain],
           borderColor: "white",
           borderWidth: 1,
         },
@@ -171,21 +172,21 @@ const Page = () => {
         {
           label: "Party Line",
           data: [groupedVotes.isPartyLine.length],
-          backgroundColor: [legislatorPLScheme.isPartyLine],
+          backgroundColor: [legislatorPLScheme?.isPartyLine],
           borderColor: "white",
           borderWidth: 1,
         },
         {
           label: "Not Party Line",
           data: [groupedVotes.isNotPartyLine.length],
-          backgroundColor: [legislatorPLScheme.isNotPartyLine],
+          backgroundColor: [legislatorPLScheme?.isNotPartyLine],
           borderColor: "white",
           borderWidth: 1,
         },
         {
           label: "Not Voting",
           data: [groupedVotes.isAbstain.length],
-          backgroundColor: [legislatorPLScheme.isAbstain],
+          backgroundColor: [legislatorPLScheme?.isAbstain],
           borderColor: "white",
           borderWidth: 1,
         },
