@@ -10,9 +10,6 @@ config.autoAddCss = false;
 
 import { Analytics } from "@vercel/analytics/react";
 
-// import { FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-// import { faGithubSquare } from "@fortawesome/free-brands-svg-icons";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -58,9 +55,6 @@ export default function RootLayout({
 
           <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white flex flex-row justify-end items-center gap-2 px-10 py-2">
             <div className="text-center">&copy; 2025 CoffeeTech</div>
-            {/* <Link href="https://github.com/tmountjr">
-              <FontAwesomeIcon icon={faGithubSquare} className="fa-fw fa-2xl" />
-            </Link> */}
           </footer>
         </div>
       </body>
