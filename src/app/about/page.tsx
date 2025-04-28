@@ -1,7 +1,9 @@
 import "./page.css";
 import Link from "next/link";
-import PageHeader from "@/app/components/PageHeader";
 import { Metadata } from "next";
+import PageHeader from "@/app/components/PageHeader";
+import { faAnchor } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.DOMAIN!),
@@ -16,16 +18,48 @@ export const metadata: Metadata = {
   },
 };
 
+// Create an inline component that handles repeated formatting blocks for this page.
+
+type SectionProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+const Section: React.FC<SectionProps> = ({ title, children }) => {
+  const generatedId = title
+      .toLowerCase() // Convert to lowercase
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
+      .trim() // Trim leading and trailing spaces
+      .replace(/\s+/g, "-"); // Replace spaces with hyphens
+
+  return (
+    <section
+      className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+      id={generatedId}
+    >
+      <Link
+        href={`#${generatedId}`}
+        className="group flex items-center space-x-2"
+      >
+        <h2 className="text-xl font-bold">{title}</h2>
+        <FontAwesomeIcon
+          icon={faAnchor}
+          className="fa fa-fw opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        />
+      </Link>
+      {children}
+    </section>
+  );
+};
+
 export default function Page() {
   return (
     <>
-      <PageHeader title="About This Site" />
+      <span className="block mb-20">
+        <PageHeader title="About This Site" />
+      </span>
 
-      <section
-        className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="our-mission"
-      >
-        <h2 className="text-xl font-bold">Our Mission</h2>
+      <Section title="Our Mission">
         <p>
           Our mission is to provide a comprehensive and accurate resource for
           information about the United States Congress. We strive to make it
@@ -46,15 +80,9 @@ export default function Page() {
           breakdown of each legislator&apos;s voting record, we hope to help
           people better understand the political landscape in Washington D.C.
         </p>
-      </section>
+      </Section>
 
-      <section
-        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="what-is-a-party-line-vote"
-      >
-        <h2 className="text-xl font-bold">
-          What is a &quot;party-line vote&quot;?
-        </h2>
+      <Section title={`What is a "party-line vote"?`}>
         <p>
           Understanding how we summarize the data on this site is key to
           understanding how we present information about legislators. Here we
@@ -109,13 +137,9 @@ export default function Page() {
           applies the logic above to each vote to determine if it would be
           considered a party-line vote or not.
         </p>
-      </section>
+      </Section>
 
-      <section
-        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="why-focus-on-party-line-votes"
-      >
-        <h2 className="text-xl font-bold">Why focus on party-line votes?</h2>
+      <Section title="Why focus on party-line votes?">
         <p>
           Your level of partisanship plays a significant role in how you
           perceive the political process. For one who is hyper-partisan, you
@@ -132,13 +156,9 @@ export default function Page() {
           non-partisan, the Democrat and the Republican, are welcome to look at
           this data and draw their own conclusions.
         </p>
-      </section>
+      </Section>
 
-      <section
-        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="data-caveats"
-      >
-        <h2 className="text-xl font-bold">Data Caveats</h2>
+      <Section title="Data Caveats">
         <p>There are a few caveats to be aware of when looking at this data:</p>
         <ol className="flex flex-col gap-2">
           <li className="ml-10">
@@ -172,13 +192,9 @@ export default function Page() {
             nomination is a party-line vote.
           </li>
         </ol>
-      </section>
+      </Section>
 
-      <section
-        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="data-sources-and-acknowledgements"
-      >
-        <h2 className="text-xl font-bold">Data Sources and Acknowledgements</h2>
+      <Section title="Data Sources and Acknowledgements">
         <p>
           The data powering this site comes primarily from{" "}
           <a
@@ -214,20 +230,16 @@ export default function Page() {
           upstream data, but filing an issue will help us troubleshoot all the
           same.
         </p>
-      </section>
+      </Section>
 
-      <section
-        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
-        id="cookie-policy"
-      >
-        <h2 className="text-xl font-bold">Cookie Policy</h2>
+      <Section title="Cookie Policy">
         <p>
           We use cookies to improve your browsing experience, analyze site
           traffic, and remember your preferences. No personal information is
           stored at any point. By continuing to use our site, you agree to our
           use of cookies.
         </p>
-      </section>
+      </Section>
     </>
   );
 }

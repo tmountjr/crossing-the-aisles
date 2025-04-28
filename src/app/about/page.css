@@ -1,3 +1,15 @@
+section {
+  scroll-margin-top: 60px;
+}
+
 section a {
   text-decoration: underline;
+
+  &:not(:has(h2)) {
+    text-decoration: underline;
+  }
+
+  &:has(h2) {
+    text-decoration: none;
+  }
 }
