@@ -220,23 +220,17 @@ export default function Page() {
           <strong>Vote</strong>, <strong>Bill</strong>, and{" "}
           <strong>Legislator</strong> datasets daily and integrate them into the
           database, where this web app can query it to generate the information
-          you see throughout the site.
-        </p>
-        <p>
-          If you see data that you believe is misleading or incorrect, please
-          feel free to <a href="#">create an issue</a> on the Github repository
-          for this site. Most likely, inaccuracies you may find here are a
-          result of incorrect querying or summarizing, rather than incorrect
-          upstream data, but filing an issue will help us troubleshoot all the
-          same.
+          you see throughout the site. Most likely, inaccuracies you may find
+          here are a result of incorrect querying or summarizing, rather than
+          incorrect upstream data.
         </p>
         <p>
           We use geolocation data from <a href="https://ipinfo.io">IPInfo</a>{" "}
           when you first visit the site or click the location icon. The only
           information we store as a result of this call is the state detected as
           your location. If you are using a VPN, this information may not be
-          accurate as some VPNs cloak your location. Your detected state is stored
-          as a cookie while you are browsing the site.
+          accurate as some VPNs cloak your location. Your detected state is
+          stored as a cookie while you are browsing the site.
         </p>
       </Section>
 
