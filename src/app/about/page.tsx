@@ -27,10 +27,10 @@ type SectionProps = {
 
 const Section: React.FC<SectionProps> = ({ title, children }) => {
   const generatedId = title
-      .toLowerCase() // Convert to lowercase
-      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
-      .trim() // Trim leading and trailing spaces
-      .replace(/\s+/g, "-"); // Replace spaces with hyphens
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
+    .trim() // Trim leading and trailing spaces
+    .replace(/\s+/g, "-"); // Replace spaces with hyphens
 
   return (
     <section
@@ -229,6 +229,14 @@ export default function Page() {
           result of incorrect querying or summarizing, rather than incorrect
           upstream data, but filing an issue will help us troubleshoot all the
           same.
+        </p>
+        <p>
+          We use geolocation data from <a href="https://ipinfo.io">IPInfo</a>{" "}
+          when you first visit the site or click the location icon. The only
+          information we store as a result of this call is the state detected as
+          your location. If you are using a VPN, this information may not be
+          accurate as some VPNs cloak your location. Your detected state is stored
+          as a cookie while you are browsing the site.
         </p>
       </Section>
 

@@ -137,10 +137,17 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
         <p className="mt-2">
           Each bar on this chart represents the percentage of votes where the
           legislator crossed party lines. A more detailed description of the
-          methodology can be found <Link href="/about">here</Link>, but to put
-          it simply, a vote is considered a &quot;party line&quot; vote when the
-          lawmaker <strong>does not vote &quot;Nay&quot;</strong> on a bill
-          advanced by their own party,{" "}
+          methodology can be found{" "}
+          <Link
+            className="underline"
+            href="/about#what-is-a-party-line-vote"
+            rel="noopener noreferer"
+          >
+            here
+          </Link>
+          , but to put it simply, a vote is considered a &quot;party line&quot;
+          vote when the lawmaker <strong>does not vote &quot;Nay&quot;</strong>{" "}
+          on a bill advanced by their own party,{" "}
           <strong>OR does not vote &quot;Yea&quot;</strong> on a bill advanced
           by the opposition party.
         </p>
