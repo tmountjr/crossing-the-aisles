@@ -9,6 +9,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
 import { Analytics } from "@vercel/analytics/react";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +55,7 @@ export default function RootLayout({
           </main>
 
           <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white flex flex-row justify-end items-center gap-2 px-10 py-2">
-            <div className="text-center">&copy; 2025 CoffeeTech</div>
+            <div className="text-center">&copy; 2025 CoffeeTech. <Link className="underline" href="/about#cookie-policy" rel="noopener noreferer">Cookie Policy</Link></div>
           </footer>
         </div>
       </body>
