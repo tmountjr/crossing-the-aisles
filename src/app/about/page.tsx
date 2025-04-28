@@ -21,7 +21,10 @@ export default function Page() {
     <>
       <PageHeader title="About This Site" />
 
-      <section className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section
+        className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="our-mission"
+      >
         <h2 className="text-xl font-bold">Our Mission</h2>
         <p>
           Our mission is to provide a comprehensive and accurate resource for
@@ -44,7 +47,11 @@ export default function Page() {
           people better understand the political landscape in Washington D.C.
         </p>
       </section>
-      <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+
+      <section
+        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="what-is-a-party-line-vote"
+      >
         <h2 className="text-xl font-bold">
           What is a &quot;party-line vote&quot;?
         </h2>
@@ -104,7 +111,10 @@ export default function Page() {
         </p>
       </section>
 
-      <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section
+        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="why-focus-on-party-line-votes"
+      >
         <h2 className="text-xl font-bold">Why focus on party-line votes?</h2>
         <p>
           Your level of partisanship plays a significant role in how you
@@ -124,7 +134,10 @@ export default function Page() {
         </p>
       </section>
 
-      <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section
+        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="data-caveats"
+      >
         <h2 className="text-xl font-bold">Data Caveats</h2>
         <p>There are a few caveats to be aware of when looking at this data:</p>
         <ol className="flex flex-col gap-2">
@@ -161,7 +174,10 @@ export default function Page() {
         </ol>
       </section>
 
-      <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section
+        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="data-sources-and-acknowledgements"
+      >
         <h2 className="text-xl font-bold">Data Sources and Acknowledgements</h2>
         <p>
           The data powering this site comes primarily from{" "}
@@ -197,6 +213,19 @@ export default function Page() {
           result of incorrect querying or summarizing, rather than incorrect
           upstream data, but filing an issue will help us troubleshoot all the
           same.
+        </p>
+      </section>
+
+      <section
+        className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto"
+        id="cookie-policy"
+      >
+        <h2 className="text-xl font-bold">Cookie Policy</h2>
+        <p>
+          We use cookies to improve your browsing experience, analyze site
+          traffic, and remember your preferences. No personal information is
+          stored at any point. By continuing to use our site, you agree to our
+          use of cookies.
         </p>
       </section>
     </>
