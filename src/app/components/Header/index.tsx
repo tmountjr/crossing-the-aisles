@@ -20,7 +20,7 @@ const Header: React.FC = () => {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex flex-row items-center gap-2">
           <FontAwesomeIcon icon={faShuffle} className="fa-fw fa-2xl" />
-          <span className="text-lg">Crossing the Aisles</span>
+          <span className="text-lg hidden md:inline-block">Crossing the Aisles</span>
         </div>
         <nav>
           <ul className="flex space-x-4">
