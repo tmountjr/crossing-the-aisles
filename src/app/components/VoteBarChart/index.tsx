@@ -154,7 +154,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
       </div>
       {displayData && (
         <>
-          <div className="mt-4 text-center flex flex-row justify-start items-center gap-10">
+          <div className="mt-4 text-center flex flex-row justify-start items-center gap-4 lg:gap-10">
             <NavButton
               disabled={page === 0}
               onClick={() => setPage(page - 1)}
@@ -170,7 +170,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
               {Math.ceil(recordCount / ITEMS_PER_PAGE)}.
             </span>
           </div>
-          <div className="h-[750px]">
+          <div className="lg:h-[750px] h-[500px]">
             <Bar data={displayData} options={displayOptions}></Bar>
           </div>
         </>

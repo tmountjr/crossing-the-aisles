@@ -89,7 +89,7 @@ export default function Home() {
         {/* Row 2 of the filters is all the other stuff - chamber (house, senate) and party (R, D) */}
         <div className="flex flex-col gap-5 lg:flex-row lg:gap-10">
           {/* Filter: chamber */}
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-4 lg:items-center">
             <span className="text-lg font-medium">Chamber:</span>
             <div className="flex flex-row gap-2">
               {chamberFilterList.map((chamber) => (
@@ -112,7 +112,7 @@ export default function Home() {
           </div>
 
           {/* Filter: party */}
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-4 lg:items-center">
             <span className="text-lg font-medium">Party:</span>
             <div className="flex flex-row gap-2">
               {partyFilterList.map((party) => (
