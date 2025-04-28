@@ -1,7 +1,8 @@
 "use client";
 
+import Cookies from "js-cookie";
 import { states } from "@/exports/states";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import VoteBarChart from "./components/VoteBarChart";
 import { AllowedChambers } from "@/db/queries/partyline";
@@ -13,11 +14,18 @@ import LegislatorList from "@/app/components/LegislatorList";
  * @returns The two-letter state code for US states, if available, otherwise an empty string.
  */
 const getClientState = async (): Promise<string> => {
+  // Check if there's already a cookie for geo, and if so, use the state it provides.
+  const state = Cookies.get("geo");
+  if (state) {
+    return state;
+  }
+
   const response = await fetch("https://ipinfo.io/json");
   const data = await response.json();
   if (data.country && data.country === "US" && data.region) {
     const foundState = states.find((s) => s.name === data.region);
     if (foundState) {
+      Cookies.set("geo", foundState.code, { path: "/" });
       return foundState.code;
     }
   }
@@ -36,6 +44,12 @@ export default function Home() {
       setSelectedState(code);
     });
   }, []);
+
+  const handleSelectedStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    Cookies.set("geo", code, { path: "/" });
+    setSelectedState(e.target.value);
+  };
 
   const chamberFilterList: {
     value: AllowedChambers;
@@ -75,7 +89,7 @@ export default function Home() {
             id="state-picker"
             className="flex-grow border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-gray-950 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             value={selectedState || ""}
-            onChange={(e) => setSelectedState(e.target.value)}
+            onChange={handleSelectedStateChange}
           >
             <option value="">No State Selected</option>
             {states.map((state) => (
