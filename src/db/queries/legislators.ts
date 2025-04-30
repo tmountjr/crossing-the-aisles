@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import type { Vote } from '@/db/schema';
+import type { Vote } from '@/db/types';
 import { eq, exists } from 'drizzle-orm';
 import { legislators, votes } from "@/db/schema";
 
