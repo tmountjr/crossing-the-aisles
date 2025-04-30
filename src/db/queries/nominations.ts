@@ -1,11 +1,11 @@
 import { db } from '@/db';
+import type { LatestVoteId } from '@/db/types';
+import { and, asc, eq, inArray, not, type InferSelectModel } from 'drizzle-orm';
 import {
   votes as v,
   legislators as l,
   latestVoteIds as vm,
-  LatestVoteId
 } from "@/db/schema";
-import { and, asc, eq, inArray, not, type InferSelectModel } from 'drizzle-orm';
 
 // Subquery select to filter for just nomination votes
 const nominationVotes = db
