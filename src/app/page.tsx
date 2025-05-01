@@ -2,11 +2,10 @@
 
 import Cookies from "js-cookie";
 import { states } from "@/exports/states";
-import { useState, useEffect, ChangeEvent } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import VoteBarChart from "./components/VoteBarChart";
-import { AllowedChambers } from "@/db/queries/partyline";
-import { AllowedParties } from "@/db/queries/legislators";
+import { useState, useEffect, ChangeEvent } from "react";
+import { AllowedChambers, AllowedParties } from "@/db/types";
 import LegislatorList from "@/app/components/LegislatorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassLocation } from "@fortawesome/free-solid-svg-icons";

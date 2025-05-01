@@ -2,12 +2,9 @@
 
 import Chip from "@/app/components/Chip";
 import { useState, useEffect } from "react";
-import { AllowedChambers } from "@/db/queries/partyline";
-import { AllowedParties } from "@/db/queries/legislators";
-import {
-  fetchLegislators,
-  type Legislator,
-} from "@/server/actions/legislators";
+import { Legislator } from "@/db/queries/legislators";
+import { AllowedChambers, AllowedParties } from "@/db/types";
+import { fetchLegislators } from "@/server/actions/legislators";
 
 interface LegislatorListProps {
   state: string;

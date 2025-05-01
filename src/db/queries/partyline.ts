@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { AllowedChambers, AllowedParties } from "@/db/types";
 import { and, asc, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
 import {
   votes as v,
@@ -6,7 +7,6 @@ import {
   enrichedVoteMeta as vm,
   latestVoteIds as v_ids,
 } from "@/db/schema";
-import { AllowedParties } from "@/db/queries/legislators";
 
 const _tempVoteMeta = db
   .select({
@@ -91,8 +91,6 @@ const _brokePartyLineVotes = db
     t.caucus,
   ])
   .as('broke_party_line_votes');
-
-export type AllowedChambers = "sen" | "rep" | "all";
 
 export interface BrokePartyLinesFilters {
   state?: string;

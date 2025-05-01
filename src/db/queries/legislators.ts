@@ -1,9 +1,7 @@
 import { db } from '@/db';
 import type { Vote } from '@/db/types';
-import { eq, exists } from 'drizzle-orm';
 import { legislators, votes } from "@/db/schema";
-
-export type AllowedParties = "R" | "D" | "I" | "all";
+import { eq, exists, InferSelectModel } from 'drizzle-orm';
 
 const _allLegislators = db
   .select()
@@ -34,3 +32,6 @@ export const votesByLegislator = (id: string): Promise<Vote[]> => db
   .from(votes)
   .where(eq(votes.legislatorId, id))
   .execute();
+
+// export type Legislator = Awaited<typeof allLegislators>[number]; <-- this extracts the resolved type directly
+export type Legislator = InferSelectModel<typeof legislators>;

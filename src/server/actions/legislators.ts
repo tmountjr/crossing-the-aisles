@@ -1,14 +1,10 @@
 "use server";
 
 import { cache } from "react";
-import { legislators } from "@/db/schema";
-import { InferSelectModel } from "drizzle-orm";
-import { AllowedChambers } from "@/db/queries/partyline";
-import { AllowedParties, legislator } from "@/db/queries/legislators";
+import { legislator } from "@/db/queries/legislators";
+import type { Legislator } from "@/db/queries/legislators";
+import { AllowedChambers, AllowedParties } from "@/db/types";
 import { allLegislators, stateLegislators } from "@/db/queries/legislators";
-
-// export type Legislator = Awaited<typeof allLegislators>[number]; <-- this extracts the resolved type directly
-export type Legislator = InferSelectModel<typeof legislators>;
 
 export const fetchLegislators = cache(async (
   state: string,

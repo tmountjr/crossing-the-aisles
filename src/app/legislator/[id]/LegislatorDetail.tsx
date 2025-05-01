@@ -6,9 +6,9 @@ import { Bar } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
+import { Legislator } from "@/db/queries/legislators";
 import Chip, { ChipStyle } from "@/app/components/Chip";
 import { VoteWithPartyLine } from "@/db/queries/partyline";
-import { type Legislator } from "@/server/actions/legislators";
 import type { ChartData, ChartDataset, ChartOptions } from "chart.js";
 import {
   Chart as ChartJS,
