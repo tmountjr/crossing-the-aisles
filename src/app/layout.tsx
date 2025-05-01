@@ -48,7 +48,7 @@ export default function RootLayout({
           <Header />
 
           <main className="flex-grow flex justify-center items-start mt-8">
-            <div className="w-full px-4 lg:px-10 mb-[75px]">
+            <div className="w-full xl:max-w-[1280px] px-4 lg:px-10 mb-[75px]">
               {children}
               <Analytics />
             </div>
