@@ -8,7 +8,7 @@ import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
 import { Legislator } from "@/db/queries/legislators";
 import Chip, { ChipStyle } from "@/app/components/Chip";
-import { VoteWithPartyLine } from "@/db/queries/partyline";
+import { VoteWithPartyLine } from "@/db/queries/partylineFull";
 import type { ChartData, ChartDataset, ChartOptions } from "chart.js";
 import {
   Chart as ChartJS,

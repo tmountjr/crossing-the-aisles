@@ -5,11 +5,11 @@ import { useColorScheme } from "@/exports/colors";
 import NavButton from "@/app/components/NavButton";
 import React, { useEffect, useState } from "react";
 import type { ChartData, ChartOptions } from "chart.js";
-import { fetchBplData } from "@/server/actions/brokePartyLines";
+import { fetchBplData } from "@/server/actions/brokePartyLinesFull";
 import type {
   BrokePartyLinesData,
   BrokePartyLinesFilters,
-} from "@/db/queries/partyline";
+} from "@/db/queries/partylineFull";
 import {
   Chart as ChartJS,
   CategoryScale,

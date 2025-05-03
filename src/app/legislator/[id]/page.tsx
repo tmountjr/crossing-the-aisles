@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { states } from "@/exports/states";
 import LegislatorDetail from "./LegislatorDetail";
 import { Legislator } from "@/db/queries/legislators";
-import { VoteWithPartyLine } from "@/db/queries/partyline";
+import { VoteWithPartyLine } from "@/db/queries/partylineFull";
 import { fetchLegislator } from "@/server/actions/legislators";
-import { fetchVotesByLegislator } from "@/server/actions/brokePartyLines";
+import { fetchVotesByLegislator } from "@/server/actions/brokePartyLinesFull";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;

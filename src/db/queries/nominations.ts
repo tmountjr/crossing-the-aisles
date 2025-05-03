@@ -1,10 +1,9 @@
 import { db } from '@/db';
-import type { LatestVoteId } from '@/db/types';
 import { and, asc, eq, inArray, not, type InferSelectModel } from 'drizzle-orm';
 import {
   votes as v,
   legislators as l,
-  latestVoteIds as vm,
+  enrichedVoteMeta as vm,
 } from "@/db/schema";
 
 // Subquery select to filter for just nomination votes
@@ -109,5 +108,8 @@ type Legislator = InferSelectModel<typeof l>
 export type NominationVotes = 
   Pick<Vote, "voteId" | "legislatorId" | "position"> &
   Pick<Legislator, "name" | "state" | "party" | "caucus"> &
-  Pick<LatestVoteId, "date" | "result"> &
-  { title: string | null };
+  {
+    title: string | null,
+    date: string | null,
+    result: string | null
+  };
