@@ -111,31 +111,20 @@ export default function Page() {
           those that are not are not tracked here.
         </p>
         <p>
-          Furthermore, this site is not tracking every roll call vote. In the
-          lifetime of a bill, multiple roll call votes can be taken on the bill
-          before it is passed to the next stage of becoming law. One of the
-          reasons we do not summarize even all roll call votes is because some
-          votes, like a <em>motion to recommit</em>, generally see the
-          opposition party voting &quot;yea&quot; and the sponsoring party
-          voting &quot;nay&quot; on a bill that they would otherwise vote the
-          other way around. An example of this was two back-to-back votes on{" "}
-          <a
-            href="https://www.govtrack.us/congress/bills/119/hr22"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            H.R.22: SAVE Act
-          </a>
-          . The final vote on this bill (sponsored by{" "}
-          <Link href="/legislator/R000614">Chip Roy, R, TX-21</Link>) saw high
-          levels of Republican support, but the previous vote on this bill
-          (which was the motion to recommit) saw unanimous Democratic support
-          and unanimous Republican opposition.
+          It is worth noting that a bill may receive several roll call votes. An
+          extreme example of this would be Senate Concurrent Resolution 7,
+          better known as the Senate version of the House&apos;s budget bill for
+          2025. On a single bill, there were 27 roll call votes cast, most of
+          which were votes on individual amendments. Because we can track the
+          sponsor for each individual amendment, we can determine for each of
+          those 27 votes whether a vote was a party-line vote or not.
         </p>
         <p>
-          For now, this site only tracks the latest vote on any given bill, and
-          applies the logic above to each vote to determine if it would be
-          considered a party-line vote or not.
+          There are some cases, for example with nominations, or other
+          procedural votes that do not require a sponsor, where a sponsoring
+          party is not explicitly named. In these cases, in order to have sponsor
+          data for the vote, we default to the majority party for this session of
+          Congress.
         </p>
       </Section>
 

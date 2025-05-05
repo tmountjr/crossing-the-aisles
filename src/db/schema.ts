@@ -101,8 +101,8 @@ export const latestVoteIds = pgView("latest_vote_ids", {	voteNumber: integer("vo
 	voteId: varchar("vote_id"),
 	billId: varchar("bill_id"),
 	chamber: varchar(),
-	date: timestamp({ mode: 'string' }).notNull(),
-	result: varchar().notNull(),
+	date: timestamp({ mode: 'string' }),
+	result: varchar(),
 	category: varchar(),
 	nominationTitle: varchar("nomination_title"),
 	sourceFilename: varchar("source_filename"),
@@ -117,7 +117,8 @@ export const enrichedVoteMeta = pgView("enriched_vote_meta", {	voteNumber: integ
 	result: varchar(),
 	category: varchar(),
 	nominationTitle: varchar("nomination_title"),
+	amendmentId: varchar("amendment_id"),
 	sourceFilename: varchar("source_filename"),
 	sponsorName: varchar("sponsor_name"),
 	sponsorParty: varchar("sponsor_party"),
-}).as(sql`SELECT vote_meta.vote_number, vote_meta.vote_id, vote_meta.bill_id, vote_meta.chamber, vote_meta.date, vote_meta.result, vote_meta.category, vote_meta.nomination_title, vote_meta.source_filename, legislators.name AS sponsor_name, legislators.party AS sponsor_party FROM vote_meta LEFT JOIN bills ON vote_meta.bill_id::text = bills.bill_id::text LEFT JOIN legislators ON bills.sponsor_id::text = legislators.bioguide_id::text`);
+}).as(sql`SELECT vote_meta.vote_number, vote_meta.vote_id, vote_meta.bill_id, vote_meta.chamber, vote_meta.date, vote_meta.result, vote_meta.category, vote_meta.nomination_title, vote_meta.amendment_id, vote_meta.source_filename, CASE WHEN vote_meta.amendment_id IS NOT NULL THEN a_sponsor.name ELSE b_sponsor.name END AS sponsor_name, CASE WHEN vote_meta.category::text = ANY (ARRAY['nomination'::character varying, 'leadership'::character varying, 'quorum'::character varying, 'procedural'::character varying]::text[]) THEN 'R'::character varying WHEN vote_meta.category::text = 'cloture'::text AND vote_meta.nomination_title IS NOT NULL THEN 'R'::character varying WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NOT NULL THEN a_sponsor.party WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NULL THEN 'R'::character varying ELSE b_sponsor.party END AS sponsor_party FROM vote_meta LEFT JOIN bills ON vote_meta.bill_id::text = bills.bill_id::text LEFT JOIN amendments ON vote_meta.amendment_id::text = amendments.amendment_id::text LEFT JOIN legislators a_sponsor ON amendments.sponsor_id::text = a_sponsor.bioguide_id::text LEFT JOIN legislators b_sponsor ON bills.sponsor_id::text = b_sponsor.bioguide_id::text ORDER BY vote_meta.chamber, vote_meta.vote_number`);

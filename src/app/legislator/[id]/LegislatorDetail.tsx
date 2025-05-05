@@ -42,8 +42,8 @@ type PartyLineColorScheme = Record<keyof PartyLineGroups, string>;
  * @param v A list of votes to group.
  * @returns Votes grouped by party line status.
  */
-const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
-  v.reduce<PartyLineGroups>(
+const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups => {
+  return v.reduce<PartyLineGroups>(
     (acc, curr) => {
       if (curr.isAbstain) {
         acc.isAbstain.push(curr);
@@ -62,6 +62,7 @@ const groupVotes = (v: VoteWithPartyLine[]): PartyLineGroups =>
       isAbstain: [],
     }
   );
+};
 
 /**
  * Generate chart datasets for a list of votes.
@@ -131,12 +132,9 @@ const LegislatorDetail = ({
   // On page load, set up some calculated properties.
   useEffect(() => {
     const legislatorPLScheme: PartyLineColorScheme = {
-      isPartyLine:
-        legislator.party === "D" || legislator.party === "I"
-          ? colorScheme.D
-          : colorScheme.R,
+      isPartyLine: colorScheme[legislator.caucus],
       isNotPartyLine:
-        legislator.party === "D" || legislator.party === "I"
+        legislator.caucus === "D"
           ? colorScheme.R
           : colorScheme.D,
       isAbstain: colorScheme["Not Voting"],

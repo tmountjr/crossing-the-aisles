@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { AllowedChambers, AllowedParties } from "@/db/types";
-import { and, asc, count, desc, eq, getTableColumns, inArray, InferSelectModel, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, InferSelectModel, sql } from "drizzle-orm";
 import {
   votes as v,
   legislators as l,
@@ -9,7 +9,10 @@ import {
 
 export const _votesWithPartyLine = db
   .select({
-    ...getTableColumns(v),
+    voteId: v.voteId,
+    legislatorId: v.legislatorId,
+    position: v.position,
+    originalPosition: v.originalPosition,
     category: vm.category,
     nominationTitle: vm.nominationTitle,
     sponsorParty: vm.sponsorParty,
@@ -21,16 +24,16 @@ export const _votesWithPartyLine = db
     caucus: l.caucus,
     isPartyLine: sql<boolean>`
       CASE
-        WHEN (${l.caucus} =  ${vm.sponsorParty} AND ${v.position} != 'Nay')
-          OR (${l.caucus} != ${vm.sponsorParty} AND ${v.position} != 'Yea')
-        THEN 1
-        ELSE 0
+        WHEN ((${l.caucus} =  ${vm.sponsorParty} AND ${v.position} != 'Nay')
+          OR (${l.caucus} != ${vm.sponsorParty} AND ${v.position} != 'Yea'))
+        THEN true
+        ELSE false
       END`.as("is_party_line"),
     isAbstain: sql<boolean>`
       CASE
         WHEN ${v.position} NOT IN ('Yea', 'Nay')
-        THEN 1
-        ELSE 0
+        THEN true
+        ELSE false
       END`.as("is_abstain")
   })
   .from(v)
@@ -50,9 +53,9 @@ const _brokePartyLineVotes = db
     brokePartyLineCount: sql<number>`
       SUM(
         CASE
-          WHEN ${_votesWithPartyLine.isPartyLine} = 0
-          THEN 1
-          ELSE 0
+          WHEN ${_votesWithPartyLine.isPartyLine} = 't'
+          THEN 0
+          ELSE 1
         END
       )`.as("broke_party_line_count"),
     totalVoteCount: count(_votesWithPartyLine.legislatorId).as("total_vote_count")
@@ -124,7 +127,7 @@ export type VoteWithPartyLine =
     isAbstain: boolean
   };
 
-export const votesWithPartyLineByLegislator = (id: string): Promise<VoteWithPartyLine[]> => db
+export const votesWithPartyLineByLegislator = async (id: string): Promise<VoteWithPartyLine[]> => db
   .select()
   .from(_votesWithPartyLine)
   .where(eq(_votesWithPartyLine.legislatorId, id))
