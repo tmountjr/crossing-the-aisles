@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import Header from "./components/Header";
+import Header from "@/app/components/Header";
 import siteMetadata from "@/metadata.json";
+import { Footer } from "@/app/components/Footer";
 import { SiteMetadata } from "@/exports/metadata";
+import { Analytics } from "@vercel/analytics/react";
+
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
-
-import { Analytics } from "@vercel/analytics/react";
-import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +25,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.DOMAIN!),
   title: "Crossing the Aisles",
-  description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
+  description:
+    "Visibility into Congressional votes and which lawmakers crossed party lines.",
   openGraph: {
     title: "Crossing the Aisles",
-    description: "Visibility into Congressional votes and which lawmakers crossed party lines.",
+    description:
+      "Visibility into Congressional votes and which lawmakers crossed party lines.",
     url: process.env.DOMAIN,
     siteName: "Crossing the Aisles",
     type: "website",
@@ -40,11 +42,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const {
-    lastUpdate,
-    announcements,
-  }: SiteMetadata = siteMetadata;
-  const lastUpdateDate = new Date(lastUpdate).toISOString();
+  const { announcements }: SiteMetadata = siteMetadata;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -52,7 +50,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <Header announcements={announcements}/>
+          <Header announcements={announcements} />
 
           <main className="flex-grow flex justify-center items-start mt-8">
             <div className="w-full xl:max-w-[1280px] px-4 lg:px-10 mb-[75px]">
@@ -61,19 +59,7 @@ export default function RootLayout({
             </div>
           </main>
 
-          <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white flex flex-row justify-end sm:justify-between gap-2 px-10 py-2">
-            <p>Last data fetch: {lastUpdateDate}</p>
-            <div className="text-center items-center gap-2 flex flex-row justify-end">
-              &copy; 2025 CoffeeTech.{" "}
-              <Link
-                className="underline"
-                href="/about#cookie-policy"
-                rel="noopener noreferer"
-              >
-                Cookie Policy
-              </Link>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </body>
     </html>

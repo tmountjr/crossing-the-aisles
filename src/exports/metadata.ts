@@ -7,6 +7,5 @@ export type Announcement = {
 };
 
 export type SiteMetadata = {
-  lastUpdate: number;
   announcements: Announcement[];
 };

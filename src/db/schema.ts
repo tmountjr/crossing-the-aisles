@@ -1,6 +1,7 @@
-import { pgTable, unique, varchar, foreignKey, timestamp, integer, primaryKey, pgView } from "drizzle-orm/pg-core"
+import { pgTable, unique, varchar, foreignKey, timestamp, integer, pgSchema, primaryKey, pgView } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
+export const siteMeta = pgSchema("site_meta");
 
 
 export const legislators = pgTable("legislators", {
@@ -79,6 +80,10 @@ export const voteMeta = pgTable("vote_meta", {
 		}),
 ]);
 
+export const siteMetaInSiteMeta = siteMeta.table("site_meta", {
+	lastUpdate: timestamp("last_update", { withTimezone: true, mode: 'string' }).primaryKey().notNull(),
+});
+
 export const votes = pgTable("votes", {
 	voteId: varchar("vote_id").notNull(),
 	legislatorId: varchar("legislator_id").notNull(),
@@ -121,4 +126,4 @@ export const enrichedVoteMeta = pgView("enriched_vote_meta", {	voteNumber: integ
 	sourceFilename: varchar("source_filename"),
 	sponsorName: varchar("sponsor_name"),
 	sponsorParty: varchar("sponsor_party"),
-}).as(sql`SELECT vote_meta.vote_number, vote_meta.vote_id, vote_meta.bill_id, vote_meta.chamber, vote_meta.date, vote_meta.result, vote_meta.category, vote_meta.nomination_title, vote_meta.amendment_id, vote_meta.source_filename, CASE WHEN vote_meta.amendment_id IS NOT NULL THEN a_sponsor.name ELSE b_sponsor.name END AS sponsor_name, CASE WHEN vote_meta.category::text = ANY (ARRAY['nomination'::character varying, 'leadership'::character varying, 'quorum'::character varying, 'procedural'::character varying]::text[]) THEN 'R'::character varying WHEN vote_meta.category::text = 'cloture'::text AND vote_meta.nomination_title IS NOT NULL THEN 'R'::character varying WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NOT NULL THEN a_sponsor.party WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NULL THEN 'R'::character varying ELSE b_sponsor.party END AS sponsor_party FROM vote_meta LEFT JOIN bills ON vote_meta.bill_id::text = bills.bill_id::text LEFT JOIN amendments ON vote_meta.amendment_id::text = amendments.amendment_id::text LEFT JOIN legislators a_sponsor ON amendments.sponsor_id::text = a_sponsor.bioguide_id::text LEFT JOIN legislators b_sponsor ON bills.sponsor_id::text = b_sponsor.bioguide_id::text ORDER BY vote_meta.chamber, vote_meta.vote_number`);
+}).as(sql`SELECT vote_meta.vote_number, vote_meta.vote_id, vote_meta.bill_id, vote_meta.chamber, vote_meta.date, vote_meta.result, vote_meta.category, vote_meta.nomination_title, vote_meta.amendment_id, vote_meta.source_filename, CASE WHEN vote_meta.amendment_id IS NOT NULL THEN a_sponsor.name ELSE b_sponsor.name END AS sponsor_name, CASE WHEN vote_meta.category::text = ANY (ARRAY['nomination'::character varying::text, 'leadership'::character varying::text, 'quorum'::character varying::text, 'procedural'::character varying::text]) THEN 'R'::character varying WHEN vote_meta.category::text = 'cloture'::text AND vote_meta.nomination_title IS NOT NULL THEN 'R'::character varying WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NOT NULL THEN a_sponsor.party WHEN vote_meta.amendment_id IS NOT NULL AND amendments.sponsor_id IS NULL THEN 'R'::character varying ELSE b_sponsor.party END AS sponsor_party FROM vote_meta LEFT JOIN bills ON vote_meta.bill_id::text = bills.bill_id::text LEFT JOIN amendments ON vote_meta.amendment_id::text = amendments.amendment_id::text LEFT JOIN legislators a_sponsor ON amendments.sponsor_id::text = a_sponsor.bioguide_id::text LEFT JOIN legislators b_sponsor ON bills.sponsor_id::text = b_sponsor.bioguide_id::text ORDER BY vote_meta.chamber, vote_meta.vote_number`);
