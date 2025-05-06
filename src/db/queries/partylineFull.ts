@@ -93,6 +93,7 @@ export interface BrokePartyLinesFilters {
   chamber?: AllowedChambers;
   party?: AllowedParties;
   legislatorIds?: string[];
+  sortOrder?: string;
 }
 
 /**
@@ -104,10 +105,15 @@ export interface BrokePartyLinesFilters {
  * @returns The Broke Party Lines summaries for the given filters.
  */
 export const brokePartyLineVotes = ({
-  state, chamber, party, legislatorIds
+  state, chamber, party, legislatorIds, sortOrder = "desc"
 }: BrokePartyLinesFilters) => {
   const normalizedChamber = chamber === "all" ? undefined : chamber;
   const normalizedParty = party === "all" ? undefined : party;
+
+  let sorter = desc;
+  if (sortOrder === "asc") {
+    sorter = asc;
+  }
 
   return db
     .select()
@@ -120,7 +126,7 @@ export const brokePartyLineVotes = ({
         legislatorIds && legislatorIds.length > 0 ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
       )
     )
-    .orderBy(desc(_brokePartyLineVotes.brokePartyLinePercent))
+    .orderBy(sorter(_brokePartyLineVotes.brokePartyLinePercent))
     .execute();
 }
 

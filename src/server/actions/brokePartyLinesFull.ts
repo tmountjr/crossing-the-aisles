@@ -5,21 +5,6 @@ import type { BrokePartyLinesFilters, BrokePartyLinesData, VoteWithPartyLine } f
 
 export const fetchBplData = async (filters: BrokePartyLinesFilters): Promise<BrokePartyLinesData[]> => {
   const data = await brokePartyLineVotes(filters);
-  data.sort((a, b) => {
-    if (a.brokePartyLinePercent < b.brokePartyLinePercent) {
-      return 1;
-    } else if (a.brokePartyLinePercent > b.brokePartyLinePercent) {
-      return -1;
-    } else {
-      if (a.brokePartyLineCount < b.brokePartyLineCount) {
-        return 1;
-      } else if (a.brokePartyLineCount > b.brokePartyLineCount) {
-        return -1;
-      } else {
-        return 0
-      }
-    }
-  });
   return data;
 };
 

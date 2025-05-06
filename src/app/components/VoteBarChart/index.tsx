@@ -20,6 +20,8 @@ import {
   Legend,
 } from "chart.js";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpShortWide, faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons";
 
 // Register Chart.js components
 ChartJS.register(
@@ -50,19 +52,20 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
   const [bplData, setBplData] = useState<BrokePartyLinesData[]>([]);
   const [displayData, setDisplayData] = useState<ChartData<"bar">>();
   const [displayOptions, setDisplayOptions] = useState<ChartOptions<"bar">>();
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const colorScheme = useColorScheme();
 
   // Run an effect when the filters change.
   useEffect(() => {
-    fetchBplData({ state, chamber, party, legislatorIds }).then(
+    fetchBplData({ state, chamber, party, legislatorIds, sortOrder }).then(
       (filteredData) => {
         setBplData(filteredData);
         setRecordCount(filteredData.length);
         setPage(0);
       }
     );
-  }, [state, chamber, party, legislatorIds]);
+  }, [state, chamber, party, legislatorIds, sortOrder]);
 
   // Don't re-fetch the data when just the page changes, but do reslice the original
   // data. Also watch the color scheme for changes and rebuild the data and options if it changes.
@@ -170,6 +173,31 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
               onClick={() => setPage(page + 1)}
               direction="next"
             />
+
+            {sortOrder === "desc" && (
+              <button
+                className="px-4 py-2 rounded-lg font-medium transition-colors bg-white text-gray-950 border border-gray-300 dark:bg-gray-800 dark:text-gray-50 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer hover:bg-gray-100 flex flex-row gap-2 items-center"
+                onClick={() => setSortOrder("asc")}
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpWideShort}
+                  className="fa fa-fw"
+                />
+              </button>
+            )}
+
+            {sortOrder === "asc" && (
+              <button
+                className="px-4 py-2 rounded-lg font-medium transition-colors bg-white text-gray-950 border border-gray-300 dark:bg-gray-800 dark:text-gray-50 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer hover:bg-gray-100 flex flex-row gap-2 items-center"
+                onClick={() => setSortOrder("desc")}
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpShortWide}
+                  className="fa fa-fw"
+                />
+              </button>
+            )}
+            
             <span>
               Currently viewing page {page + 1} of{" "}
               {Math.ceil(recordCount / ITEMS_PER_PAGE)}.
