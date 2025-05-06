@@ -1,0 +1,12 @@
+{
+  "lastUpdate": 1746541561791,
+  "announcements": [
+    {
+      "title": "Additional party-line votes now available.",
+      "description": "Rather than restrict party-line vote calculation to the latest roll call votes on each bill, we are now able to track party-line vote statuses for all roll call votes, including amendments and procedural votes. See the About page for more details.",
+      "link": "/about",
+      "date": 1746541561791,
+      "expires": 1747146361791
+    }
+  ]
+}
