@@ -21,7 +21,7 @@ export const fetchBplData = async (filters: BrokePartyLinesFilters): Promise<Bro
         return 0
       }
     }
-  })
+  });
   return data;
 };
 
