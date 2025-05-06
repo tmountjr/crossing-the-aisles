@@ -81,7 +81,8 @@ export const voteMeta = pgTable("vote_meta", {
 ]);
 
 export const siteMetaInSiteMeta = siteMeta.table("site_meta", {
-	lastUpdate: timestamp("last_update", { withTimezone: true, mode: 'string' }).primaryKey().notNull(),
+	lastUpdate: timestamp("last_update", { mode: 'string' }).primaryKey().notNull(),
+	tz: varchar({ length: 500 }).notNull(),
 });
 
 export const votes = pgTable("votes", {

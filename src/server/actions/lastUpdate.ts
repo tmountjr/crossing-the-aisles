@@ -1,20 +1,26 @@
 "use server";
 
-import { db } from "@/db";
-import { desc } from "drizzle-orm";
-import { siteMetaInSiteMeta as siteMeta } from "@/db/schema";
+import { latestUpdate } from "@/db/queries/siteMeta";
 
 export const lastUpdateDate = async () => {
-  const data = await db.select({
-    lastUpdate: siteMeta.lastUpdate
-  })
-  .from(siteMeta)
-  .orderBy(desc(siteMeta.lastUpdate))
-  .limit(1)
-  .execute();
+  const data = await latestUpdate();
 
   if (data.length === 0) {
     return null;
   }
-  return data[0].lastUpdate;
+
+  const { lastUpdate, tz } = data[0];
+  const naiveDate = new Date(lastUpdate);
+  const formatter = new Intl.DateTimeFormat("default", {
+    timeZone: tz,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  return formatter.format(naiveDate);
 }
