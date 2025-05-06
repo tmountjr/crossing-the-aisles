@@ -79,9 +79,7 @@ const VoteBarChart: React.FC<BrokePartyLinesFilters> = ({
           acc.labels.push(
             `${curr.name} - ${curr.brokePartyLineCount} / ${curr.totalVoteCount}`
           );
-          acc.normalizedValues.push(
-            (curr.brokePartyLineCount / curr.totalVoteCount) * 100
-          );
+          acc.normalizedValues.push(curr.brokePartyLinePercent * 100);
           acc.backgroundColors.push(colorScheme[curr.party]);
 
           return acc;

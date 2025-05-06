@@ -41,7 +41,7 @@ export const _votesWithPartyLine = db
   .innerJoin(l, eq(v.legislatorId, l.id))
   .as("votes_with_party_line");
 
-const _brokePartyLineVotes = db
+const _brokePartyLineVotesPre = db
   .select({
     legislatorId: _votesWithPartyLine.legislatorId,
     name: _votesWithPartyLine.name,
@@ -70,6 +70,22 @@ const _brokePartyLineVotes = db
     t.party,
     t.caucus,
   ])
+  .as("broke_party_line_votes_pre");
+
+const _brokePartyLineVotes = db
+  .select({
+    legislatorId: _brokePartyLineVotesPre.legislatorId,
+    name: _brokePartyLineVotesPre.name,
+    state: _brokePartyLineVotesPre.state,
+    district: _brokePartyLineVotesPre.district,
+    termType: _brokePartyLineVotesPre.termType,
+    party: _brokePartyLineVotesPre.party,
+    caucus: _brokePartyLineVotesPre.caucus,
+    brokePartyLineCount: _brokePartyLineVotesPre.brokePartyLineCount,
+    totalVoteCount: _brokePartyLineVotesPre.totalVoteCount,
+    brokePartyLinePercent: sql<number>`CAST(${_brokePartyLineVotesPre.brokePartyLineCount} AS FLOAT) / CAST(${_brokePartyLineVotesPre.totalVoteCount} AS FLOAT)`.as("broke_party_line_percent"),
+  })
+  .from(_brokePartyLineVotesPre)
   .as("broke_party_line_votes");
 
 export interface BrokePartyLinesFilters {
@@ -104,7 +120,7 @@ export const brokePartyLineVotes = ({
         legislatorIds && legislatorIds.length > 0 ? inArray(_brokePartyLineVotes, legislatorIds) : undefined
       )
     )
-    .orderBy(desc(_brokePartyLineVotes.brokePartyLineCount))
+    .orderBy(desc(_brokePartyLineVotes.brokePartyLinePercent))
     .execute();
 }
 
@@ -113,7 +129,8 @@ export type BrokePartyLinesData =
   Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party" | "caucus"> &
   {
     brokePartyLineCount: number,
-    totalVoteCount: number
+    totalVoteCount: number,
+    brokePartyLinePercent: number
   };
 
 export type VoteWithPartyLine =
