@@ -6,7 +6,7 @@ export const Footer: React.FC = async () => {
 
   return (
     <footer className="sticky bottom-0 bg-gray-100 shadow-inner dark:bg-gray-700 dark:text-white flex flex-row justify-end sm:justify-between gap-2 px-10 py-2">
-      <p>Last data fetch: {updateDate?.split("+")[0]}</p>
+      <p>Last data fetch: {updateDate!}</p>
       <div className="text-center items-center gap-2 flex flex-row justify-end">
         &copy; 2025 CoffeeTech.{" "}
         <Link

@@ -12,7 +12,7 @@ export const lastUpdateDate = async () => {
   const { lastUpdate, tz } = data[0];
   const naiveDate = new Date(lastUpdate);
   const formatter = new Intl.DateTimeFormat("default", {
-    timeZone: tz,
+    timeZone: tz.trim(),
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
