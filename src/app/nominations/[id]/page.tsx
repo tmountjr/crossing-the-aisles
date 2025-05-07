@@ -7,6 +7,7 @@ import {
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+export const revalidate = 3600; // 1h
 
 export async function generateMetadata(props: {
   params: Params

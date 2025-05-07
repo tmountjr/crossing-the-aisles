@@ -10,6 +10,7 @@ import "@/app/globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { lastUpdateDate } from "@/server/actions/lastUpdate";
 config.autoAddCss = false;
 
 const geistSans = Geist({
@@ -37,12 +38,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const { announcements }: SiteMetadata = siteMetadata;
+  const _lastUpdateDate = await lastUpdateDate();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -59,7 +61,7 @@ export default function RootLayout({
             </div>
           </main>
 
-          <Footer />
+          <Footer updateDate={_lastUpdateDate} />
         </div>
       </body>
     </html>
