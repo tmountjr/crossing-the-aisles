@@ -1,9 +1,9 @@
 "use client";
 
 import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import VoteBarChart from "@/app/components/VoteBarChart";
-import { useState, useEffect, ChangeEvent } from "react";
 import { states, getClientState } from "@/exports/states";
 import { AllowedChambers, AllowedParties } from "@/db/types";
 import LegislatorList from "@/app/components/LegislatorList";
@@ -23,17 +23,13 @@ export default function Home() {
       setSelectedState(stateCode);
       return;
     }
-    doGeoLocation();
+
+    // If no cookie was found, get the state from a geolocation API and set the
+    // cookie.
+    getClientState().then(handleStateChange);
   }, []);
 
-  const handleSelectedStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value;
-    Cookies.set("geo", code);
-    setSelectedState(e.target.value);
-  };
-
-  const doGeoLocation = async () => {
-    const code = await getClientState();
+  const handleStateChange = (code: string) => {
     Cookies.set("geo", code);
     setSelectedState(code);
   };
@@ -76,7 +72,7 @@ export default function Home() {
             id="state-picker"
             className="flex-grow border border-gray-300 rounded-md p-2 text-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-gray-950 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             value={selectedState || ""}
-            onChange={handleSelectedStateChange}
+            onChange={(e) => handleStateChange(e.target.value)}
           >
             <option value="">No State Selected</option>
             {states.map((state) => (
@@ -87,7 +83,7 @@ export default function Home() {
           </select>
           <span
             className="cursor-pointer"
-            onClick={doGeoLocation}
+            onClick={() => getClientState().then(handleStateChange)}
           >
             <FontAwesomeIcon
               icon={faMagnifyingGlassLocation}
