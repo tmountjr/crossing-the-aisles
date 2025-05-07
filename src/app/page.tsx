@@ -1,30 +1,14 @@
 "use client";
 
 import Cookies from "js-cookie";
-import { states } from "@/exports/states";
 import PageHeader from "@/app/components/PageHeader";
-import VoteBarChart from "./components/VoteBarChart";
+import VoteBarChart from "@/app/components/VoteBarChart";
 import { useState, useEffect, ChangeEvent } from "react";
+import { states, getClientState } from "@/exports/states";
 import { AllowedChambers, AllowedParties } from "@/db/types";
 import LegislatorList from "@/app/components/LegislatorList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassLocation } from "@fortawesome/free-solid-svg-icons";
-
-/**
- * Get the state code of the client from ipinfo, if available.
- * @returns The two-letter state code for US states, if available, otherwise an empty string.
- */
-const getClientState = async (): Promise<string> => {
-  const response = await fetch("https://ipinfo.io/json");
-  const data = await response.json();
-  if (data.country && data.country === "US" && data.region) {
-    const foundState = states.find((s) => s.name === data.region);
-    if (foundState) {
-      return foundState.code;
-    }
-  }
-  return "";
-};
 
 export default function Home() {
   const [selectedState, setSelectedState] = useState<string>("");
@@ -48,11 +32,10 @@ export default function Home() {
     setSelectedState(e.target.value);
   };
 
-  const doGeoLocation = () => {
-    getClientState().then((code) => {
-      Cookies.set("geo", code);
-      setSelectedState(code);
-    });
+  const doGeoLocation = async () => {
+    const code = await getClientState();
+    Cookies.set("geo", code);
+    setSelectedState(code);
   };
 
   const chamberFilterList: {

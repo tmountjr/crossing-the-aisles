@@ -50,3 +50,22 @@ export const states = [
   { name: "Wisconsin", code: "WI" },
   { name: "Wyoming", code: "WY" },
 ];
+
+export type State = typeof states[number];
+export type States = typeof states;
+
+/**
+ * Get the state code of the client from ipinfo, if available.
+ * @returns The two-letter state code for US states, if available, otherwise an empty string.
+ */
+export const getClientState = async (): Promise<string> => {
+  const response = await fetch("https://ipinfo.io/json");
+  const data = await response.json();
+  if (data.country && data.country === "US" && data.region) {
+    const foundState = states.find((s) => s.name === data.region);
+    if (foundState) {
+      return foundState.code;
+    }
+  }
+  return "";
+};
