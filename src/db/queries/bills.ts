@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { asc, eq, getTableColumns, sql } from "drizzle-orm";
-import { bills, enrichedVoteMeta as vm } from "@/db/schema";
+import { amendments, bills, enrichedVoteMeta as vm } from "@/db/schema";
 
 // Limit the list of bills to just ones with recorded votes.
 const _billsWithVotes = db
@@ -29,3 +29,24 @@ const _billList = db
 export const billList = async () => db.select().from(_billList).execute();
 export type BillList = Awaited<ReturnType<typeof billList>>;
 export type BillListItem = BillList[number];
+
+export const voteMetaForBill = (billId: string) => {
+  return db
+    .select()
+    .from(vm)
+    .leftJoin(amendments, eq(vm.amendmentId, amendments.amendmentId))
+    .where(eq(vm.billId, billId))
+    .orderBy(asc(sql<number>`cast(${vm.voteNumber} as int)`))
+    .execute();
+};
+
+export const billInformation = async (billId: string) => {
+  const b = await db
+    .select()
+    .from(bills)
+    .where(eq(bills.billId, billId))
+    .limit(1)
+    .execute();
+
+  return b[0];
+};
