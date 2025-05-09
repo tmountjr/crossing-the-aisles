@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { asc, eq, exists, getTableColumns, sql } from "drizzle-orm";
+import { _votesGroupedByPartywithPartyLine } from "@/db/queries/partylineFull";
 import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
 // This will be for the bill landing page - distinct bills with votes and sponsor
@@ -35,8 +36,9 @@ export const voteMetaForBill = (billId: string) => {
     .select()
     .from(vm)
     .leftJoin(amendments, eq(vm.amendmentId, amendments.amendmentId))
+    .leftJoin(_votesGroupedByPartywithPartyLine, eq(vm.voteId, _votesGroupedByPartywithPartyLine.voteId))
     .where(eq(vm.billId, billId))
-    .orderBy(asc(sql<number>`${vm.voteNumber}::int`))
+    .orderBy(asc(vm.date))
     .execute();
 };
 

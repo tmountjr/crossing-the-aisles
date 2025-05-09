@@ -7,7 +7,7 @@ import {
   enrichedVoteMeta as vm,
 } from "@/db/schema";
 
-export const _votesWithPartyLine = db
+const _votesWithPartyLine = db
   .select({
     voteId: v.voteId,
     legislatorId: v.legislatorId,
@@ -88,6 +88,18 @@ const _brokePartyLineVotes = db
   .from(_brokePartyLineVotesPre)
   .as("broke_party_line_votes");
 
+export const _votesGroupedByPartywithPartyLine = db
+  .select({
+    voteId: _votesWithPartyLine.voteId,
+    demPartyLineCount: sql<number>`count(*) filter (where ${_votesWithPartyLine.caucus} = 'D' and ${_votesWithPartyLine.isPartyLine})`.as("dem_party_line_count"),
+    demNotPartyLineCount: sql<number>`count(*) filter (where ${_votesWithPartyLine.caucus} = 'D' and not ${_votesWithPartyLine.isPartyLine})`.as("dem_not_party_line_count"),
+    repNotPartyLineCount: sql<number>`count(*) filter (where ${_votesWithPartyLine.caucus} = 'R' and not ${_votesWithPartyLine.isPartyLine})`.as("rep_not_party_line_count"),
+    repPartyLineCount: sql<number>`count(*) filter (where ${_votesWithPartyLine.caucus} = 'R' and ${_votesWithPartyLine.isPartyLine})`.as("rep_party_line_count"),
+  })
+  .from(_votesWithPartyLine)
+  .groupBy(_votesWithPartyLine.voteId)
+  .as("votes_grouped_by_party_with_party_line");
+
 export interface BrokePartyLinesFilters {
   state?: string;
   chamber?: AllowedChambers;
@@ -156,3 +168,11 @@ export const votesWithPartyLineByLegislator = async (id: string): Promise<VoteWi
   .where(eq(_votesWithPartyLine.legislatorId, id))
   .orderBy(asc(_votesWithPartyLine.voteId))
   .execute();
+
+  export const partyLineVoteCount = async (voteId: string | null) => db
+    .select()
+    .from(_votesGroupedByPartywithPartyLine)
+    .where(
+      voteId ? eq(_votesGroupedByPartywithPartyLine.voteId, voteId) : undefined
+    )
+    .execute();
