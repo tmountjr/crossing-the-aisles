@@ -3,6 +3,7 @@
 import { Bar } from "react-chartjs-2";
 import { useColorScheme } from "@/exports/colors";
 import type { ChartData, ChartOptions } from "chart.js";
+import ChartjsPluginStacked100 from "chartjs-plugin-stacked100";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,7 +21,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartjsPluginStacked100
 );
 
 interface BillBarChartProps {
@@ -98,11 +100,34 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
         stacked: true,
       },
     },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const data = tooltipItem.chart.data;
+            const datasetIndex = tooltipItem.datasetIndex;
+            const index = tooltipItem.dataIndex;
+            const datasetLabel = data.datasets[datasetIndex].label || "";
+            const originalValue = data.originalData
+              ? data.originalData[datasetIndex][index]
+              : "N/A";
+            const rateValue = data.calculatedData
+              ? data.calculatedData[datasetIndex][index]
+              : "N/A";
+            return `${datasetLabel}: ${originalValue} (${rateValue}%)`;
+          },
+        },
+      },
+      stacked100: {
+        enable: true,
+        replaceTooltipLabel: false,
+      },
+    },
   };
 
   return (
     <div className="w-full">
-      <div className="mt-10 h-[300px] lg:h-[400px]">
+      <div className="mt-10 h-[600px] lg:h-[800px]">
         <Bar data={chartData} options={chartOptions} />
       </div>
     </div>
