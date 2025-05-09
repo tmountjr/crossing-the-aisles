@@ -1,5 +1,6 @@
 "use client";
 
+import { draw } from "patternomaly";
 import { Bar } from "react-chartjs-2";
 import { useColorScheme } from "@/exports/colors";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -60,9 +61,9 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
           ({ votes_grouped_by_party_with_party_line: v }) =>
             v?.demNotPartyLineCount || 0
         ),
-        backgroundColor: "white",
+        backgroundColor: draw('zigzag-vertical', colorScheme.D, colorScheme.R, 15),
         borderColor: "black",
-        borderRadius: 3,
+        borderWidth: 2,
       },
       {
         label: "Republican Non Party Line Votes",
@@ -70,9 +71,9 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
           ({ votes_grouped_by_party_with_party_line: v }) =>
             v?.repNotPartyLineCount || 0
         ),
-        backgroundColor: "white",
+        backgroundColor: draw('zigzag-vertical', colorScheme.R, colorScheme.D, 15),
         borderColor: "black",
-        borderRadius: 3,
+        borderWidth: 2,
       },
       {
         label: "Republican Party Line Votes",
