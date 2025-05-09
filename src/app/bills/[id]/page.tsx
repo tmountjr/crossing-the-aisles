@@ -1,5 +1,8 @@
+import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
-import { billInformation, voteMetaForBill } from "@/db/queries/bills";
+import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { fetchBillInformation, fetchVoteMeta } from "@/server/actions/bills";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
@@ -13,15 +16,15 @@ export default async function Page(props: {
   const { id } = params;
 
   const [voteMeta, billInfo] = await Promise.all([
-    voteMetaForBill(id),
-    billInformation(id),
+    fetchVoteMeta(id),
+    fetchBillInformation(id),
   ]);
 
   // Break out the amendments to their own object.
   const vmA = voteMeta.filter((vm) => vm.amendments);
   let subtitle = billInfo.title;
   if (billInfo.shortTitle) {
-    subtitle += `(aka ${billInfo.shortTitle})`;
+    subtitle += ` (aka ${billInfo.shortTitle})`;
   }
 
   return (
@@ -30,30 +33,37 @@ export default async function Page(props: {
         title={`Bill information for ${billInfo.billId}`}
         subtitle={subtitle}
       />
-      <p>There were {voteMeta.length} roll call votes on this bill in total.</p>
-      <p>
-        This bill <strong>{vmA.length > 0 ? "has" : "does not have"}</strong>{" "}
-        amendments.
-      </p>
-      {vmA.length > 0 && (
-        <p>
-          There are {vmA.length} amendments to this bill that received a roll
-          call vote.
-        </p>
-      )}
 
-      {vmA.length > 0 && (
-        <ul>
-          {vmA.map((vm) => (
-            <li key={vm.amendments?.amendmentId}>
-              <p>
-                Amendment ID: {vm.amendments?.amendmentId}:{" "}
-                {vm.amendments?.purpose}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <p className="text-center">
+        <Link href="/bills">
+          <FontAwesomeIcon icon={faAnglesLeft} className="fa fa-fw" /> Back to
+          Bill List
+        </Link>
+      </p>
+
+      <section className="flex flex-col gap-2">
+        <p>There were {voteMeta.length} roll call votes on this bill in total.</p>
+        <p>
+          This bill <strong>{vmA.length > 0 ? "has" : "does not have"}</strong>{" "}
+          amendments.
+        </p>
+        {vmA.length > 0 && (
+          <p>
+            There are {vmA.length} amendments to this bill that received a roll
+            call vote.
+          </p>
+        )}
+
+        {vmA.length > 0 && (
+          <ul>
+            {vmA.map((vm) => (
+              <li key={vm.amendments?.amendmentId}>
+                <p>-- {vm.amendments?.purpose}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </>
   );
 }

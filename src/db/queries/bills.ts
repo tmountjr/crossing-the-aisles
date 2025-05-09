@@ -1,33 +1,33 @@
 import { db } from "@/db";
-import { asc, eq, getTableColumns, sql } from "drizzle-orm";
-import { amendments, bills, enrichedVoteMeta as vm } from "@/db/schema";
+import { asc, eq, exists, getTableColumns, sql } from "drizzle-orm";
+import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
-// Limit the list of bills to just ones with recorded votes.
-const _billsWithVotes = db
-  .selectDistinctOn(
-    [bills.billId],
-    { ...getTableColumns(bills) }
-  )
-  .from(bills)
-  .innerJoin(vm, eq(bills.billId, vm.billId))
-  .as("bills_with_votes")
-
-// Join the bills list with the vote_meta table to get sponsor data and order
-// the results.
-const _billList = db
+// This will be for the bill landing page - distinct bills with votes and sponsor
+// details.
+const _billsHavingVotes = db
   .select({
     ...getTableColumns(bills),
-    sponorName: vm.sponsorName,
-    sponsorParty: vm.sponsorParty,
+    sponsorName: legislators.name,
+    sponsorParty: legislators.caucus
   })
-  .from(_billsWithVotes)
-  .innerJoin(bills, eq(_billsWithVotes.billId, bills.billId))
-  .leftJoin(vm, eq(_billsWithVotes.sponsorId, vm.billId))
-  .orderBy(asc(_billsWithVotes.billType), asc(sql<number>`cast(${_billsWithVotes.billNumber} as int)`))
-  .as("bill_list");
+  .from(bills)
+  .innerJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
+  .where(
+    exists(
+      db.select()
+      .from(vm)
+      .where(eq(bills.billId, vm.billId))
+    )
+  )
+  .orderBy(
+    asc(bills.billId),
+    asc(bills.billType),
+    asc(sql<number>`${bills.billNumber}::int`)
+  )
+  .as("bills_having_votes");
 
-export const billList = async () => db.select().from(_billList).execute();
-export type BillList = Awaited<ReturnType<typeof billList>>;
+export const billsHavingVotes = () => db.select().from(_billsHavingVotes).execute();
+export type BillList = Awaited<ReturnType<typeof billsHavingVotes>>;
 export type BillListItem = BillList[number];
 
 export const voteMetaForBill = (billId: string) => {
@@ -36,7 +36,7 @@ export const voteMetaForBill = (billId: string) => {
     .from(vm)
     .leftJoin(amendments, eq(vm.amendmentId, amendments.amendmentId))
     .where(eq(vm.billId, billId))
-    .orderBy(asc(sql<number>`cast(${vm.voteNumber} as int)`))
+    .orderBy(asc(sql<number>`${vm.voteNumber}::int`))
     .execute();
 };
 

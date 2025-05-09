@@ -1,6 +1,7 @@
-import Link from "next/link";
+import { type BillList } from "@/db/queries/bills";
 import PageHeader from "@/app/components/PageHeader";
-import { billList, type BillList } from "@/db/queries/bills";
+import { fetchBillList } from "@/server/actions/bills";
+import Chip, { ChipStyle } from "@/app/components/Chip";
 
 const categoryLookup = {
   hjres: "House Joint Resolution",
@@ -13,10 +14,15 @@ const categoryLookup = {
   sres: "Senate Resolution",
 };
 
+const chipStyleLookup: Record<string, ChipStyle> = {
+  "R": "rep",
+  "D": "dem",
+};
+
 type Categories = keyof typeof categoryLookup;
 
 export default async function BillsPage() {
-  const billsResponse: BillList = await billList();
+  const billsResponse = await fetchBillList();
   type RecordMap = Record<Categories, BillList>;
 
   // Slice billsResponse based on category
@@ -34,24 +40,23 @@ export default async function BillsPage() {
     <>
       <PageHeader title="Bills" />
 
-      <section className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+      <section className="mt-20 flex flex-col gap-8 lg:max-w-[768px] m-auto">
         {(Object.entries(slicedBills) as [Categories, BillList][]).map(
           ([k, v]) => (
-            <div key={k}>
+            <section className="flex flex-col gap-2" key={k}>
               <h2 className="text-xl font-bold">{categoryLookup[k]}s</h2>
               <div className="grid grid-cols-2 lg:grid-cols-3">
                 {v.map((bill) => (
-                  <Link
+                  <Chip
                     key={bill.billId}
+                    style={chipStyleLookup[bill.sponsorParty!]}
                     href={`/bills/${bill.billId}`}
-                    rel="noopener noreferrer"
-                    className="underline"
                   >
                     {bill.billId}
-                  </Link>
+                  </Chip>
                 ))}
               </div>
-            </div>
+            </section>
           )
         )}
       </section>
