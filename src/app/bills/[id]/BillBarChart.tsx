@@ -34,10 +34,10 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
   const colorScheme = useColorScheme();
 
   const labelMaker = (vm: EVM): string => {
-    const { voteId, date } = vm;
-    let s = `${voteId} (${date})`;
+    const { category, chamber } = vm;
+    let s = `${category} (${chamber})`;
     if (vm.amendmentId) {
-      s += `, Amend. ${vm.amendmentId}`;
+      s += `, ${vm.amendmentId}`;
     }
     return s;
   };
@@ -61,9 +61,9 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
           ({ votes_grouped_by_party_with_party_line: v }) =>
             v?.demNotPartyLineCount || 0
         ),
-        backgroundColor: draw('zigzag-vertical', colorScheme.D, colorScheme.R, 15),
+        backgroundColor: draw('zigzag-vertical', colorScheme.D, "white", 15),
         borderColor: "black",
-        borderWidth: 2,
+        borderWidth: 1,
       },
       {
         label: "Republican Non Party Line Votes",
@@ -71,9 +71,9 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
           ({ votes_grouped_by_party_with_party_line: v }) =>
             v?.repNotPartyLineCount || 0
         ),
-        backgroundColor: draw('zigzag-vertical', colorScheme.R, colorScheme.D, 15),
+        backgroundColor: draw('zigzag-vertical', colorScheme.R, "white", 15),
         borderColor: "black",
-        borderWidth: 2,
+        borderWidth: 1,
       },
       {
         label: "Republican Party Line Votes",
@@ -126,9 +126,25 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
     },
   };
 
+  // Dynamically decide on the height of the chart area.
+  let heightOptions = "h-[300px] lg:h-[400px]";
+  
+  if (voteMeta.length > 5) {
+    heightOptions = "h-[400px] lg:h-[600px]";
+  }
+  if (voteMeta.length > 10) {
+    heightOptions = "h-[600px] lg:h-[800px]";
+  }
+  if (voteMeta.length > 15) {
+    heightOptions = "h-[800px] lg:h-[1000px]";
+  }
+  if (voteMeta.length > 20) {
+    heightOptions = "h-[1000px] lg:h-[1200px]";
+  }
+
   return (
     <div className="w-full">
-      <div className="mt-10 h-[600px] lg:h-[800px]">
+      <div className={`mt-10 ${heightOptions}`}>
         <Bar data={chartData} options={chartOptions} />
       </div>
     </div>
