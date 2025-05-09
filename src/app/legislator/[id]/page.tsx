@@ -3,7 +3,8 @@ import { states } from "@/exports/states";
 import LegislatorDetail from "./LegislatorDetail";
 import { Legislator } from "@/db/queries/legislators";
 import { VoteWithPartyLine } from "@/db/queries/partylineFull";
-import { fetchLegislator } from "@/server/actions/legislators";
+import { notFound, redirect, RedirectType } from "next/navigation";
+import { fetchLegislator, fetchLegislatorByBioguide } from "@/server/actions/legislators";
 import { fetchVotesByLegislator } from "@/server/actions/brokePartyLinesFull";
 
 type Params = Promise<{ id: string }>;
@@ -17,6 +18,10 @@ export async function generateMetadata(props: {
   const params = await props.params;
   const id = params.id;
   const legislator = await fetchLegislator(id);
+  if (!legislator) {
+    // Don't care so much about the metadata for not-found pages.
+    return {};
+  }
 
   return {
     metadataBase: new URL(process.env.DOMAIN!),
@@ -45,7 +50,22 @@ export default async function Page(props: {
   const params = await props.params;
   const id = params.id;
 
-  const legislator: Legislator = await fetchLegislator(id);
+  let legislator: Legislator = await fetchLegislator(id);
+
+  if (!legislator) {
+    // Probably searched by the wrong id because we linked from somewhere else.
+    // Try getting the legislator by bioguide_id instead.
+    legislator = await fetchLegislatorByBioguide(id);
+
+    // If we found a match, issue a redirect to the correct ID so everything else
+    // works properly.
+    if (legislator) {
+      redirect(`/legislator/${legislator.id}`, RedirectType.replace);
+    } else {
+      notFound();
+    }
+  }
+
   const votesByLegislator: VoteWithPartyLine[] = await fetchVotesByLegislator(
     id
   );

@@ -1,6 +1,13 @@
 {
   "announcements": [
     {
+      "title": "New feature: Party Line Votes per Bill",
+      "description": "We've introduced a new way to visualize roll call votes on a per-bill basis, showing the number of lawmakers from both sides who cross the aisles on vote and amendments.",
+      "link": "/bills",
+      "date": 1746810929000,
+      "expires": 1747415729000
+    },
+    {
       "title": "Additional party-line votes now available.",
       "description": "Rather than restrict party-line vote calculation to the latest roll call votes on each bill, we are now able to track party-line vote statuses for all roll call votes, including amendments and procedural votes. See the About page for more details.",
       "link": "/about",

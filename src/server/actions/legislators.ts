@@ -1,7 +1,7 @@
 "use server";
 
 import { cache } from "react";
-import { legislator } from "@/db/queries/legislators";
+import { legislator, legislatorByBioguide } from "@/db/queries/legislators";
 import type { Legislator } from "@/db/queries/legislators";
 import { AllowedChambers, AllowedParties } from "@/db/types";
 import { allLegislators, stateLegislators } from "@/db/queries/legislators";
@@ -32,5 +32,10 @@ export const fetchLegislators = cache(async (
 
 export const fetchLegislator = cache(async (id: string): Promise<Legislator> => {
   const _legislator = await legislator(id);
+  return _legislator[0];
+});
+
+export const fetchLegislatorByBioguide = cache(async (id: string): Promise<Legislator> => {
+  const _legislator = await legislatorByBioguide(id);
   return _legislator[0];
 });
