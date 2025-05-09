@@ -15,11 +15,13 @@ const categoryLookup = {
 };
 
 const chipStyleLookup: Record<string, ChipStyle> = {
-  "R": "rep",
-  "D": "dem",
+  R: "rep",
+  D: "dem",
 };
 
 type Categories = keyof typeof categoryLookup;
+
+const BILL_TITLE_MAX_LENGTH = 75;
 
 export default async function BillsPage() {
   const billsResponse = await fetchBillList();
@@ -52,7 +54,17 @@ export default async function BillsPage() {
                     style={chipStyleLookup[bill.sponsorParty!]}
                     href={`/bills/${bill.billId}`}
                   >
-                    {bill.billId}
+                    <h2 className="text-xl font-bold">{bill.billId}</h2>
+                    <h3 className="text-md text-gray-700 dark:text-gray-300 italic">
+                      {bill.shortTitle ||
+                        bill.title.substring(0, BILL_TITLE_MAX_LENGTH) +
+                          (bill.title.length > BILL_TITLE_MAX_LENGTH
+                            ? "..."
+                            : "")}
+                    </h3>
+                    <p className="text-md mt-4">
+                      Latest Status: {bill.status} as of {bill.statusAt}
+                    </p>
                   </Chip>
                 ))}
               </div>

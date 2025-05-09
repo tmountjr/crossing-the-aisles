@@ -30,7 +30,7 @@ export default async function Page(props: {
   return (
     <>
       <PageHeader
-        title={`Bill information for ${billInfo.billId}`}
+        title={`Bill Information for ${billInfo.billId}`}
         subtitle={subtitle}
       />
 
