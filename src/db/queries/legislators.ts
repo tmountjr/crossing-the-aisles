@@ -25,6 +25,13 @@ export const legislator = (id: string) => db
   .limit(1)
   .execute();
 
+export const legislatorByBioguide = (id: string) => db
+    .select()
+    .from(_allLegislators)
+    .where(eq(_allLegislators.bioguideId, id))
+    .limit(1)
+    .execute();
+
 export const allLegislators = db.select().from(_allLegislators).execute();
 
 export const votesByLegislator = (id: string): Promise<Vote[]> => db

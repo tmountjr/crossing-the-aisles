@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BillBarChart from "./BillBarChart";
 import PageHeader from "@/app/components/PageHeader";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,8 +23,6 @@ export default async function Page(props: {
 
   // Break out the amendments to their own object.
   const vmA = voteMeta.filter((vm) => vm.amendments);
-
-  console.log(voteMeta);
 
   return (
     <>
@@ -56,7 +55,43 @@ export default async function Page(props: {
             .
           </p>
           <p>
-            There were {voteMeta.length} roll call votes on this bill in total.
+            <strong>Sponsor:</strong>{" "}
+            {billInfo.sponsorName && (
+              <>
+                This bill was sponsored by{" "}
+                <Link
+                  className="underline"
+                  href={`/legislator/${billInfo.sponsorId}`}
+                  rel="noopener noreferrer"
+                >
+                  {billInfo.sponsorName}
+                </Link>{" "}
+                ({billInfo.sponsorParty}-{billInfo.sponsorState}).
+              </>
+            )}
+            {!billInfo.sponsorName && (
+              <>
+                This was a {billInfo.sponsorParty}-sponsored bill not advanced
+                by a specific legislator.
+              </>
+            )}
+          </p>
+          <p>
+            Party line votes are determined based on this being a{" "}
+            <strong>{billInfo.sponsorParty}-sponsored</strong> piece of
+            legislation. See{" "}
+            <Link
+              className="underline"
+              href="/about#what-is-a-party-line-vote"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>{" "}
+            for information on how party line votes are determined.
+          </p>
+          <p>
+            <strong>Vote count:</strong> There were {voteMeta.length} roll call
+            votes on this bill in total.
           </p>
         </section>
 
@@ -65,40 +100,41 @@ export default async function Page(props: {
             <h2 className="text-xl font-bold">Amendments</h2>
             <p>
               There were {vmA.length} amendments to this bill that received a
-              roll call vote.
+              roll call vote. The amendments are listed below with their
+              sponsors:
             </p>
-            {/* {vmA.length > 0 && (
-              <ul>
-                {vmA.map((vm) => (
-                  <li key={vm.amendments?.amendmentId}>
-                    <p>-- {vm.amendments?.purpose}</p>
-                  </li>
-                ))}
-              </ul>
-            )} */}
+            <ul className="ml-8">
+              {vmA.map((vm) => (
+                <li key={vm.amendments?.amendmentId}>
+                  -- Amendment <strong>{vm.amendments?.amendmentId}</strong>{" "}
+                  filed by{" "}
+                  <Link
+                    className="underline"
+                    href={`/legislator/${vm.amendments?.sponsorId}`}
+                    rel="noopener noreferrer"
+                  >
+                    {vm.enriched_vote_meta.sponsorName} (
+                    {vm.enriched_vote_meta.sponsorParty})
+                  </Link>{" "}
+                  : {vm.amendments?.purpose}
+                </li>
+              ))}
+            </ul>
+            <p>
+              Party line votes for these amendments are determined based on the
+              party of the amendment sponsor, NOT the bill&apos;s sponsor.
+            </p>
           </section>
         )}
 
-        {/*
-          TODO: vote bar chart(s). For each vote, the bar should be in four chunks:
-            leftmost chunk: democratic party line vote count
-            left middle chunk: democratic non-party line vote count
-            right middle chunk: republican non-party line vote count
-            rightmost chunk: republican party line vote count
-
-          party line vote chunks (outermost) should be solid colors.
-          non-party line vote chunks should have the same color but with stripes
-            (see https://www.chartjs.org/docs/latest/general/colors.html#patterns-and-gradients)
-            (see also https://developer.mozilla.org/en-US/docs/Web/API/CanvasPattern)
-
-          The bar chart component will be passed voteMeta assuming we can join
-          the vote counts as well. Might also see if we can precompute the
-          datasets necessary serverside rather than clientside and just pass
-          the resulting datasets over to the client component directly. That
-          way the client component doesn't have to calculate anything, it just
-          draws what it's given.
-        */}
-
+        <section className="flex flex-col gap-2">
+          <h2 className="text-xl font-bold">Vote Distribution</h2>
+          <p>
+            This chart shows the distribution of party line and non-party line
+            votes per party for each roll call vote taken.
+          </p>
+          <BillBarChart voteMeta={voteMeta} />
+        </section>
       </section>
     </>
   );

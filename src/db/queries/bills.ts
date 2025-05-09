@@ -9,7 +9,7 @@ const _billsHavingVotes = db
   .select({
     ...getTableColumns(bills),
     sponsorName: legislators.name,
-    sponsorParty: legislators.caucus
+    sponsorParty: legislators.caucus,
   })
   .from(bills)
   .innerJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
@@ -44,8 +44,14 @@ export const voteMetaForBill = (billId: string) => {
 
 export const billInformation = async (billId: string) => {
   const b = await db
-    .select()
+    .select({
+      ...getTableColumns(bills),
+      sponsorName: legislators.name,
+      sponsorParty: legislators.caucus,
+      sponsorState: legislators.state,
+    })
     .from(bills)
+    .leftJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
     .where(eq(bills.billId, billId))
     .limit(1)
     .execute();

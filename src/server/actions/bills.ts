@@ -13,6 +13,9 @@ export const fetchVoteMeta = cache(async (billId: string) => {
   return data;
 });
 
+export type VM = Awaited<ReturnType<typeof fetchVoteMeta>>[number];
+export type EVM = VM["enriched_vote_meta"];
+
 export const fetchBillInformation = cache(async (billId: string) => {
   const data = await billInformation(billId);
   return data;
