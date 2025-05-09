@@ -10,6 +10,7 @@ import { useState } from "react";
 export const menuLinks = [
   { url: "/", name: "Home" },
   { url: "/nominations", name: "Senate Nominations" },
+  { url: "/bills", name: "Bills" },
   { url: "/about", name: "About This Site" },
 ];
 
