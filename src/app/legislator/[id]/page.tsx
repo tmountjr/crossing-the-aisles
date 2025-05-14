@@ -4,7 +4,10 @@ import LegislatorDetail from "./LegislatorDetail";
 import { Legislator } from "@/db/queries/legislators";
 import { VoteWithPartyLine } from "@/db/queries/partylineFull";
 import { notFound, redirect, RedirectType } from "next/navigation";
-import { fetchLegislator, fetchLegislatorByBioguide } from "@/server/actions/legislators";
+import {
+  fetchLegislator,
+  fetchLegislatorByBioguide,
+} from "@/server/actions/legislators";
 import { fetchVotesByLegislator } from "@/server/actions/brokePartyLinesFull";
 
 type Params = Promise<{ id: string }>;
@@ -39,13 +42,24 @@ export async function generateMetadata(props: {
       url: `${process.env.DOMAIN}/legislator/${id}`,
       type: "profile",
       siteName: "Crossing the Aisles",
+      images: [
+        {
+          url: `${process.env.DOMAIN!}/api/legislator_image?bioguide_id=${
+            legislator.bioguideId
+          }`,
+          alt: `Official portrait for ${legislator.name}`,
+          type: "image/jpeg",
+          width: 225,
+          height: 275,
+        },
+      ],
     },
   };
-};
+}
 
 export default async function Page(props: {
-  params: Params
-  searchParams: SearchParams
+  params: Params;
+  searchParams: SearchParams;
 }) {
   const params = await props.params;
   const id = params.id;
@@ -94,4 +108,4 @@ export default async function Page(props: {
       homeState={homeState}
     />
   );
-};
+}

@@ -8,6 +8,7 @@ import { useColorScheme } from "@/exports/colors";
 import PageHeader from "@/app/components/PageHeader";
 import { Legislator } from "@/db/queries/legislators";
 import Chip, { ChipStyle } from "@/app/components/Chip";
+import CongressImage from "@/app/components/CongressImage";
 import { VoteWithPartyLine } from "@/db/queries/partylineFull";
 import type { ChartData, ChartDataset, ChartOptions } from "chart.js";
 import {
@@ -206,6 +207,13 @@ const LegislatorDetail = ({
       <PageHeader
         title={`${legislator.name!}, ${legislator.party}-${legislator.state}`}
       />
+
+      <section className="m-auto lg:max-w-[768px] flex flex-row justify-center-safe">
+        <CongressImage 
+          bioguideId={legislator.bioguideId!}
+          name={legislator.name!}
+        />
+      </section>
 
       <section className="mt-20 flex flex-col gap-4 lg:max-w-[768px] m-auto">
         <p>
