@@ -1,7 +1,7 @@
+import { Metadata } from "next";
 import Chip from "@/app/components/Chip";
 import PageHeader from "@/app/components/PageHeader";
-import { nominationVoteIds } from "@/db/queries/nominations";
-import { Metadata } from "next";
+import { fetchNominationVoteIds } from "@/server/actions/nominations";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.DOMAIN!),
@@ -19,7 +19,8 @@ export const metadata: Metadata = {
 export const revalidate = 3600; // 1h
 
 export default async function NominationsPage() {
-  const voteIdsResponse = (await nominationVoteIds).slice().reverse();
+  const voteIds = await fetchNominationVoteIds();
+  const voteIdsResponse = voteIds.slice().reverse();
 
   const parseNomineeName = (title: string): string => {
     const matches = [...title.matchAll(/^(.+), (of|in).*/gm)];

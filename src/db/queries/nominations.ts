@@ -100,7 +100,9 @@ export const nominationTitle = async (voteId: string) => {
     .execute()
 };
 
-export const nominationVoteIds = _nominationVoteIds.execute()
+export const nominationVoteIds = async () => {
+  return _nominationVoteIds.execute();
+};
 
 type Vote = InferSelectModel<typeof v>
 type Legislator = InferSelectModel<typeof l>
