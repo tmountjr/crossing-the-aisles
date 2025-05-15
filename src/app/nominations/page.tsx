@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600; // 1h
+
 export default async function NominationsPage() {
   const voteIdsResponse = (await nominationVoteIds).slice().reverse();
 
