@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { asc, eq, exists, getTableColumns, sql } from "drizzle-orm";
+import { asc, eq, exists, getTableColumns, InferSelectModel, or, sql } from "drizzle-orm";
 import { _votesGroupedByPartywithPartyLine } from "@/db/queries/partylineFull";
 import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
@@ -30,6 +30,7 @@ const _billsHavingVotes = db
 export const billsHavingVotes = () => db.select().from(_billsHavingVotes).execute();
 export type BillList = Awaited<ReturnType<typeof billsHavingVotes>>;
 export type BillListItem = BillList[number];
+export type Bill = InferSelectModel<typeof bills>;
 
 export const voteMetaForBill = (billId: string) => {
   return db
@@ -58,3 +59,12 @@ export const billInformation = async (billId: string) => {
 
   return b[0];
 };
+
+export const sponsoredBillsByLegislator = (id: string) => {
+  return db
+    .select({ ...getTableColumns(bills) })
+    .from(bills)
+    .leftJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
+    .where(or(eq(legislators.bioguideId, id), eq(legislators.id, id)))
+    .execute();
+}

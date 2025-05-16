@@ -127,14 +127,16 @@ export default async function Page(props: {
           </section>
         )}
 
-        <section className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold">Vote Distribution</h2>
-          <p>
-            This chart shows the distribution of party line and non-party line
-            votes per party for each roll call vote taken.
-          </p>
-          <BillBarChart voteMeta={voteMeta} />
-        </section>
+        {voteMeta.length > 0 && (
+          <section className="flex flex-col gap-2">
+            <h2 className="text-xl font-bold">Vote Distribution</h2>
+            <p>
+              This chart shows the distribution of party line and non-party line
+              votes per party for each roll call vote taken.
+            </p>
+            <BillBarChart voteMeta={voteMeta} />
+          </section>
+        )}
       </section>
     </>
   );

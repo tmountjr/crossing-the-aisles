@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Bill } from "@/db/queries/bills";
 import { states } from "@/exports/states";
 import LegislatorDetail from "./LegislatorDetail";
 import { Legislator } from "@/db/queries/legislators";
@@ -9,6 +10,7 @@ import {
   fetchLegislatorByBioguide,
 } from "@/server/actions/legislators";
 import { fetchVotesByLegislator } from "@/server/actions/brokePartyLinesFull";
+import { fetchSponsoredBills } from "@/server/actions/bills";
 
 type Params = Promise<{ id: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
@@ -84,6 +86,8 @@ export default async function Page(props: {
     id
   );
 
+  const sponsoredBills: Bill[] = await fetchSponsoredBills(id);
+
   let fullParty = "Other";
   if (legislator.party === "R") {
     fullParty = "Republican";
@@ -103,6 +107,7 @@ export default async function Page(props: {
     <LegislatorDetail
       legislator={legislator}
       votes={votesByLegislator}
+      sponsoredBills={sponsoredBills}
       fullParty={fullParty}
       shortTitle={shortTitle}
       homeState={homeState}

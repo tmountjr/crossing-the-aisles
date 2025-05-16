@@ -20,6 +20,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Bill } from "@/db/queries/bills";
 
 ChartJS.register(
   CategoryScale,
@@ -104,16 +105,18 @@ const defaultChartData: ChartData<"bar"> = {
 };
 
 interface PageProps {
-  legislator: Legislator,
-  votes: VoteWithPartyLine[],
-  fullParty: string,
-  shortTitle: string,
-  homeState: string,
-};
+  legislator: Legislator;
+  votes: VoteWithPartyLine[];
+  sponsoredBills: Bill[];
+  fullParty: string;
+  shortTitle: string;
+  homeState: string;
+}
 
 const LegislatorDetail = ({
   legislator,
   votes,
+  sponsoredBills,
   fullParty,
   shortTitle,
   homeState,
@@ -134,10 +137,7 @@ const LegislatorDetail = ({
   useEffect(() => {
     const legislatorPLScheme: PartyLineColorScheme = {
       isPartyLine: colorScheme[legislator.caucus],
-      isNotPartyLine:
-        legislator.caucus === "D"
-          ? colorScheme.R
-          : colorScheme.D,
+      isNotPartyLine: legislator.caucus === "D" ? colorScheme.R : colorScheme.D,
       isAbstain: colorScheme["Not Voting"],
     };
     setLegislatorPLScheme(legislatorPLScheme);
@@ -209,7 +209,7 @@ const LegislatorDetail = ({
       />
 
       <section className="m-auto lg:max-w-[768px] flex flex-row justify-center-safe">
-        <CongressImage 
+        <CongressImage
           bioguideId={legislator.bioguideId!}
           name={legislator.name!}
         />
@@ -226,9 +226,7 @@ const LegislatorDetail = ({
             `'s House District ${legislator.district}`}
           .
         </p>
-        <h2 className="text-xl font-bold">
-          <strong>Quick Links:</strong>
-        </h2>
+        <h2 className="text-xl font-bold">Quick Links:</h2>
         <ul className="flex flex-col gap-2">
           <li className="ml-10">
             <a
@@ -246,6 +244,26 @@ const LegislatorDetail = ({
           </li>
         </ul>
       </section>
+
+      {sponsoredBills.length > 0 && (
+        <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
+          <h2 className="text-xl font-bold">Sponsored Legislation:</h2>
+          <p>
+            The list below shows the pieces of legislation (including bills,
+            resolutions, and amendments) that this legislator has sponsored. Not
+            all pieces of legislation have been brought for a roll call vote.
+          </p>
+          <ul className="flex flex-col gap-2">
+            {sponsoredBills.map((bill) => (
+              <li key={bill.billId} className="ml-10">
+                <Link href={`/bills/${bill.billId}`}>{bill.billId}</Link> -{" "}
+                {bill.title}
+                {bill.shortTitle && ` (aka ${bill.shortTitle})`}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mt-4 flex flex-col gap-4 lg:max-w-[768px] m-auto">
         <h2 className="text-xl font-bold">Vote Summary</h2>
