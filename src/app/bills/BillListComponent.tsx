@@ -70,6 +70,9 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
                               : "")}
                       </h3>
                       <p className="text-md mt-4">
+                        Sponsor: {bill.sponsorName} ({bill.sponsorParty})
+                      </p>
+                      <p className="text-md mt-4">
                         Latest Status: {bill.status} as of {bill.statusAt}
                       </p>
                     </Chip>
