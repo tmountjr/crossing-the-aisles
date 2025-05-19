@@ -2,19 +2,19 @@ import { type BillList } from "@/db/queries/bills";
 import BillListComponent from "./BillListComponent";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
-import { categoryLookup, type Categories } from "@/exports/bills";
+import { billCategoryLookup, type BillCategory } from "@/exports/bills";
 
 export const revalidate = 3600; // 1h
 
 export default async function BillsPage() {
   const billsResponse = await fetchBillList();
-  type RecordMap = Record<Categories, BillList>;
+  type RecordMap = Record<BillCategory, BillList>;
 
   // Slice billsResponse based on category
   const slicedBills = billsResponse.reduce<RecordMap>((acc, curr) => {
     const { billType } = curr;
-    if (billType in categoryLookup) {
-      const typedBillType = billType as Categories;
+    if (billType in billCategoryLookup) {
+      const typedBillType = billType as BillCategory;
       if (!acc[typedBillType]) acc[typedBillType] = [];
       acc[typedBillType].push(curr);
     }

@@ -1,4 +1,4 @@
-export const categoryLookup = {
+export const billCategoryLookup = {
   hjres: "House Joint Resolution",
   sconres: "Senate Concurrent Resolution",
   hconres: "House Concurrent Resolution",
@@ -9,4 +9,4 @@ export const categoryLookup = {
   sres: "Senate Resolution",
 };
 
-export type Categories = keyof typeof categoryLookup;
+export type BillCategory = keyof typeof billCategoryLookup;

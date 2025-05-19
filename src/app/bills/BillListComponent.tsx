@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type BillList } from "@/db/queries/bills";
 import Chip, { ChipStyle } from "@/app/components/Chip";
-import { categoryLookup, type Categories } from "@/exports/bills";
+import { billCategoryLookup, type BillCategory } from "@/exports/bills";
 
 const chipStyleLookup: Record<string, ChipStyle> = {
   R: "rep",
@@ -11,14 +11,14 @@ const chipStyleLookup: Record<string, ChipStyle> = {
 };
 
 interface BillListProps {
-  slicedBills: Record<Categories, BillList>;
+  slicedBills: Record<BillCategory, BillList>;
 }
 
 const BILL_TITLE_MAX_LENGTH = 75;
 
 const BillListComponent = ({ slicedBills }: BillListProps) => {
-  const [showCategories, setShowCategories] = useState<Categories[]>(
-    Object.keys(categoryLookup) as Categories[]
+  const [showCategories, setShowCategories] = useState<BillCategory[]>(
+    Object.keys(billCategoryLookup) as BillCategory[]
   );
 
   return (
@@ -26,7 +26,7 @@ const BillListComponent = ({ slicedBills }: BillListProps) => {
       <div className="flex flex-col gap-2 lg:gap-4 lg:items-center">
         <span className="text-lg font-medium">Filter by bill type:</span>
         <div className="flex flex-row flex-wrap gap-2">
-          {(Object.keys(categoryLookup) as Categories[]).map((k) => (
+          {(Object.keys(billCategoryLookup) as BillCategory[]).map((k) => (
             <label
               key={k}
               className="flex items-center gap-2 cursor-pointer border-2 rounded-md p-2 mr-2 mb-2 border-gray-400/75 bg-gray-400/10 hover:bg-gray-400/25"
@@ -42,18 +42,18 @@ const BillListComponent = ({ slicedBills }: BillListProps) => {
                   )
                 }
               />
-              {categoryLookup[k]}
+              {billCategoryLookup[k]}
             </label>
           ))}
         </div>
       </div>
 
-      {(Object.entries(slicedBills) as [Categories, BillList][]).map(
+      {(Object.entries(slicedBills) as [BillCategory, BillList][]).map(
         ([k, v]) => (
           <>
             {showCategories.includes(k) && (
               <section className="flex flex-col gap-2" key={k}>
-                <h2 className="text-xl font-bold">{categoryLookup[k]}s</h2>
+                <h2 className="text-xl font-bold">{billCategoryLookup[k]}s</h2>
                 <div className="grid grid-cols-2 lg:grid-cols-3">
                   {v.map((bill) => (
                     <Chip
