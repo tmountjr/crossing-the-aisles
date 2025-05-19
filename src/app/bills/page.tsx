@@ -1,5 +1,5 @@
-import BillListComponent from "./BillList";
 import { type BillList } from "@/db/queries/bills";
+import BillListComponent from "./BillListComponent";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
 
