@@ -31,6 +31,18 @@ export default async function BillsPage() {
           category. They are sorted by the date of the last action on the bill
           (most recent first).
         </p>
+        <p>
+          Please see{" "}
+          <a
+            href="https://github.com/unitedstates/congress/wiki/bills#bill-status-codes"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="underline"
+          >
+            this page
+          </a>{" "}
+          for more information on bill status codes.
+        </p>
 
         <BillListComponent slicedBills={slicedBills} />
       </section>
