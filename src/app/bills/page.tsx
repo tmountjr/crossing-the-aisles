@@ -36,6 +36,12 @@ export default async function BillsPage() {
       <PageHeader title="Bills" />
 
       <section className="mt-20 flex flex-col gap-8 lg:max-w-[768px] m-auto">
+        <p>
+          These are all the bills that have roll call votes, broken down by bill
+          category. They are sorted by the date of the last action on the bill
+          (most recent first).
+        </p>
+
         <BillListComponent slicedBills={slicedBills} />
       </section>
     </>
