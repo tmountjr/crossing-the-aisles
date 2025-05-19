@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { asc, eq, exists, getTableColumns, InferSelectModel, or, sql } from "drizzle-orm";
+import { asc, desc, eq, exists, getTableColumns, InferSelectModel, or } from "drizzle-orm";
 import { _votesGroupedByPartywithPartyLine } from "@/db/queries/partylineFull";
 import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
@@ -20,11 +20,7 @@ const _billsHavingVotes = db
       .where(eq(bills.billId, vm.billId))
     )
   )
-  .orderBy(
-    asc(bills.billId),
-    asc(bills.billType),
-    asc(sql<number>`${bills.billNumber}::int`)
-  )
+  .orderBy(desc(bills.statusAt))
   .as("bills_having_votes");
 
 export const billsHavingVotes = () => db.select().from(_billsHavingVotes).execute();
