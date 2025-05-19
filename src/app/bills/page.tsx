@@ -2,19 +2,9 @@ import { type BillList } from "@/db/queries/bills";
 import BillListComponent from "./BillListComponent";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
+import { categoryLookup, type Categories } from "@/exports/bills";
 
-export const categoryLookup = {
-  hjres: "House Joint Resolution",
-  sconres: "Senate Concurrent Resolution",
-  hconres: "House Concurrent Resolution",
-  sjres: "Senate Joint Resolution",
-  s: "Senate Bill",
-  hres: "House Resolution",
-  hr: "House Bill",
-  sres: "Senate Resolution",
-};
-
-export type Categories = keyof typeof categoryLookup;
+export const revalidate = 3600; // 1h
 
 export default async function BillsPage() {
   const billsResponse = await fetchBillList();

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { type BillList } from "@/db/queries/bills";
 import Chip, { ChipStyle } from "@/app/components/Chip";
-import { categoryLookup, type Categories } from "./page";
+import { categoryLookup, type Categories } from "@/exports/bills";
 
 const chipStyleLookup: Record<string, ChipStyle> = {
   R: "rep",
