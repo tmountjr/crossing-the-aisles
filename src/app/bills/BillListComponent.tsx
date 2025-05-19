@@ -49,9 +49,9 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
       </div>
 
       {(Object.entries(slicedBills) as [BillCategory, BillList][]).map(
-        ([k, v]) => (
-          <>
-            {showCategories.includes(k) && (
+        ([k, v]) => {
+          if (showCategories.includes(k)) {
+            return (
               <section className="flex flex-col gap-2" key={k}>
                 <h2 className="text-xl font-bold">{billCategoryLookup[k]}s</h2>
                 <div className="grid grid-cols-2 lg:grid-cols-3">
@@ -76,9 +76,10 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
                   ))}
                 </div>
               </section>
-            )}
-          </>
-        )
+            );
+          }
+          return;
+        }
       )}
     </>
   );
