@@ -16,7 +16,7 @@ interface BillListProps {
 
 const BILL_TITLE_MAX_LENGTH = 75;
 
-const BillListComponent = ({ slicedBills }: BillListProps) => {
+const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
   const [showCategories, setShowCategories] = useState<BillCategory[]>(
     Object.keys(billCategoryLookup) as BillCategory[]
   );
