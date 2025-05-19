@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { type BillList } from "@/db/queries/bills";
 import Chip, { ChipStyle } from "@/app/components/Chip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { billCategoryLookup, type BillCategory } from "@/exports/bills";
 
 const chipStyleLookup: Record<string, ChipStyle> = {
@@ -14,17 +16,38 @@ interface BillListProps {
   slicedBills: Record<BillCategory, BillList>;
 }
 
+const allBillCategories: BillCategory[] = Object.keys(
+  billCategoryLookup
+) as BillCategory[];
+
+const initialCategoryAccordions: Record<BillCategory, boolean> =
+  allBillCategories.reduce((acc, category) => {
+    acc[category] = true;
+    return acc;
+  }, {} as Record<BillCategory, boolean>);
+
 const BILL_TITLE_MAX_LENGTH = 75;
 
 const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
-  const [showCategories, setShowCategories] = useState<BillCategory[]>(
-    Object.keys(billCategoryLookup) as BillCategory[]
-  );
+  const [categoryFilters, setCategoryFilters] =
+    useState<BillCategory[]>(allBillCategories);
+
+  const [categoryAccordions, setCategoryAccordions] = useState<
+    Record<BillCategory, boolean>
+  >(initialCategoryAccordions);
+
+  const handleCategoryChange = (category: BillCategory) => {
+    const accordions = { ...categoryAccordions };
+    accordions[category] = !categoryAccordions[category];
+    setCategoryAccordions(accordions);
+  };
 
   return (
     <>
       <div className="flex flex-col gap-2 lg:gap-4 lg:items-center">
         <span className="text-lg font-medium">Filter by bill type:</span>
+
+        {/* Filter row for bill categories */}
         <div className="flex flex-row flex-wrap gap-2">
           {(Object.keys(billCategoryLookup) as BillCategory[]).map((k) => (
             <label
@@ -33,12 +56,12 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
             >
               <input
                 type="checkbox"
-                checked={showCategories.includes(k)}
+                checked={categoryFilters.includes(k)}
                 onChange={(e) =>
-                  setShowCategories(
+                  setCategoryFilters(
                     e.target.checked
-                      ? [...showCategories, k]
-                      : showCategories.filter((c) => c !== k)
+                      ? [...categoryFilters, k]
+                      : categoryFilters.filter((c) => c !== k)
                   )
                 }
               />
@@ -48,13 +71,27 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
         </div>
       </div>
 
+      {/* Actual bills by category */}
       {(Object.entries(slicedBills) as [BillCategory, BillList][]).map(
         ([k, v]) => {
-          if (showCategories.includes(k)) {
+          if (categoryFilters.includes(k)) {
             return (
               <section className="flex flex-col gap-2" key={k}>
-                <h2 className="text-xl font-bold">{billCategoryLookup[k]}s</h2>
-                <div className="grid grid-cols-2 lg:grid-cols-3">
+                <h2
+                  className="text-xl font-bold"
+                  onClick={() => handleCategoryChange(k)}
+                >
+                  {billCategoryLookup[k]}s{" "}
+                  <FontAwesomeIcon
+                    icon={categoryAccordions[k] ? faEye : faEyeSlash}
+                    className="fa fa-fw"
+                  />
+                </h2>
+                <div
+                  className={`grid grid-cols-2 lg:grid-cols-3 ${
+                    categoryAccordions[k] ? "block" : "hidden"
+                  }`}
+                >
                   {v.map((bill) => (
                     <Chip
                       key={bill.billId}
