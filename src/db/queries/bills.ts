@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { asc, desc, eq, exists, getTableColumns, InferSelectModel, or } from "drizzle-orm";
+import { desc, eq, exists, getTableColumns, InferSelectModel, or } from "drizzle-orm";
 import { _votesGroupedByPartywithPartyLine } from "@/db/queries/partylineFull";
 import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
@@ -35,7 +35,7 @@ export const voteMetaForBill = (billId: string) => {
     .leftJoin(amendments, eq(vm.amendmentId, amendments.amendmentId))
     .leftJoin(_votesGroupedByPartywithPartyLine, eq(vm.voteId, _votesGroupedByPartywithPartyLine.voteId))
     .where(eq(vm.billId, billId))
-    .orderBy(asc(vm.date))
+    .orderBy(desc(vm.date)) // sort by vote date descending (most recent vote first)
     .execute();
 };
 
