@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Revalidate at most every 12 hours.
-export const revalidate = 43200;
+// Revalidate at most every 1 hour.
+export const revalidate = 3600;
 
 export default async function RootLayout({
   children,
