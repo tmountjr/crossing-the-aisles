@@ -16,6 +16,7 @@ const _votesWithPartyLine = db
     category: vm.category,
     nominationTitle: vm.nominationTitle,
     sponsorParty: vm.sponsorParty,
+    date: vm.date,
     name: l.name,
     state: l.state,
     district: l.district,
@@ -155,6 +156,7 @@ export type VoteWithPartyLine =
   Pick<InferSelectModel<typeof v>, "voteId" | "legislatorId" | "position"> &
   Pick<InferSelectModel<typeof l>, "name" | "state" | "district" | "termType" | "party" | "caucus"> &
   {
+    date: string | null,
     category: string | null,
     nominationTitle: string | null,
     sponsorParty: string | null,
@@ -166,7 +168,7 @@ export const votesWithPartyLineByLegislator = async (id: string): Promise<VoteWi
   .select()
   .from(_votesWithPartyLine)
   .where(eq(_votesWithPartyLine.legislatorId, id))
-  .orderBy(asc(_votesWithPartyLine.voteId))
+  .orderBy(desc(_votesWithPartyLine.date))
   .execute();
 
   export const partyLineVoteCount = async (voteId: string | null) => db
