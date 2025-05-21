@@ -36,7 +36,7 @@ const Header: React.FC<{ announcements: Announcement[] }> = ({
           </span>
         </div>
         <nav>
-          <ul className="flex space-x-4">
+          <ul className="flex space-x-3 sm:space-x-4 items-center-safe">
             {menuLinks.map((linkObject, index) => (
               <li
                 key={index}
