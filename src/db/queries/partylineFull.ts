@@ -171,10 +171,20 @@ export const votesWithPartyLineByLegislator = async (id: string): Promise<VoteWi
   .orderBy(desc(_votesWithPartyLine.date))
   .execute();
 
-  export const partyLineVoteCount = async (voteId: string | null) => db
-    .select()
-    .from(_votesGroupedByPartywithPartyLine)
-    .where(
-      voteId ? eq(_votesGroupedByPartywithPartyLine.voteId, voteId) : undefined
-    )
-    .execute();
+export const partyLineVoteCount = async (voteId: string | null) => db
+  .select()
+  .from(_votesGroupedByPartywithPartyLine)
+  .where(
+    voteId ? eq(_votesGroupedByPartywithPartyLine.voteId, voteId) : undefined
+  )
+  .execute();
+
+export const nominationPartyLineVoteCount = async () => db
+  .select()
+  .from(_votesGroupedByPartywithPartyLine)
+  .innerJoin(vm, eq(_votesGroupedByPartywithPartyLine.voteId, vm.voteId))
+  .where(eq(vm.category, "nomination"))
+  .orderBy(desc(vm.date))
+  .execute();
+
+export type nomPLV = Awaited<ReturnType<typeof nominationPartyLineVoteCount>>;

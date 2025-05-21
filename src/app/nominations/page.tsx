@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Chip from "@/app/components/Chip";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchNominationVoteIds } from "@/server/actions/nominations";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.DOMAIN!),
@@ -57,6 +58,18 @@ export default async function NominationsPage() {
         <p>
           Click on a nomination vote to display the details of how each Senator
           voted. The list is sorted so that the latest vote shows up first.
+        </p>
+        <p>
+          Additionally, click{" "}
+          <Link
+            href="/nominations/summary"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            here
+          </Link>{" "}
+          to summarize the nominations based on the count of party line votes
+          from each party.
         </p>
 
         <div className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
