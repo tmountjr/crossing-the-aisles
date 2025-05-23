@@ -95,6 +95,7 @@ const BillBarChart: React.FC<BillBarChartProps> = ({ voteMeta }) => {
         grid: { color: "#f0f0f0" },
         stacked: true,
         beginAtZero: true,
+        max: 100,
       },
       y: {
         grid: { color: "#f0f0f0" },
