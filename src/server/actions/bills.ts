@@ -15,6 +15,15 @@ export const fetchVoteMeta = cache(async (billId: string) => {
 
 export type VM = Awaited<ReturnType<typeof fetchVoteMeta>>[number];
 export type EVM = VM["enriched_vote_meta"];
+export type PLV = VM["votes_grouped_by_party_with_party_line"];
+export type AMD = VM["amendments"];
+export type PLVote = {
+  enriched_vote_meta: EVM;
+  votes_grouped_by_party_with_party_line: PLV;
+
+  // Nominations won't have amendments.
+  amendments?: AMD;
+};
 
 export const fetchBillInformation = cache(async (billId: string) => {
   const data = await billInformation(billId);

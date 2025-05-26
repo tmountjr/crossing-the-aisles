@@ -2,11 +2,16 @@ import Link from "next/link";
 import PageHeader from "@/app/components/PageHeader";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PartyLineVoteChart from "@/app/components/PartyLineVoteChart";
 import { fetchNominationPartyLineVoteCount } from "@/server/actions/brokePartyLinesFull";
-import SummaryComponent from "./SummaryComponent";
 
 const NominationSummaryPage = async () => {
   const partyLineVotes = await fetchNominationPartyLineVoteCount();
+
+  const labels = partyLineVotes.map(({ enriched_vote_meta: v }) => {
+    const title = v.nominationTitle || "";
+    return title.substring(0, title.indexOf(","));
+  });
 
   return (
     <>
@@ -45,7 +50,7 @@ const NominationSummaryPage = async () => {
       </section>
 
       <section>
-        <SummaryComponent votes={partyLineVotes} />
+        <PartyLineVoteChart votes={partyLineVotes} labels={labels} />
       </section>
     </>
   );

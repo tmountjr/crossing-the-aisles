@@ -1,8 +1,8 @@
 import Link from "next/link";
-import BillBarChart from "./BillBarChart";
 import PageHeader from "@/app/components/PageHeader";
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PartyLineVoteChart from "@/app/components/PartyLineVoteChart";
 import { fetchBillInformation, fetchVoteMeta } from "@/server/actions/bills";
 
 type Params = Promise<{ id: string }>;
@@ -23,6 +23,15 @@ export default async function Page(props: {
 
   // Break out the amendments to their own object.
   const vmA = voteMeta.filter((vm) => vm.amendments);
+
+  const labels = voteMeta.map(({ enriched_vote_meta: vm }) => {
+    const { category, chamber } = vm;
+    let s = `${category} (${chamber})`;
+    if (vm.amendmentId) {
+      s += `, ${vm.amendmentId}`;
+    }
+    return s;
+  });
 
   return (
     <>
@@ -134,7 +143,7 @@ export default async function Page(props: {
               This chart shows the distribution of party line and non-party line
               votes per party for each roll call vote taken.
             </p>
-            <BillBarChart voteMeta={voteMeta} />
+            <PartyLineVoteChart votes={voteMeta} labels={labels} />
           </section>
         )}
       </section>
