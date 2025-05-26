@@ -110,6 +110,8 @@ const PartyLineVoteChart: React.FC<PLVChartProps> = ({
 
     setDatasets(datasets);
 
+    // Pass normalized values to the chart to get the right x-axis scale.
+    // Use the datasets state value to look up the original raw value.
     const chartData: ChartData<"bar"> = {
       labels: paginatedLabels,
       datasets: [
@@ -170,6 +172,8 @@ const PartyLineVoteChart: React.FC<PLVChartProps> = ({
             const index = tooltipItem.dataIndex;
             const datasetLabel = data.datasets[datasetIndex].label || "";
 
+            // Can't easily calculate raw values backwards from normalized values,
+            // so look them up from the datasets calculated on each state change.
             const raw = datasets[datasetIndex].raw[index] || 0;
             const normalized = datasets[datasetIndex].normalized[index] || 0;
 
