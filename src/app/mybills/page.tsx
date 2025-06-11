@@ -2,17 +2,14 @@
 
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { BillList } from "@/db/queries/bills";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBulkBills } from "@/server/actions/bills";
 import SlicedBillList from "@/app/components/SlicedBillList";
-import { billCategoryLookup, type BillCategory } from "@/exports/bills";
-
-type Reducer = Record<BillCategory, BillList>;
+import { sliceBills, type SlicedBillRecord } from "@/exports/bills";
 
 export default function MyBills() {
   const [myBillsRaw, setMyBillsRaw] = useState<string[]>([]);
-  const [slicedBills, setSlicedBills] = useState<Reducer>();
+  const [slicedBills, setSlicedBills] = useState<SlicedBillRecord>();
 
   useEffect(() => {
     const billListRaw = Cookies.get("billList");
@@ -29,16 +26,7 @@ export default function MyBills() {
   useEffect(() => {
     const getBills = async () => {
       const bills = await fetchBulkBills(myBillsRaw);
-
-      const slicedBills = bills.reduce<Reducer>((acc, curr) => {
-        const { billType } = curr;
-        if (billType in billCategoryLookup) {
-          const typedBillType = billType as BillCategory;
-          if (!acc[typedBillType]) acc[typedBillType] = [];
-          acc[typedBillType].push(curr);
-        }
-        return acc;
-      }, {} as Reducer);
+      const slicedBills = sliceBills(bills);
       setSlicedBills(slicedBills);
     };
 

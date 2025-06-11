@@ -1,25 +1,15 @@
-import { type BillList } from "@/db/queries/bills";
+import { sliceBills } from "@/exports/bills";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
 import SlicedBillList from "@/app/components/SlicedBillList";
-import { billCategoryLookup, type BillCategory } from "@/exports/bills";
 
 export const revalidate = 3600; // 1h
 
 export default async function BillsPage() {
   const billsResponse = await fetchBillList();
-  type RecordMap = Record<BillCategory, BillList>;
 
   // Slice billsResponse based on category
-  const slicedBills = billsResponse.reduce<RecordMap>((acc, curr) => {
-    const { billType } = curr;
-    if (billType in billCategoryLookup) {
-      const typedBillType = billType as BillCategory;
-      if (!acc[typedBillType]) acc[typedBillType] = [];
-      acc[typedBillType].push(curr);
-    }
-    return acc;
-  }, {} as RecordMap);
+  const slicedBills = sliceBills(billsResponse);
 
   return (
     <>
