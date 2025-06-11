@@ -116,7 +116,11 @@ const SlicedBillList: React.FC<BillListProps> = ({ slicedBills }) => {
                               : faBookmarkRegular
                           }
                           className="fa fa-fw"
-                          onClick={() => toggleFavoriteBill(bill.billId)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            toggleFavoriteBill(bill.billId);
+                          }}
                         />
                       </div>
                       <h3 className="text-md text-gray-700 dark:text-gray-300 italic">

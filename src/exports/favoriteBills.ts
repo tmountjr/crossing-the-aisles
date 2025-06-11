@@ -4,13 +4,18 @@ import { useState, useEffect } from "react";
 export const useFavoriteBills = (defaultBills: string[] = []) => {
   const [favoriteBills, setFavoriteBills] = useState<string[]>(defaultBills);
 
-  useEffect(() => {
+  const updateFavorites = () => {
     const billListRaw = Cookies.get("billList");
-    if (billListRaw && billListRaw !== "") {
-      const bills = billListRaw.split(",");
-      console.log(bills);
-      setFavoriteBills(bills);
-    }
+    setFavoriteBills(billListRaw ? billListRaw.split(",") : []);
+  };
+
+  useEffect(() => {
+    updateFavorites();
+
+    const handleUpdate = () => updateFavorites();
+    window.addEventListener("billListChanged", handleUpdate);
+
+    return () => window.removeEventListener("billListChanged", handleUpdate);
   }, []);
 
   return favoriteBills;
@@ -25,6 +30,7 @@ export const addFavoriteBill = (billId: string) => {
   const currentBills = new Set(currentBillsRaw.split(","));
   currentBills.add(billId);
   Cookies.set("billList", [...currentBills].join(","));
+  dispatchChange();
 }
 
 /**
@@ -36,6 +42,7 @@ export const removeFavoriteBill = (billId: string) => {
   const currentBills = new Set(currentBillsRaw.split(","));
   currentBills.delete(billId);
   Cookies.set("billList", [...currentBills].join(","));
+  dispatchChange();
 }
 
 /**
@@ -51,3 +58,5 @@ export const toggleFavoriteBill = (billId: string) => {
     addFavoriteBill(billId);
   }
 }
+
+const dispatchChange = () => window.dispatchEvent(new Event("billListChanged"));
