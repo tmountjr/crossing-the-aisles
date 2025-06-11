@@ -13,6 +13,13 @@
       "link": "/about",
       "date": 1746541561791,
       "expires": 1747146361791
+    },
+    {
+      "title": "New My Bills Feature now available.",
+      "description": "There is a new My Bills page available now. As you list bills out, you can select any of them to be saved to your list of favorite bills, visible on the My Bills page. Stay tuned for more features on that page, including a overall vote breakdown for each of your favorites.",
+      "link": "/bills/mybills",
+      "date": 1749607752949,
+      "expires": 1750212552949
     }
   ]
 }

@@ -46,12 +46,23 @@ export default function MyBills() {
             href="http://localhost:3000/about#cookie-policy"
             rel="noopener noreferrer"
             target="_blank"
+             className="underline"
           >
             Cookie Policy
           </Link>{" "}
           for more information.
         </p>
-        {slicedBills && <SlicedBillList slicedBills={slicedBills} />}
+        {favoriteBills.length === 0 && (
+          <p>
+            It looks like you don&apos;t have any favorite bills stored. Go to
+            the{" "}
+            <Link href="/bills" rel="noopener noreferrer" className="underline">
+              Bills page
+            </Link>{" "}
+            to add favorite bills.
+          </p>
+        )}
+        {favoriteBills.length > 0 && slicedBills && <SlicedBillList slicedBills={slicedBills} />}
       </section>
     </>
   );
