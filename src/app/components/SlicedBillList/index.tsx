@@ -28,7 +28,7 @@ const initialCategoryAccordions: Record<BillCategory, boolean> =
 
 const BILL_TITLE_MAX_LENGTH = 75;
 
-const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
+const SlicedBillList: React.FC<BillListProps> = ({ slicedBills }) => {
   const [categoryFilters, setCategoryFilters] =
     useState<BillCategory[]>(allBillCategories);
 
@@ -125,4 +125,4 @@ const BillListComponent: React.FC<BillListProps> = ({ slicedBills }) => {
   );
 };
 
-export default BillListComponent;
+export default SlicedBillList;

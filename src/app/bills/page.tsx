@@ -1,7 +1,7 @@
 import { type BillList } from "@/db/queries/bills";
-import BillListComponent from "./BillListComponent";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
+import SlicedBillList from "@/app/components/SlicedBillList";
 import { billCategoryLookup, type BillCategory } from "@/exports/bills";
 
 export const revalidate = 3600; // 1h
@@ -44,7 +44,7 @@ export default async function BillsPage() {
           for more information on bill status codes.
         </p>
 
-        <BillListComponent slicedBills={slicedBills} />
+        <SlicedBillList slicedBills={slicedBills} />
       </section>
     </>
   );
