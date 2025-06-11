@@ -1,7 +1,7 @@
 "use server";
 
 import { cache } from "react";
-import { billInformation, billsHavingVotes, sponsoredBillsByLegislator, voteMetaForBill } from "@/db/queries/bills";
+import { billInformation, billsHavingVotes, bulkBillsById, sponsoredBillsByLegislator, voteMetaForBill } from "@/db/queries/bills";
 
 export const fetchBillList = cache(async () => {
   const data = await billsHavingVotes();
@@ -32,5 +32,10 @@ export const fetchBillInformation = cache(async (billId: string) => {
 
 export const fetchSponsoredBills = cache(async (id: string) => {
   const data = await sponsoredBillsByLegislator(id);
+  return data;
+});
+
+export const fetchBulkBills = cache(async (ids: string[]) => {
+  const data = await bulkBillsById(ids);
   return data;
 });

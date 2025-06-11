@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { desc, eq, exists, getTableColumns, InferSelectModel, or } from "drizzle-orm";
+import { desc, eq, exists, getTableColumns, inArray, InferSelectModel, or } from "drizzle-orm";
 import { _votesGroupedByPartywithPartyLine } from "@/db/queries/partylineFull";
 import { amendments, bills, legislators, enrichedVoteMeta as vm } from "@/db/schema";
 
@@ -63,4 +63,17 @@ export const sponsoredBillsByLegislator = (id: string) => {
     .leftJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
     .where(or(eq(legislators.bioguideId, id), eq(legislators.id, id)))
     .execute();
-}
+};
+
+export const bulkBillsById = (ids: string[]) => {
+  return db
+    .select({
+      ...getTableColumns(bills),
+      sponsorName: legislators.name,
+      sponsorParty: legislators.caucus,
+    })
+    .from(bills)
+    .innerJoin(legislators, eq(bills.sponsorId, legislators.bioguideId))
+    .where(inArray(bills.billId, ids))
+    .execute();
+};
