@@ -30,7 +30,9 @@ export default function MyBills() {
       setSlicedBills(slicedBills);
     };
 
-    getBills();
+    if (myBillsRaw.length > 0) {
+      getBills();
+    }
   }, [ myBillsRaw ]);
 
   return (
@@ -40,7 +42,11 @@ export default function MyBills() {
         subtitle="Track the bills important to you."
       />
 
-      {slicedBills && <SlicedBillList slicedBills={slicedBills} />}
+      <section className="mt-20 flex flex-col gap-8 lg:max-w-[768px] m-auto">
+        <p>These are the bills that you have marked as interesting to you.</p>
+        {slicedBills && <SlicedBillList slicedBills={slicedBills} />}
+      </section>
+
     </>
   );
 }
