@@ -4,8 +4,14 @@ import { useState } from "react";
 import { type BillList } from "@/db/queries/bills";
 import Chip, { ChipStyle } from "@/app/components/Chip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { billCategoryLookup, type BillCategory } from "@/exports/bills";
+import { useFavoriteBills, toggleFavoriteBill } from "@/exports/favoriteBills";
+import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faBookmark as faBookmarkSolid,
+} from "@fortawesome/free-solid-svg-icons";
 
 const chipStyleLookup: Record<string, ChipStyle> = {
   R: "rep",
@@ -35,6 +41,9 @@ const SlicedBillList: React.FC<BillListProps> = ({ slicedBills }) => {
   const [categoryAccordions, setCategoryAccordions] = useState<
     Record<BillCategory, boolean>
   >(initialCategoryAccordions);
+
+  const favoriteBills = useFavoriteBills();
+  console.log(`Favorite bills:`, favoriteBills);
 
   const handleCategoryChange = (category: BillCategory) => {
     const accordions = { ...categoryAccordions };
@@ -98,7 +107,18 @@ const SlicedBillList: React.FC<BillListProps> = ({ slicedBills }) => {
                       style={chipStyleLookup[bill.sponsorParty!]}
                       href={`/bills/${bill.billId}`}
                     >
-                      <h2 className="text-xl font-bold">{bill.billId}</h2>
+                      <div className="flex flex-row items-center-safe justify-between">
+                        <h2 className="text-xl font-bold">{bill.billId}</h2>
+                        <FontAwesomeIcon
+                          icon={
+                            favoriteBills.includes(bill.billId)
+                              ? faBookmarkSolid
+                              : faBookmarkRegular
+                          }
+                          className="fa fa-fw"
+                          onClick={() => toggleFavoriteBill(bill.billId)}
+                        />
+                      </div>
                       <h3 className="text-md text-gray-700 dark:text-gray-300 italic">
                         {bill.shortTitle ||
                           bill.title.substring(0, BILL_TITLE_MAX_LENGTH) +

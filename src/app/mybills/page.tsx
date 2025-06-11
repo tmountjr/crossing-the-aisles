@@ -1,39 +1,29 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBulkBills } from "@/server/actions/bills";
 import SlicedBillList from "@/app/components/SlicedBillList";
 import { sliceBills, type SlicedBillRecord } from "@/exports/bills";
+import { useFavoriteBills } from "@/exports/favoriteBills";
 
 export default function MyBills() {
-  const [myBillsRaw, setMyBillsRaw] = useState<string[]>([]);
   const [slicedBills, setSlicedBills] = useState<SlicedBillRecord>();
 
-  useEffect(() => {
-    const billListRaw = Cookies.get("billList");
-    if (billListRaw && billListRaw !== "") {
-      const bills = billListRaw.split(",");
-      setMyBillsRaw(bills);
-    } else {
-      // For testing, specify a few default bills
-      setMyBillsRaw(["hr1-119", "s5-119"]);
-    }
-  }, []);
+  const favoriteBills = useFavoriteBills();
 
   // When the list of bills is updated, fetch the bills.
   useEffect(() => {
     const getBills = async () => {
-      const bills = await fetchBulkBills(myBillsRaw);
+      const bills = await fetchBulkBills(favoriteBills);
       const slicedBills = sliceBills(bills);
       setSlicedBills(slicedBills);
     };
 
-    if (myBillsRaw.length > 0) {
+    if (favoriteBills.length > 0) {
       getBills();
     }
-  }, [ myBillsRaw ]);
+  }, [favoriteBills]);
 
   return (
     <>
@@ -46,7 +36,6 @@ export default function MyBills() {
         <p>These are the bills that you have marked as interesting to you.</p>
         {slicedBills && <SlicedBillList slicedBills={slicedBills} />}
       </section>
-
     </>
   );
 }
