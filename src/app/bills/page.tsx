@@ -2,6 +2,7 @@ import { sliceBills } from "@/exports/bills";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBillList } from "@/server/actions/bills";
 import SlicedBillList from "@/app/components/SlicedBillList";
+import Link from "next/link";
 
 export const revalidate = 3600; // 1h
 
@@ -32,6 +33,18 @@ export default async function BillsPage() {
             this page
           </a>{" "}
           for more information on bill status codes.
+        </p>
+        <p>
+          Please note that you can toggle the bookmark icon on any bill to save
+          that as a favorite bill. See{" "}
+          <Link
+            href="/bills/mybills"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            the My Bills page
+          </Link>{" "}
+          to browse your favorites.
         </p>
 
         <SlicedBillList slicedBills={slicedBills} />

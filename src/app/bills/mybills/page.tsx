@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import { fetchBulkBills } from "@/server/actions/bills";
+import { useFavoriteBills } from "@/exports/favoriteBills";
 import SlicedBillList from "@/app/components/SlicedBillList";
 import { sliceBills, type SlicedBillRecord } from "@/exports/bills";
-import { useFavoriteBills } from "@/exports/favoriteBills";
 
 export default function MyBills() {
   const [slicedBills, setSlicedBills] = useState<SlicedBillRecord>();
@@ -33,7 +34,23 @@ export default function MyBills() {
       />
 
       <section className="mt-20 flex flex-col gap-8 lg:max-w-[768px] m-auto">
-        <p>These are the bills that you have marked as interesting to you.</p>
+        <p>
+          These are the bills that you have marked as interesting to you. You
+          can toggle the favorites by clicking the bookmark icon on each bill.
+          Please note: a page refresh will be required to remove any bills
+          removed from the favorites list.
+        </p>
+        <p>
+          This feature stores your favorite bills as a cookie. Please see the{" "}
+          <Link
+            href="http://localhost:3000/about#cookie-policy"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Cookie Policy
+          </Link>{" "}
+          for more information.
+        </p>
         {slicedBills && <SlicedBillList slicedBills={slicedBills} />}
       </section>
     </>
