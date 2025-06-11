@@ -43,7 +43,7 @@ export default function MyBills() {
         <p>
           This feature stores your favorite bills as a cookie. Please see the{" "}
           <Link
-            href="http://localhost:3000/about#cookie-policy"
+            href="/about#cookie-policy"
             rel="noopener noreferrer"
             target="_blank"
              className="underline"
